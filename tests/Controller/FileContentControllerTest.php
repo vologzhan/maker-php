@@ -6,7 +6,7 @@ use App\Controller\FileContentController;
 use App\Request\FileContentRequest;
 use App\Response\FileContentResponse;
 use App\Response\Node\Node;
-use App\Tests\Tests\ApiTestCase;
+use App\Tests\Infrastructure\ApiTestCase;
 
 final class FileContentControllerTest extends ApiTestCase
 {

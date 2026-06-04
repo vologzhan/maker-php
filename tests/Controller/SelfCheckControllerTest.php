@@ -2,7 +2,7 @@
 
 namespace App\Tests\Controller;
 
-use App\Tests\Tests\ApiTestCase;
+use App\Tests\Infrastructure\ApiTestCase;
 
 final class SelfCheckControllerTest extends ApiTestCase
 {

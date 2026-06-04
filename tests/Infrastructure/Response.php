@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace App\Tests\Tests;
+namespace App\Tests\Infrastructure;
 
 use PHPUnit\Framework\Constraint\JsonMatches;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;

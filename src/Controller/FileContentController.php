@@ -18,9 +18,9 @@ final readonly class FileContentController
 {
     #[Route('/api/file/content', methods: ['GET'])]
     public function __invoke(
-        #[MapQueryString] FileContentRequest $request,
+//        #[MapQueryString] FileContentRequest $request,
     ): FileContentResponse {
-        $content = file_get_contents($request->path);
+        $content = file_get_contents(__DIR__ . '/FileContentController.php'); // todo hardcode
 
         $parser = new ParserFactory()->createForNewestSupportedVersion();
         $stmts = $parser->parse($content);
