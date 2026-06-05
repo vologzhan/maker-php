@@ -1,9 +1,8 @@
 <?php declare(strict_types=1);
 
-namespace App\Helper;
+namespace App\Service\String;
 
 use Symfony\Component\String\UnicodeString;
-use function Symfony\Component\String\u;
 
 final readonly class StrCase
 {

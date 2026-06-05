@@ -3,8 +3,8 @@
 namespace App\Serializer;
 
 use App\Dto\Php\ClassDto;
-use App\Helper\StrCase;
 use App\Response\Controller\ControllerItemResponse;
+use App\Service\String\StrCase;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Uid\Uuid;
 

@@ -4,11 +4,11 @@ namespace App\Controller\Controller;
 
 use App\Dto\Php\NodeDto;
 use App\Dto\Php\TokenDto;
-use App\Helper\StrCase;
 use App\Request\Controller\UpdateRequest;
 use App\Response\SuccessResponse;
 use App\Service\Php\PhpParser;
 use App\Service\Php\PhpPrinter;
+use App\Service\String\StrCase;
 use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Routing\Requirement\Requirement;
