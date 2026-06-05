@@ -1,8 +1,8 @@
 <?php declare(strict_types=1);
 
-namespace App\Request;
+namespace App\Request\File;
 
-final class FileContentRequest
+final class GetOneRequest
 {
     public string $path;
 }

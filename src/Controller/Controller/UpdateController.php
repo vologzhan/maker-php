@@ -1,0 +1,68 @@
+<?php declare(strict_types=1);
+
+namespace App\Controller\Controller;
+
+use App\Dto\Php\NodeDto;
+use App\Dto\Php\TokenDto;
+use App\Helper\StrCase;
+use App\Request\Controller\UpdateRequest;
+use App\Response\SuccessResponse;
+use App\Service\Php\PhpParser;
+use App\Service\Php\PhpPrinter;
+use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
+use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Routing\Requirement\Requirement;
+use Symfony\Component\Uid\Uuid;
+
+#[Route('/api/controller/{uuid}', requirements: ['uuid' => Requirement::UUID_V7], methods: ['PUT'])]
+final readonly class UpdateController
+{
+    public function __construct(
+        private PhpParser $phpParser,
+        private PhpPrinter $phpPrinter,
+    ) {}
+
+    public function __invoke(
+        Uuid $uuid,
+        #[MapRequestPayload] UpdateRequest $request,
+    ): SuccessResponse {
+        $file = $this->phpParser->parseFile('/tmp/SelfCheckControllerTest.php'); // todo hardcode
+        $class = $file->classes[0];
+
+        $tokens = $file->tokens;
+
+        $name = $class->name;
+        $this->replaceTokens($tokens, $name, StrCase::toPascalCase($request->name) . 'Controller');
+
+        $route = $class->attribute(Route::class);
+
+        $method = $route->args[1]->value;
+        $this->replaceTokens($tokens, $method, "['$request->method']");
+
+        $path = $route->args[0]->value;
+        $this->replaceTokens($tokens, $path, "'$request->path'");
+
+        $this->phpPrinter->saveFile($file->path, $tokens);
+
+        return new SuccessResponse();
+    }
+
+    public function replaceTokens(array &$tokens, NodeDto $node, string $value): void
+    {
+        $pos = $node->pos;
+        $end = $node->end;
+
+        $newToken = new TokenDto(
+            pos: $pos,
+            end: $pos,
+            value: $value,
+            type: '', // todo
+        );
+
+        $tokens = array_merge(
+            array_slice($tokens, 0, $pos, true),
+            [$newToken],
+            array_slice($tokens, $end + 1, null, true),
+        );
+    }
+}

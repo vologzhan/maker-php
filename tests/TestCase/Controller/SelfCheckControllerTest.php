@@ -1,12 +1,16 @@
 <?php declare(strict_types=1);
 
-namespace App\Tests\Controller;
+namespace App\Tests\TestCase\Controller;
 
+use App\Controller\SelfCheckController;
 use App\Tests\Infrastructure\ApiTestCase;
 
+/**
+ * @see SelfCheckController
+ */
 final class SelfCheckControllerTest extends ApiTestCase
 {
-    public function testCheckReturnsSuccess(): void
+    public function test(): void
     {
         $this
             ->request('GET', '/')
@@ -16,6 +20,7 @@ final class SelfCheckControllerTest extends ApiTestCase
                 {
                   "success": true
                 }
-                JSON);
+                JSON
+            );
     }
 }

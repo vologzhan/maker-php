@@ -2,16 +2,14 @@
 
 namespace App\Controller;
 
-use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpKernel\Attribute\AsController;
+use App\Response\SuccessResponse;
 use Symfony\Component\Routing\Attribute\Route;
 
-#[AsController]
+#[Route('/', methods: ['GET'])]
 final readonly class SelfCheckController
 {
-    #[Route('/', methods: ['GET'])]
-    public function check(): JsonResponse
+    public function __invoke(): SuccessResponse
     {
-        return new JsonResponse(['success' => true]);
+        return new SuccessResponse();
     }
 }
