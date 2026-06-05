@@ -26,13 +26,19 @@ final readonly class UpdateController
         Uuid $uuid,
         #[MapRequestPayload] UpdateRequest $request,
     ): SuccessResponse {
-        $file = $this->phpParser->parseFile('/tmp/SelfCheckControllerTest.php'); // todo hardcode
+        $file = $this->phpParser->parseFile('/tmp/SelfCheckController.php');
         $class = $file->classes[0];
 
         $tokens = $file->tokens;
 
         $name = $class->name;
-        $this->replaceTokens($tokens, $name, StrCase::toPascalCase($request->name) . 'Controller');
+        $newName = StrCase::toPascalCase($request->name) . 'Controller';
+        $filepath = $file->path;
+        if ($name->value !== $newName) {
+            unlink($file->path);
+            $this->replaceTokens($tokens, $name, $newName);
+            $filepath = pathinfo($filepath, PATHINFO_DIRNAME) . DIRECTORY_SEPARATOR . $newName . '.php';
+        }
 
         $route = $class->attribute(Route::class);
 
@@ -42,7 +48,7 @@ final readonly class UpdateController
         $path = $route->args[0]->value;
         $this->replaceTokens($tokens, $path, "'$request->path'");
 
-        $this->phpPrinter->saveFile($file->path, $tokens);
+        $this->phpPrinter->saveFile($filepath, $tokens);
 
         return new SuccessResponse();
     }

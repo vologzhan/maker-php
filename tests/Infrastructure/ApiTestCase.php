@@ -6,16 +6,6 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 class ApiTestCase extends WebTestCase
 {
-    protected function tmpDir(): string
-    {
-        return sys_get_temp_dir();
-    }
-
-    protected function fixturesDir(): string
-    {
-        return self::getContainer()->getParameter('kernel.project_dir') . '/tests/Fixtures';
-    }
-
     protected function request(string $method, string $url, ?string $body = null): Response
     {
         $headers = [];
@@ -28,5 +18,15 @@ class ApiTestCase extends WebTestCase
         $response = $client->getResponse();
 
         return new Response($response, $this);
+    }
+
+    protected function tmpDir(): string
+    {
+        return sys_get_temp_dir();
+    }
+
+    protected function fixturesDir(): string
+    {
+        return self::getContainer()->getParameter('kernel.project_dir') . '/tests/Fixtures';
     }
 }

@@ -12,9 +12,9 @@ final class UpdateControllerTest extends ApiTestCase
 {
     public function test(): void
     {
-        $tmpDir = $this->tmpDir();
+        $path = $this->tmpDir() . '/SelfCheckController.php';
 
-        file_put_contents($tmpDir . '/SelfCheckControllerTest.php', <<<PHP
+        file_put_contents($path, <<<PHP
             <?php declare(strict_types=1);
             
             namespace App\Tests\Fixtures;
@@ -51,7 +51,7 @@ final class UpdateControllerTest extends ApiTestCase
                 JSON
             );
 
-        $actualContent = file_get_contents($this->tmpDir() . '/SelfCheckControllerTest.php'); // todo rename file
+        self::assertFileDoesNotExist($path);
 
         self::assertEquals(<<<PHP
             <?php declare(strict_types=1);
@@ -70,6 +70,8 @@ final class UpdateControllerTest extends ApiTestCase
                 }
             }
 
-            PHP, $actualContent);
+            PHP
+            , file_get_contents($this->tmpDir() . '/SelfCheckEditedController.php'),
+        );
     }
 }
