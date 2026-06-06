@@ -2,9 +2,9 @@
 
 namespace App\Request\Controller;
 
-final readonly class CreateRequest
+final class CreateRequest
 {
     public string $name;
-    public string $path;
     public string $method;
+    public string $path;
 }

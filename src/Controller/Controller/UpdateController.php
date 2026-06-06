@@ -6,6 +6,7 @@ use App\Dto\Php\NodeDto;
 use App\Dto\Php\TokenDto;
 use App\Request\Controller\UpdateRequest;
 use App\Response\SuccessResponse;
+use App\Service\Controller\ControllerService;
 use App\Service\Php\PhpParser;
 use App\Service\Php\PhpPrinter;
 use App\Service\String\StrCase;
@@ -20,6 +21,7 @@ final readonly class UpdateController
     public function __construct(
         private PhpParser $phpParser,
         private PhpPrinter $phpPrinter,
+        private ControllerService $controllerService,
     ) {}
 
     public function __invoke(
@@ -28,11 +30,10 @@ final readonly class UpdateController
     ): SuccessResponse {
         $file = $this->phpParser->parseFile('/tmp/SelfCheckController.php');
         $class = $file->classes[0];
-
         $tokens = $file->tokens;
 
         $name = $class->name;
-        $newName = StrCase::toPascalCase($request->name) . 'Controller';
+        $newName = $this->controllerService->nameToClassName(StrCase::toPascalCase($request->name));
         $filepath = $file->path;
         if ($name->value !== $newName) {
             unlink($file->path);
