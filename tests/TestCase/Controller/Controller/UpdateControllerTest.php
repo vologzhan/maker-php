@@ -37,7 +37,7 @@ final class UpdateControllerTest extends ApiTestCase
         $this
             ->request('PUT', '/api/controller/019e98a9-592b-7988-8d91-6893b70e38c5', body: <<<JSON
                 {
-                    "name": "Self check edited",
+                    "name": "Self check updated",
                     "method": "POST",
                     "path": "/self-check"
                 }
@@ -53,6 +53,9 @@ final class UpdateControllerTest extends ApiTestCase
 
         self::assertFileDoesNotExist($path);
 
+        $actualPath = $this->tmpDir() . '/SelfCheckUpdatedController.php';
+        $actualContent = file_get_contents($actualPath);
+
         self::assertEquals(<<<PHP
             <?php declare(strict_types=1);
 
@@ -62,7 +65,7 @@ final class UpdateControllerTest extends ApiTestCase
             use Symfony\Component\Routing\Attribute\Route;
 
             #[Route('/self-check', methods: ['POST'])]
-            final readonly class SelfCheckEditedController
+            final readonly class SelfCheckUpdatedController
             {
                 public function __invoke(): SuccessResponse
                 {
@@ -70,8 +73,8 @@ final class UpdateControllerTest extends ApiTestCase
                 }
             }
 
-            PHP
-            , file_get_contents($this->tmpDir() . '/SelfCheckEditedController.php'),
-        );
+            PHP, $actualContent);
+
+        unlink($actualPath);
     }
 }

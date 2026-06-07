@@ -33,5 +33,7 @@ final class CreateControllerTest extends ApiTestCase
         $actual = $this->tmpDir() . '/SelfCheckController.php';
 
         self::assertFileEquals($expected, $actual);
+
+        unlink($actual);
     }
 }
