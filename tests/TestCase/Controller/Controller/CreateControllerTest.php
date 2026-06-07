@@ -17,7 +17,7 @@ final class CreateControllerTest extends ApiTestCase
                 {
                   "name": "Self check",
                   "path": "/",
-                  "method": "POST"
+                  "method": "GET"
                 }
                 JSON
             )

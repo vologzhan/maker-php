@@ -22,8 +22,8 @@ final readonly class CreateController
         $uuid = Uuid::fromString("019e98a9-592b-7988-8d91-6893b70e38c5"); // todo hardcode
 
         $className = $this->controllerService->nameToClassName($request->name);
-        $method = ''; // todo from request
-        $path = ''; // todo from request
+        $method = $request->method;
+        $path = $request->path;
 
         $content = <<<PHP
             <?php declare(strict_types=1);
