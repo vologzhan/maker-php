@@ -33,6 +33,12 @@ final class IndexControllerTest extends ApiTestCase
                   "controllers": [
                     {
                       "id": 1,
+                      "name": "Index",
+                      "method": "POST",
+                      "path": "/api/project/index"
+                    },
+                    {
+                      "id": 2,
                       "name": "Self check",
                       "method": "GET",
                       "path": "/"
@@ -50,7 +56,8 @@ final class IndexControllerTest extends ApiTestCase
             )
             ->assertEquals(
                 [
-                    [1, 1, 'Self check', 'GET', '/', '/app/tests/Fixtures/maker-php/src/Controller/SelfCheckController.php'],
+                    [1, 1, 'Index', 'POST', '/api/project/index', '/app/tests/Fixtures/maker-php/src/Controller/Project/IndexController.php'],
+                    [2, 1, 'Self check', 'GET', '/', '/app/tests/Fixtures/maker-php/src/Controller/SelfCheckController.php'],
                 ],
                 'SELECT id, project_id, name, method, path, filepath FROM controller'
             );
