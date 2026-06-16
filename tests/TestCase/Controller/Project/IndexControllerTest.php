@@ -51,7 +51,7 @@ final class IndexControllerTest extends ApiTestCase
         $this
             ->connectionPsql()
             ->assertEqualRow(
-                [1, 'maker-php', "/app/tests/Fixtures/maker-php"],
+                [1, 'maker-php', '/app/tests/Fixtures/maker-php'],
                 'SELECT id, name, path FROM project'
             )
             ->assertEquals(
