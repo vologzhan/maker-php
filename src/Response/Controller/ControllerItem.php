@@ -2,12 +2,10 @@
 
 namespace App\Response\Controller;
 
-use Symfony\Component\Uid\Uuid;
-
-final readonly class ControllerItemResponse
+final readonly class ControllerItem
 {
     public function __construct(
-        public Uuid $uuid,
+        public int $id,
         public string $name,
         public string $method,
         public string $path,

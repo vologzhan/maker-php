@@ -6,8 +6,22 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 class ApiTestCase extends WebTestCase
 {
+    private ?Connection $connection = null;
+
+    protected function connectionPsql(): Connection
+    {
+        if ($this->connection === null) {
+            $conn = static::getContainer()->get(\Doctrine\DBAL\Connection::class);
+            $this->connection = new Connection($conn);
+        }
+        return $this->connection;
+    }
+
     protected function request(string $method, string $url, ?string $body = null): Response
     {
+        // todo принудительно гасим ядро, почему-то \App\Infrastructure\RequestResolver запускает его
+        static::ensureKernelShutdown();
+
         $headers = [];
         if ($body !== null) {
             $headers['CONTENT_TYPE'] = 'application/json';
