@@ -18,9 +18,9 @@ final class PhpParserTest extends ApiTestCase
         $content = <<<'PHP'
             <?php declare(strict_types=1);
             
-            namespace App\Tests\Fixtures;
+            namespace Fixtures\Controller;
             
-            use App\Response\SuccessResponse;
+            use Fixtures\Response\SuccessResponse;
             use Symfony\Component\Routing\Attribute\Route;
             
             #[Route('/', methods: ['GET'])]
@@ -38,7 +38,7 @@ final class PhpParserTest extends ApiTestCase
 
         $this->assertEquals([
             new ClassDto(
-                fqn: 'App\Tests\Fixtures\SelfCheckController',
+                fqn: 'Fixtures\Controller\SelfCheckController',
                 name: new NodeDto(45, 45, 'SelfCheckController'),
                 attributes: [new AttributeDto(
                     name: new NodeDto(25, 25, Route::class),
@@ -56,6 +56,7 @@ final class PhpParserTest extends ApiTestCase
                 methods: [
                     new MethodDto(
                         name: new NodeDto(53, 53, '__invoke'),
+                        return: new NodeDto(58, 58, 'Fixtures\Response\SuccessResponse'),
                         params: [],
                         attributes: [],
                     ),
