@@ -43,22 +43,27 @@ final readonly class IndexController
         $project = new Project()
             ->setName(basename($request->path))
             ->setPath($request->path);
+
         $this->projectRepository->save($project);
 
-        $this->scanResponseRecursive($project);
-
-        $this->scanDirRecursive(
-            project: $project,
-            dir: $project->getPath() . '/src/Controller',
-            fileCallback: [$this, 'indexControllerFile'],
-        );
+        $this->scanResponsesRecursive($project);
+        $this->scanControllersRecursive($project);
 
         $this->em->flush();
 
         return $this->projectSerializer->projectResponse($project);
     }
 
-    private function scanResponseRecursive(Project $project): void
+    private function scanControllersRecursive(Project $project): void
+    {
+        $this->scanDirRecursive(
+            project: $project,
+            dir: $project->getPath() . '/src/Controller',
+            fileCallback: [$this, 'indexControllerFile'],
+        );
+    }
+
+    private function scanResponsesRecursive(Project $project): void
     {
         $this->scanDirRecursive(
             project: $project,
@@ -66,10 +71,7 @@ final readonly class IndexController
             fileCallback: [$this, 'indexResponseFile'],
         );
 
-        $responseMap = [];
-        foreach ($project->getResponses() as $response) {
-            $responseMap[$response->getClassName()] = $response;
-        }
+        $responseMap = $project->getResponsesMap();
 
         foreach ($project->getResponses() as $response) {
             foreach ($response->getFields() as $field) {
@@ -110,13 +112,19 @@ final readonly class IndexController
         $className = $class->name;
         $routeAttribute = $class->attribute(Route::class);
 
+        $methodInvoke = $class->method('__invoke');
+        $responseClassName = $methodInvoke->return->value;
+        $responseMap = $project->getResponsesMap();
+        $response = $responseMap[$responseClassName] ?? null;
+
         $name = $this->controllerService->classNameToName($className->value);
 
         $controller = new Controller()
             ->setName($name)
             ->setPath($routeAttribute->args[0]->value->value)
             ->setMethod($routeAttribute->args[1]->value->value[0])
-            ->setFilepath($filepath);
+            ->setFilepath($filepath)
+            ->setResponse($response);
 
         $project->addController($controller);
 

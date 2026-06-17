@@ -89,12 +89,24 @@ class Project
         return $this;
     }
 
+    # ------------------------------------------------------------------------------------------------------------------
+
     /**
      * @return Response[]
      */
     public function getResponses(): array
     {
         return $this->responses->getValues();
+    }
+
+    public function getResponsesMap(): array
+    {
+        $responseMap = [];
+        foreach ($this->responses as $response) {
+            $responseMap[$response->getClassName()] = $response;
+        }
+
+        return $responseMap;
     }
 
     public function addResponse(Response $response): static
@@ -113,4 +125,6 @@ class Project
 
         return $this;
     }
+
+    # ------------------------------------------------------------------------------------------------------------------
 }

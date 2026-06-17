@@ -142,8 +142,8 @@ final class IndexControllerTest extends ApiTestCase
             )
             ->assertEquals(
                 [
-                    [1, 'Index', '/api/project/index', 'POST', '/app/tests/Fixtures/maker-php/src/Controller/Project/IndexController.php', 1],
-                    [2, 'Self check', '/', 'GET', '/app/tests/Fixtures/maker-php/src/Controller/SelfCheckController.php', 1],
+                    [1, 'Index', '/api/project/index', 'POST', '/app/tests/Fixtures/maker-php/src/Controller/Project/IndexController.php', 1,2],
+                    [2, 'Self check', '/', 'GET', '/app/tests/Fixtures/maker-php/src/Controller/SelfCheckController.php', 1, 3],
                 ],
                 'SELECT * FROM controller'
             )

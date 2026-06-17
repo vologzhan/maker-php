@@ -99,6 +99,7 @@ final class CollectorVisitor extends NodeVisitorAbstract
     private function collectMethod(ClassMethod $method): MethodDto
     {
         $name = $method->name;
+        $return = $method->returnType;
 
         $attributes = [];
         foreach ($method->attrGroups as $attrGroup) {
@@ -118,6 +119,11 @@ final class CollectorVisitor extends NodeVisitorAbstract
                 end: $name->getEndTokenPos(),
                 value: $name->name,
             ),
+            return: $return ? new NodeDto(
+                pos: $return->getStartTokenPos(),
+                end: $return->getEndTokenPos(),
+                value: $return instanceof Name ? $return->getAttribute('resolvedName')->name : $return->name,
+            ) : null,
             params: $params,
             attributes: $attributes,
         );
@@ -185,16 +191,6 @@ final class CollectorVisitor extends NodeVisitorAbstract
 
     private function collectParams(Param $param): ParamDto
     {
-        $docComment = $param->getDocComment();
-        $comment = null;
-        if ($docComment !== null) {
-            $comment = new NodeDto(
-                pos: $docComment->getStartTokenPos(),
-                end: $docComment->getEndTokenPos(),
-                value: $docComment->getText(),
-            );
-        }
-
         $type = $param->type;
         $name = $param->var;
 

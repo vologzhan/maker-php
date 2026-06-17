@@ -9,5 +9,6 @@ final readonly class ControllerItem
         public string $name,
         public string $method,
         public string $path,
+        public ?int $responseId,
     ) {}
 }

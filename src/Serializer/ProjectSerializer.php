@@ -36,6 +36,7 @@ final readonly class ProjectSerializer
             name: $controller->getName(),
             method: $controller->getMethod(),
             path: $controller->getPath(),
+            responseId: $controller->getResponse()?->getId(),
         );
     }
 

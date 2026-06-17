@@ -29,6 +29,9 @@ class Controller
     #[ORM\JoinColumn(nullable: false)]
     private Project $project;
 
+    #[ORM\ManyToOne]
+    private ?Response $response = null;
+
     public function getId(): int
     {
         return $this->id;
@@ -90,6 +93,18 @@ class Controller
     public function setProject(Project $project): static
     {
         $this->project = $project;
+
+        return $this;
+    }
+
+    public function getResponse(): ?Response
+    {
+        return $this->response;
+    }
+
+    public function setResponse(?Response $response): static
+    {
+        $this->response = $response;
 
         return $this;
     }
