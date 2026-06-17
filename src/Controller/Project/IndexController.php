@@ -3,9 +3,14 @@
 namespace App\Controller\Project;
 
 use App\Entity\Controller;
+use App\Entity\Field;
 use App\Entity\Project;
+use App\Entity\Response;
+use App\Enum\Type;
 use App\Repository\ControllerRepository;
+use App\Repository\FieldRepository;
 use App\Repository\ProjectRepository;
+use App\Repository\ResponseRepository;
 use App\Request\Project\IndexRequest;
 use App\Response\Project\ProjectResponse;
 use App\Serializer\ProjectSerializer;
@@ -21,6 +26,8 @@ final readonly class IndexController
     public function __construct(
         private ProjectRepository $projectRepository,
         private ControllerRepository $controllerRepository,
+        private ResponseRepository $responseRepository,
+        private FieldRepository $fieldRepository,
         private PhpParser $phpParser,
         private EntityManagerInterface $em,
         private ProjectSerializer $projectSerializer,
@@ -36,18 +43,47 @@ final readonly class IndexController
         $project = new Project()
             ->setName(basename($request->path))
             ->setPath($request->path);
-
         $this->projectRepository->save($project);
 
-        $controllersDir = $project->getPath() . '/src/Controller';
-        $this->indexControllerDirRecursive($project, $controllersDir);
+        $this->scanResponseRecursive($project);
+
+        $this->scanDirRecursive(
+            project: $project,
+            dir: $project->getPath() . '/src/Controller',
+            fileCallback: [$this, 'indexControllerFile'],
+        );
 
         $this->em->flush();
 
         return $this->projectSerializer->projectResponse($project);
     }
 
-    private function indexControllerDirRecursive(Project $project, string $dir): void
+    private function scanResponseRecursive(Project $project): void
+    {
+        $this->scanDirRecursive(
+            project: $project,
+            dir: $project->getPath() . '/src/Response',
+            fileCallback: [$this, 'indexResponseFile'],
+        );
+
+        $responseMap = [];
+        foreach ($project->getResponses() as $response) {
+            $responseMap[$response->getClassName()] = $response;
+        }
+
+        foreach ($project->getResponses() as $response) {
+            foreach ($response->getFields() as $field) {
+                if ($field->getType() === Type::Object) {
+                    $object = $responseMap[$field->getPhpType()] ?? null;
+                    $field->setObject($object);
+                }
+
+                $this->fieldRepository->save($field);
+            }
+        }
+    }
+
+    private function scanDirRecursive(Project $project, string $dir, callable $fileCallback): void
     {
         $items = scandir($dir);
 
@@ -59,11 +95,11 @@ final readonly class IndexController
             $path = $dir . '/' . $item;
 
             if (is_dir($path)) {
-                $this->indexControllerDirRecursive($project, $path);
+                $this->scanDirRecursive($project, $path, $fileCallback);
                 continue;
             }
 
-            $this->indexControllerFile($project, $path);
+            $fileCallback($project, $path);
         }
     }
 
@@ -85,5 +121,43 @@ final readonly class IndexController
         $project->addController($controller);
 
         $this->controllerRepository->save($controller);
+    }
+
+    private function indexResponseFile(Project $project, string $filepath): void
+    {
+        $file = $this->phpParser->parseFile($filepath);
+        $class = $file->classes[0];
+        $construct = $class->method('__construct');
+
+        $response = new Response()
+            ->setName($class->name->value)
+            ->setClassName($class->fqn)
+            ->setFilepath($filepath);
+
+        $project->addResponse($response);
+
+        $this->responseRepository->save($response);
+
+        foreach ($construct->params as $param) {
+            $isArray = $param->type->value === 'array';
+
+            $phpType = $isArray ? $param->annotationVar->value->value : $param->type->value;
+            $type = match ($phpType) {
+                'string' => Type::String,
+                'int' => Type::Integer,
+                'bool' => Type::Boolean,
+                default => Type::Object,
+            };
+
+            $field = new Field()
+                ->setName($param->name->value)
+                ->setType($type)
+                ->setPhpType($phpType)
+                ->setIsArray($isArray)
+                ->setIsNullable($param->nullable)
+                ->setObject(null); // устанавливается после анализа всех респонсов
+
+            $response->addField($field);
+        }
     }
 }

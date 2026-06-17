@@ -63,7 +63,7 @@ final readonly class UpdateController
             pos: $pos,
             end: $pos,
             value: $value,
-            type: '', // todo
+            type: '', // todo нужно ли это вообще обновлять при редактировании? Состояние хранится в БД
         );
 
         $tokens = array_merge(

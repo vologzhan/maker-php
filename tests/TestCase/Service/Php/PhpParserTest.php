@@ -38,6 +38,7 @@ final class PhpParserTest extends ApiTestCase
 
         $this->assertEquals([
             new ClassDto(
+                fqn: 'App\Tests\Fixtures\SelfCheckController',
                 name: new NodeDto(45, 45, 'SelfCheckController'),
                 attributes: [new AttributeDto(
                     name: new NodeDto(25, 25, Route::class),
@@ -55,6 +56,7 @@ final class PhpParserTest extends ApiTestCase
                 methods: [
                     new MethodDto(
                         name: new NodeDto(53, 53, '__invoke'),
+                        params: [],
                         attributes: [],
                     ),
                 ],

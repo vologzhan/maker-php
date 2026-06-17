@@ -19,8 +19,7 @@ class ApiTestCase extends WebTestCase
 
     protected function request(string $method, string $url, ?string $body = null): Response
     {
-        // todo принудительно гасим ядро, почему-то \App\Infrastructure\RequestResolver запускает его
-        static::ensureKernelShutdown();
+        static::ensureKernelShutdown(); // Принудительно гасим ядро. Кажется почему-то \App\Infrastructure\RequestResolver запускает его
 
         $headers = [];
         if ($body !== null) {

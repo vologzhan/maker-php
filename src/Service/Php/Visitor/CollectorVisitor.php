@@ -2,18 +2,24 @@
 
 namespace App\Service\Php\Visitor;
 
+use App\Dto\Php\AnnotationVarDto;
 use App\Dto\Php\ArgumentDto;
 use App\Dto\Php\AttributeDto;
 use App\Dto\Php\ClassDto;
 use App\Dto\Php\MethodDto;
 use App\Dto\Php\NodeDto;
+use App\Dto\Php\ParamDto;
 use App\Dto\Php\TokenDto;
+use PhpParser\NameContext;
 use PhpParser\Node;
 use PhpParser\Node\Arg;
 use PhpParser\Node\ArrayItem;
 use PhpParser\Node\Attribute;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Array_;
+use PhpParser\Node\Name;
+use PhpParser\Node\NullableType;
+use PhpParser\Node\Param;
 use PhpParser\Node\Scalar\Float_;
 use PhpParser\Node\Scalar\Int_;
 use PhpParser\Node\Scalar\String_;
@@ -32,20 +38,27 @@ final class CollectorVisitor extends NodeVisitorAbstract
     /**
      * @var TokenDto[]
      */
-    public array $tokens = [];
+    public readonly array $tokens;
+
+    private readonly NameContext $nameContext;
 
     /**
      * @param Token[] $tokens
      */
-    public function __construct(array $tokens){
+    public function __construct(array $tokens, NameContext $nameContext)
+    {
+        $tokensDto = [];
         foreach ($tokens as $token) {
-            $this->tokens[] = new TokenDto(
+            $tokensDto[] = new TokenDto(
                 pos: $token->pos,
                 end: $token->getEndPos(),
                 value: $token->text,
                 type: $token->getTokenName() ?? $token->text,
             );
         }
+
+        $this->tokens = $tokensDto;
+        $this->nameContext = $nameContext;
     }
 
     public function leaveNode(Node $node): void
@@ -72,6 +85,7 @@ final class CollectorVisitor extends NodeVisitorAbstract
         }
 
         return new ClassDto(
+            fqn: $class->namespacedName->name,
             name: new NodeDto(
                 pos: $name->getStartTokenPos(),
                 end: $name->getEndTokenPos(),
@@ -93,12 +107,18 @@ final class CollectorVisitor extends NodeVisitorAbstract
             }
         }
 
+        $params = [];
+        foreach ($method->params as $param) {
+            $params[] = $this->collectParams($param);
+        }
+
         return new MethodDto(
             name: new NodeDto(
                 pos: $name->getStartTokenPos(),
                 end: $name->getEndTokenPos(),
                 value: $name->name,
             ),
+            params: $params,
             attributes: $attributes,
         );
     }
@@ -161,5 +181,81 @@ final class CollectorVisitor extends NodeVisitorAbstract
             $value instanceof Int_ => $value->value,
             $value instanceof Float_ => $value->value,
         };
+    }
+
+    private function collectParams(Param $param): ParamDto
+    {
+        $docComment = $param->getDocComment();
+        $comment = null;
+        if ($docComment !== null) {
+            $comment = new NodeDto(
+                pos: $docComment->getStartTokenPos(),
+                end: $docComment->getEndTokenPos(),
+                value: $docComment->getText(),
+            );
+        }
+
+        $type = $param->type;
+        $name = $param->var;
+
+        if ($type instanceof NullableType) {
+            $nullable = true;
+            $typeValue = $type->type->name;
+        } else {
+            $nullable = false;
+            $typeValue = $type->name;
+        }
+
+        $docComment = $param->getDocComment();
+        $comment = null;
+        $annotationVar = null;
+        if ($docComment !== null) {
+            $text = $docComment->getText();
+
+            $comment = new NodeDto(
+                pos: $docComment->getStartTokenPos(),
+                end: $docComment->getEndTokenPos(),
+                value: $text,
+            );
+
+            $textCleared = str_replace(['/** ', ' */'], '', $text);
+
+            [$annotationName, $annotationValue] = preg_split('/\s+/', $textCleared, 2);
+
+            $isScalar = in_array($annotationValue, ['int', 'float', 'bool', 'string']);
+            if (!$isScalar) {
+                $annotationValue = $this->nameContext->getResolvedClassName(new Name('ControllerItem'))->toString();
+            }
+
+            $annotationVar = new AnnotationVarDto(
+                name: new NodeDto(
+                    pos: $type->getStartTokenPos(), // todo для редактирования разбить комментарий на токены
+                    end: $type->getEndTokenPos(), // todo для редактирования разбить комментарий на токены
+                    value: $annotationName,
+                ),
+                value: new NodeDto(
+                    pos: $type->getStartTokenPos(), // todo для редактирования разбить комментарий на токены
+                    end: $type->getEndTokenPos(), // todo для редактирования разбить комментарий на токены
+                    value: $annotationValue,
+                ),
+                isScalar: $isScalar,
+            );
+        }
+
+        return new ParamDto(
+            type: new NodeDto(
+                pos: $type->getStartTokenPos(),
+                end: $type->getEndTokenPos(),
+                value: $typeValue,
+            ),
+            name: new NodeDto(
+                pos: $name->getStartTokenPos(),
+                end: $name->getEndTokenPos(),
+                value: $name->name,
+            ),
+            comment: $comment,
+            nullable: $nullable,
+            annotationVar: $annotationVar,
+        );
     }
 }

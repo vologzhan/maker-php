@@ -25,9 +25,14 @@ class Project
     #[ORM\OneToMany(targetEntity: Controller::class, mappedBy: 'project')]
     private Collection $controllers;
 
+    /** @var Collection<int, Response> */
+    #[ORM\OneToMany(targetEntity: Response::class, mappedBy: 'project')]
+    private Collection $responses;
+
     public function __construct()
     {
         $this->controllers = new ArrayCollection();
+        $this->responses = new ArrayCollection();
     }
 
     public function getId(): int
@@ -80,6 +85,31 @@ class Project
     public function removeController(Controller $controller): static
     {
         $this->controllers->removeElement($controller);
+
+        return $this;
+    }
+
+    /**
+     * @return Response[]
+     */
+    public function getResponses(): array
+    {
+        return $this->responses->getValues();
+    }
+
+    public function addResponse(Response $response): static
+    {
+        if (!$this->responses->contains($response)) {
+            $this->responses->add($response);
+            $response->setProject($this);
+        }
+
+        return $this;
+    }
+
+    public function removeResponse(Response $response): static
+    {
+        $this->responses->removeElement($response);
 
         return $this;
     }

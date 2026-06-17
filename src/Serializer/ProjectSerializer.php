@@ -14,7 +14,6 @@ final readonly class ProjectSerializer
         return new ProjectResponse(
             id: $project->getId(),
             name: $project->getName(),
-            path: $project->getPath(),
             controllers: array_map(
                 fn (Controller $controller) => $this->controllerItem($controller),
                 $project->getControllers(),

@@ -33,14 +33,16 @@ final readonly class PhpParser
         $tokens = array_slice($tokens, 0, -1); // delete EOF
 
         # --------------------------------------------------------------------------------------------------------------
-        $collector = new CollectorVisitor($tokens);
+        $nameResolver = new NameResolver(options: [
+            'preserveOriginalNames' => false, // default: false
+            'replaceNodes' => false, // default: true
+        ]);
+
+        $collector = new CollectorVisitor($tokens, $nameResolver->getNameContext());
 
         $traverser = new NodeTraverser(
             new CloningVisitor(), // Run CloningVisitor before making changes to the AST.
-            new NameResolver(options: [
-                'preserveOriginalNames' => false, // default: false
-                'replaceNodes' => false, // default: true
-            ]),
+            $nameResolver,
             $collector,
         );
 
