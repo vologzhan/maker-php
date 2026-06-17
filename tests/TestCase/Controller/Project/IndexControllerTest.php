@@ -54,32 +54,32 @@ final class IndexControllerTest extends ApiTestCase
                           "id": 1,
                           "name": "id",
                           "type": "integer",
-                          "array": false,
-                          "nullable": false,
+                          "isArray": false,
+                          "isNullable": false,
                           "objectId": null
                         },
                         {
                           "id": 2,
                           "name": "name",
                           "type": "string",
-                          "array": false,
-                          "nullable": false,
+                          "isArray": false,
+                          "isNullable": false,
                           "objectId": null
                         },
                         {
                           "id": 3,
                           "name": "method",
                           "type": "string",
-                          "array": false,
-                          "nullable": false,
+                          "isArray": false,
+                          "isNullable": false,
                           "objectId": null
                         },
                         {
                           "id": 4,
                           "name": "path",
                           "type": "string",
-                          "array": false,
-                          "nullable": false,
+                          "isArray": false,
+                          "isNullable": false,
                           "objectId": null
                         }
                       ]
@@ -92,24 +92,24 @@ final class IndexControllerTest extends ApiTestCase
                           "id": 5,
                           "name": "id",
                           "type": "integer",
-                          "array": false,
-                          "nullable": false,
+                          "isArray": false,
+                          "isNullable": false,
                           "objectId": null
                         },
                         {
                           "id": 6,
                           "name": "name",
                           "type": "string",
-                          "array": false,
-                          "nullable": false,
+                          "isArray": false,
+                          "isNullable": false,
                           "objectId": null
                         },
                         {
                           "id": 7,
                           "name": "controllers",
                           "type": "object",
-                          "array": true,
-                          "nullable": false,
+                          "isArray": true,
+                          "isNullable": false,
                           "objectId": 1
                         }
                       ]
@@ -122,8 +122,8 @@ final class IndexControllerTest extends ApiTestCase
                           "id": 8,
                           "name": "success",
                           "type": "boolean",
-                          "array": false,
-                          "nullable": false,
+                          "isArray": false,
+                          "isNullable": false,
                           "objectId": null
                         }
                       ]

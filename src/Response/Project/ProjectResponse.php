@@ -9,5 +9,7 @@ final readonly class ProjectResponse
         public string $name,
         /** @var ControllerItem[] */
         public array $controllers,
+        /** @var ResponseItem[] */
+        public array $responses,
     ) {}
 }
