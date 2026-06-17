@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace App\Response\Controller;
+namespace App\Response\Project;
 
 final readonly class ControllerItem
 {

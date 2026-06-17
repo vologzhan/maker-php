@@ -4,7 +4,7 @@ namespace App\Serializer;
 
 use App\Entity\Controller;
 use App\Entity\Project;
-use App\Response\Controller\ControllerItem;
+use App\Response\Project\ControllerItem;
 use App\Response\Project\ProjectResponse;
 
 final readonly class ProjectSerializer
@@ -18,6 +18,7 @@ final readonly class ProjectSerializer
                 fn (Controller $controller) => $this->controllerItem($controller),
                 $project->getControllers(),
             ),
+            responses: [], // todo
         );
     }
 

@@ -2,8 +2,6 @@
 
 namespace App\Response\Project;
 
-use App\Response\Controller\ControllerItem;
-
 final readonly class ProjectResponse
 {
     public function __construct(
