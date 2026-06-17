@@ -1,8 +1,8 @@
 <?php declare(strict_types=1);
 
-namespace App\Controller;
+namespace Fixtures\Controller;
 
-use App\Response\SuccessResponse;
+use Fixtures\Response\SuccessResponse;
 use Symfony\Component\Routing\Attribute\Route;
 
 #[Route('/', methods: ['GET'])]

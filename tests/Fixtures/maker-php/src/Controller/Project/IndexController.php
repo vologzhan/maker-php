@@ -1,9 +1,9 @@
 <?php declare(strict_types=1);
 
-namespace App\Controller\Project;
+namespace Fixtures\Controller\Project;
 
-use App\Request\Project\IndexRequest;
-use App\Response\Project\ProjectResponse;
+use Fixtures\Request\Project\IndexRequest;
+use Fixtures\Response\Project\ProjectResponse;
 use Symfony\Component\Routing\Attribute\Route;
 
 #[Route('/api/project/index', methods: ['POST'])]

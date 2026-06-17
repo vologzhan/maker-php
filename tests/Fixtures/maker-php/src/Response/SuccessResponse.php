@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace App\Response;
+namespace Fixtures\Response;
 
 final readonly class SuccessResponse
 {

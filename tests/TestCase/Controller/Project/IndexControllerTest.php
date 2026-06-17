@@ -149,9 +149,9 @@ final class IndexControllerTest extends ApiTestCase
             )
             ->assertEquals(
                 [
-                    [1, 'ControllerItem', '/app/tests/Fixtures/maker-php/src/Response/Controller/ControllerItem.php', 1, 'App\Response\Controller\ControllerItem'],
-                    [2, 'ProjectResponse', '/app/tests/Fixtures/maker-php/src/Response/Project/ProjectResponse.php', 1, 'App\Response\Project\ProjectResponse'],
-                    [3, 'SuccessResponse', '/app/tests/Fixtures/maker-php/src/Response/SuccessResponse.php', 1, 'App\Response\SuccessResponse'],
+                    [1, 'ControllerItem', '/app/tests/Fixtures/maker-php/src/Response/Controller/ControllerItem.php', 1, 'Fixtures\Response\Controller\ControllerItem'],
+                    [2, 'ProjectResponse', '/app/tests/Fixtures/maker-php/src/Response/Project/ProjectResponse.php', 1, 'Fixtures\Response\Project\ProjectResponse'],
+                    [3, 'SuccessResponse', '/app/tests/Fixtures/maker-php/src/Response/SuccessResponse.php', 1, 'Fixtures\Response\SuccessResponse'],
                 ],
                 'SELECT * FROM response'
             )
@@ -163,7 +163,7 @@ final class IndexControllerTest extends ApiTestCase
                     [4, 'path', 'string', false, false,  1, null, 'string'],
                     [5, 'id', 'integer', false, false,  2, null, 'int'],
                     [6, 'name', 'string', false, false,  2, null, 'string'],
-                    [7, 'controllers', 'object', true, false,  2, 1, 'App\Response\Controller\ControllerItem'],
+                    [7, 'controllers', 'object', true, false,  2, 1, 'Fixtures\Response\Controller\ControllerItem'],
                     [8, 'success', 'boolean', false, false,  3, null, 'bool'],
                 ],
                 'SELECT * FROM field'

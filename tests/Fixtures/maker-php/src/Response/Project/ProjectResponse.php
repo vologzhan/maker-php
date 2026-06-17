@@ -1,8 +1,8 @@
 <?php declare(strict_types=1);
 
-namespace App\Response\Project;
+namespace Fixtures\Response\Project;
 
-use App\Response\Controller\ControllerItem;
+use Fixtures\Response\Controller\ControllerItem;
 
 final readonly class ProjectResponse
 {
