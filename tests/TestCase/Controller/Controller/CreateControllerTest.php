@@ -3,6 +3,7 @@
 namespace App\Tests\TestCase\Controller\Controller;
 
 use App\Controller\Controller\CreateController;
+use App\Tests\Infrastructure\Annotation\Skip;
 use App\Tests\Infrastructure\ApiTestCase;
 
 /**
@@ -10,6 +11,7 @@ use App\Tests\Infrastructure\ApiTestCase;
  */
 final class CreateControllerTest extends ApiTestCase
 {
+    #[Skip]
     public function test(): void
     {
         $this

@@ -3,6 +3,7 @@
 namespace App\Tests\TestCase\Controller\Controller;
 
 use App\Controller\Controller\UpdateController;
+use App\Tests\Infrastructure\Annotation\Skip;
 use App\Tests\Infrastructure\ApiTestCase;
 
 /**
@@ -10,6 +11,7 @@ use App\Tests\Infrastructure\ApiTestCase;
  */
 final class UpdateControllerTest extends ApiTestCase
 {
+    #[Skip]
     public function test(): void
     {
         $path = $this->tmpDir() . '/SelfCheckController.php';

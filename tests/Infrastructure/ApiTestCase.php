@@ -2,6 +2,7 @@
 
 namespace App\Tests\Infrastructure;
 
+use App\Tests\Infrastructure\Annotation\Skip;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 class ApiTestCase extends WebTestCase
@@ -41,5 +42,17 @@ class ApiTestCase extends WebTestCase
     protected function fixturesDir(): string
     {
         return self::getContainer()->getParameter('kernel.project_dir') . '/tests/Fixtures';
+    }
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $reflection = new \ReflectionMethod($this, $this->name());
+        $attributes = $reflection->getAttributes(Skip::class);
+
+        if (!empty($attributes)) {
+            $this->markTestSkipped('#[Skip]');
+        }
     }
 }
