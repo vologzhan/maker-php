@@ -2,13 +2,15 @@
 
 namespace App\Response\Project;
 
+use App\Response\Project\Controller\DirItem;
+use App\Response\Project\Controller\ResponseItem;
+
 final readonly class ProjectResponse
 {
     public function __construct(
         public int $id,
         public string $name,
-        /** @var ControllerItem[] */
-        public array $controllers,
+        public DirItem $controllers,
         /** @var ResponseItem[] */
         public array $responses,
     ) {}

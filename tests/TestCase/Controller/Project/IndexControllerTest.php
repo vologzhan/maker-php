@@ -29,22 +29,33 @@ final class IndexControllerTest extends ApiTestCase
                 {
                   "id": 1,
                   "name": "maker-php",
-                  "controllers": [
-                    {
-                      "id": 1,
-                      "name": "Index",
-                      "method": "POST",
-                      "path": "/api/project/index",
-                      "responseId": 2
-                    },
-                    {
-                      "id": 2,
-                      "name": "Self check",
-                      "method": "GET",
-                      "path": "/",
-                      "responseId": 3
-                    }
-                  ],
+                  "controllers": {
+                    "name": "Controller",
+                    "directories": [
+                      {
+                        "name": "Project",
+                        "directories": [],
+                        "files": [
+                          {
+                            "id": 1,
+                            "name": "Index",
+                            "method": "POST",
+                            "path": "/api/project/index",
+                            "responseId": 2
+                          }
+                        ]
+                      }
+                    ],
+                    "files": [
+                      {
+                        "id": 2,
+                        "name": "Self check",
+                        "method": "GET",
+                        "path": "/",
+                        "responseId": 3
+                      }
+                    ]
+                  },
                   "responses": [
                     {
                       "id": 1,

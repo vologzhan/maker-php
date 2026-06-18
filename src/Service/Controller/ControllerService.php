@@ -6,6 +6,7 @@ use App\Service\String\StrCase;
 
 final readonly class ControllerService
 {
+    public const string DIR_NAME = 'Controller';
     private const string FILE_SUFFIX = 'Controller';
 
     public function nameToClassName(string $name): string
