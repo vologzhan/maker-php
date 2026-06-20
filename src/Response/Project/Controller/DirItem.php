@@ -2,12 +2,12 @@
 
 namespace App\Response\Project\Controller;
 
-use App\Service\Controller\ControllerService;
+use App\Service\Controller\ControllerHelper;
 
 final class DirItem
 {
     public function __construct(
-        public readonly string $name = ControllerService::DIR_NAME,
+        public readonly string $name = ControllerHelper::DIR_NAME,
         /** @var DirItem[] */
         public array $directories = [],
         /** @var ControllerItem[] */

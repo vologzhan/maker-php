@@ -1,27 +1,22 @@
 <?php declare(strict_types=1);
 
-namespace App\Controller\Controller;
+namespace App\Service\Controller;
 
 use App\Request\Controller\CreateRequest;
 use App\Response\Controller\CreateResponse;
-use App\Service\Controller\ControllerService;
-use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
-use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Uid\Uuid;
 
-#[Route('/api/controller', methods: ['POST'])]
-final readonly class CreateController
+final readonly class CreateService
 {
     public function __construct(
-        private ControllerService $controllerService,
+        private ControllerHelper $controllerHelper,
     ) {}
 
-    public function __invoke(
-        #[MapRequestPayload] CreateRequest $request,
-    ): CreateResponse {
+    public function __invoke(CreateRequest $request): CreateResponse
+    {
         $uuid = Uuid::fromString("019e98a9-592b-7988-8d91-6893b70e38c5"); // todo hardcode
 
-        $className = $this->controllerService->nameToClassName($request->name);
+        $className = $this->controllerHelper->nameToClassName($request->name);
         $method = $request->method;
         $path = $request->path;
 

@@ -10,7 +10,7 @@ use App\Response\Project\Controller\DirItem;
 use App\Response\Project\Controller\FieldItem;
 use App\Response\Project\Controller\ResponseItem;
 use App\Response\Project\ProjectResponse;
-use App\Service\Controller\ControllerService;
+use App\Service\Controller\ControllerHelper;
 
 final readonly class ProjectSerializer
 {
@@ -18,7 +18,7 @@ final readonly class ProjectSerializer
     {
         $controllersDir = new DirItem();
 
-        $controllerDirPath = sprintf('%s/src/%s/', $project->getPath(), ControllerService::DIR_NAME);
+        $controllerDirPath = sprintf('%s/src/%s/', $project->getPath(), ControllerHelper::DIR_NAME);
         $prefixLen = strlen($controllerDirPath);
         foreach ($project->getControllers() as $controller) {
             $relativePath = substr($controller->getFilepath(), $prefixLen);

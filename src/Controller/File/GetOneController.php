@@ -4,24 +4,14 @@ namespace App\Controller\File;
 
 use App\Request\File\GetOneRequest;
 use App\Response\File\FileResponse;
-use App\Serializer\FileSerializer;
-use App\Service\Php\PhpParser;
-use Symfony\Component\HttpKernel\Attribute\MapQueryString;
+use App\Service\File\GetOneService;
 use Symfony\Component\Routing\Attribute\Route;
 
 #[Route('/api/file', methods: ['GET'])]
 final readonly class GetOneController
 {
-    public function __construct(
-        private PhpParser $phpParser,
-        private FileSerializer $fileSerializer,
-    ) {}
-
-    public function __invoke(
-        #[MapQueryString] GetOneRequest $request,
-    ): FileResponse {
-        $file = $this->phpParser->parseFile($request->path);
-
-        return $this->fileSerializer->fileResponse($file->tokens);
+    public function __invoke(GetOneRequest $request, GetOneService $service): FileResponse
+    {
+        return $service->__invoke($request);
     }
 }

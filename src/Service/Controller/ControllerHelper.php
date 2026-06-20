@@ -4,7 +4,7 @@ namespace App\Service\Controller;
 
 use App\Service\String\StrCase;
 
-final readonly class ControllerService
+final readonly class ControllerHelper
 {
     public const string DIR_NAME = 'Controller';
     private const string FILE_SUFFIX = 'Controller';

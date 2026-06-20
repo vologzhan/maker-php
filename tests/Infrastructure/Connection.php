@@ -16,12 +16,6 @@ final readonly class Connection
         return $this;
     }
 
-    public function assertEqualRow(array $expected, string $sql): self
-    {
-        $this->assertEquals([$expected], $sql);
-        return $this;
-    }
-
     public function assertEquals(array $expected, string $sql): self
     {
         $actual = $this->connection->executeQuery($sql)->fetchAllNumeric();
