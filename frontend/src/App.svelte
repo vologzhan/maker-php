@@ -27,9 +27,14 @@
     <div class="layout">
         <div class="sidebar">
             <ControllerTree
-                    tree={project.controllers}
-                    onSelect={(controller) => {
+            tree={project.controllers}
+            onSelect={(controller) => {
                 selected = controller;
+            }}
+            onReload={(tree) => {
+                if (project) {
+                    project = { ...project, controllers: tree };
+                }
             }}
             />
         </div>

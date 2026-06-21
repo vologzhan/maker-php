@@ -1,24 +1,52 @@
 <script lang="ts">
     import type { Controller, ControllerDirectory } from '../types/project';
+    import { createDirectory } from '../api/project';
 
     interface Props {
         directory: ControllerDirectory;
         onSelect: (controller: Controller) => void;
+        onReload?: () => void;
     }
 
-    let { directory, onSelect }: Props = $props();
+    let { directory, onSelect, onReload }: Props = $props();
+
+    async function handleAddDirectory() {
+        const name = prompt('Directory name?');
+        if (!name) return;
+
+        await createDirectory({
+            name,
+            parentDirectoryId: directory.id
+        });
+
+        onReload?.();
+    }
 </script>
 
-<li>
-    📁 {directory.name}
+<li style="margin-top: 8px;">
+    <div style="display:flex; justify-content: space-between; align-items:center;">
+        <strong>📁 {directory.name}</strong>
 
-    <ul>
+        <button on:click={handleAddDirectory}>
+            + dir
+        </button>
+    </div>
+
+    <ul style="margin-left: 16px;">
         {#each directory.files as controller}
             <li>
-                <button onclick={() => onSelect(controller)}>
+                <button on:click={() => onSelect(controller)}>
                     {controller.name}
                 </button>
             </li>
+        {/each}
+
+        {#each directory.directories as subdir}
+            <DirectoryNode
+                    directory={subdir}
+                    {onSelect}
+                    {onReload}
+            />
         {/each}
     </ul>
 </li>
