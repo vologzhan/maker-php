@@ -1,5 +1,6 @@
 <script lang="ts">
-    let name = 'Svelte';
+    let src = 'https://svelte.dev/tutorial/image.gif';
+    let name = 'A man'
 </script>
 
-<h1>Hello {name.toUpperCase()}!</h1>
+<img src={src} alt="{name} dances."/>
