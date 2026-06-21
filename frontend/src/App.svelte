@@ -24,22 +24,45 @@
 {:else if project}
     <h1>{project.name}</h1>
 
-    <ControllerTree
-            tree={project.controllers}
-            onSelect={(controller) => {
-		        selected = controller;
-	        }}
-    />
+    <div class="layout">
+        <div class="sidebar">
+            <ControllerTree
+                    tree={project.controllers}
+                    onSelect={(controller) => {
+                selected = controller;
+            }}
+            />
+        </div>
 
-    {#if selected}
-        <hr>
+        <div class="content">
+            {#if selected}
+                <h2>{selected.name}</h2>
 
-        <h2>{selected.name}</h2>
-
-        <div>Method: {selected.method}</div>
-        <div>Path: {selected.path}</div>
-        <div>Response ID: {selected.responseId}</div>
-    {/if}
+                <div>Method: {selected.method}</div>
+                <div>Path: {selected.path}</div>
+                <div>Response ID: {selected.responseId}</div>
+            {:else}
+                <p>Select controller</p>
+            {/if}
+        </div>
+    </div>
 {:else}
     <p>Loading...</p>
 {/if}
+
+<style>
+    .layout {
+        display: flex;
+        gap: 2rem;
+    }
+
+    .sidebar {
+        width: 300px;
+        border-right: 1px solid #ccc;
+        padding-right: 1rem;
+    }
+
+    .content {
+        flex: 1;
+    }
+</style>
