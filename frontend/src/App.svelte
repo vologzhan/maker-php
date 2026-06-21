@@ -1,7 +1,5 @@
-<script lang="ts">
-    import Counter from './Counter.svelte';
+<script>
+    import Nested from './Nested.svelte';
 </script>
 
-<Counter />
-<Counter />
-<Counter />
+<Nested answer={42} />
