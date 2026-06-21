@@ -1,49 +1,27 @@
 <script lang="ts">
-    import type { Controller } from './types/project';
+    import { onMount } from 'svelte';
+    import { loadProject } from './api/project';
+    import type { Project } from './types/project';
+    import ControllerTree from './components/ControllerTree.svelte';
 
-    let controllers: Controller[] = [
-        {
-            id: 1,
-            name: 'Index',
-            method: 'POST',
-            path: '/api/project/index',
-            responseId: 2
-        },
-        {
-            id: 2,
-            name: 'Self check',
-            method: 'GET',
-            path: '/',
-            responseId: 3
-        },
-        {
-            id: 3,
-            name: 'Create',
-            method: 'POST',
-            path: '/api/project/create',
-            responseId: 4
+    let project: Project | null = null;
+    let error: string | null = null;
+
+    onMount(async () => {
+        try {
+            project = await loadProject('/app/tests/Fixtures/maker-php');
+        } catch (e) {
+            error = e instanceof Error ? e.message : 'Unknown error';
         }
-    ];
-
-    let selected: Controller | null = null;
+    });
 </script>
 
-<h1>Controllers</h1>
+{#if error}
+    <p>Error: {error}</p>
+{:else if project}
+    <h1>{project.name}</h1>
 
-{#each controllers as controller}
-    <div>
-        <button onclick={() => (selected = controller)}>
-            {controller.name}
-        </button>
-    </div>
-{/each}
-
-<hr />
-
-{#if selected}
-    <h2>{selected.name}</h2>
-
-    <div>Method: {selected.method}</div>
-    <div>Path: {selected.path}</div>
-    <div>Response ID: {selected.responseId}</div>
+    <ControllerTree tree={project.controllers} />
+{:else}
+    <p>Loading...</p>
 {/if}
