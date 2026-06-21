@@ -1,22 +1,26 @@
 <script lang="ts">
     import { onMount } from 'svelte';
     import { loadProject } from './api/project';
-    import type { Project } from './types/project';
+    import type { Project, Controller } from './types/project';
     import ControllerTree from './components/ControllerTree.svelte';
-    import type { Controller } from './types/project';
 
     let project: Project | null = null;
     let error: string | null = null;
+    let selected: Controller | null = null;
+
+    const PROJECT_PATH = '/app/tests/Fixtures/maker-php';
+
+    async function reloadProject() {
+        project = await loadProject(PROJECT_PATH);
+    }
 
     onMount(async () => {
         try {
-            project = await loadProject('/app/tests/Fixtures/maker-php');
+            await reloadProject();
         } catch (e) {
             error = e instanceof Error ? e.message : 'Unknown error';
         }
     });
-
-    let selected: Controller | null = null;
 </script>
 
 {#if error}
@@ -27,15 +31,13 @@
     <div class="layout">
         <div class="sidebar">
             <ControllerTree
-            tree={project.controllers}
-            onSelect={(controller) => {
-                selected = controller;
-            }}
-            onReload={(tree) => {
-                if (project) {
-                    project = { ...project, controllers: tree };
+                tree={project.controllers}
+                onSelect={(controller) => {
+                    selected = controller;
+                }}
+                onChanged={
+                    reloadProject
                 }
-            }}
             />
         </div>
 

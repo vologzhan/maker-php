@@ -5,10 +5,10 @@
     interface Props {
         directory: ControllerDirectory;
         onSelect: (controller: Controller) => void;
-        onReload?: () => void;
+        onChanged: () => void;
     }
 
-    let { directory, onSelect, onReload }: Props = $props();
+    let { directory, onSelect, onChanged }: Props = $props();
 
     async function handleAddDirectory() {
         const name = prompt('Directory name?');
@@ -19,7 +19,7 @@
             parentDirectoryId: directory.id
         });
 
-        onReload?.();
+        onChanged();
     }
 </script>
 
@@ -45,7 +45,7 @@
             <DirectoryNode
                     directory={subdir}
                     {onSelect}
-                    {onReload}
+                    {onChanged}
             />
         {/each}
     </ul>

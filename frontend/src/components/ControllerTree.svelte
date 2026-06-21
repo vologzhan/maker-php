@@ -1,20 +1,19 @@
 <script lang="ts">
     import type { ControllersTree, Controller } from '../types/project';
     import DirectoryNode from './DirectoryNode.svelte';
-    import { createController, deleteController, loadProject } from '../api/project';
+    import { createController, deleteController } from '../api/project';
 
     interface Props {
         tree: ControllersTree;
         onSelect: (controller: Controller) => void;
-        onReload: (project: ControllersTree) => void;
+        onChanged: () => void;
     }
 
-    let { tree, onSelect, onReload }: Props = $props();
+    let { tree, onSelect, onChanged }: Props = $props();
 
     async function handleDelete(id: number) {
         await deleteController(id);
-        const project = await loadProject('/app/tests/Fixtures/maker-php');
-        onReload(project.controllers);
+        onChanged();
     }
 
     async function handleAdd() {
@@ -29,8 +28,7 @@
             directoryId: null
         });
 
-        const project = await loadProject('/app/tests/Fixtures/maker-php');
-        onReload(project.controllers);
+        onChanged();
     }
 </script>
 
@@ -60,7 +58,7 @@
             <DirectoryNode
                     directory={dir}
                     {onSelect}
-                    {onReload}
+                    {onChanged}
             />
         {/each}
     </ul>
