@@ -1,11 +1,5 @@
 <script lang="ts">
-    interface Controller {
-        id: number;
-        name: string;
-        method: string;
-        path: string;
-        responseId: number;
-    }
+    import type { Controller } from './types/project';
 
     let controllers: Controller[] = [
         {
@@ -21,6 +15,13 @@
             method: 'GET',
             path: '/',
             responseId: 3
+        },
+        {
+            id: 3,
+            name: 'Create',
+            method: 'POST',
+            path: '/api/project/create',
+            responseId: 4
         }
     ];
 
