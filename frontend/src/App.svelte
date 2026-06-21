@@ -3,6 +3,7 @@
     import { loadProject } from './api/project';
     import type { Project } from './types/project';
     import ControllerTree from './components/ControllerTree.svelte';
+    import type { Controller } from './types/project';
 
     let project: Project | null = null;
     let error: string | null = null;
@@ -14,6 +15,8 @@
             error = e instanceof Error ? e.message : 'Unknown error';
         }
     });
+
+    let selected: Controller | null = null;
 </script>
 
 {#if error}
@@ -21,7 +24,22 @@
 {:else if project}
     <h1>{project.name}</h1>
 
-    <ControllerTree tree={project.controllers} />
+    <ControllerTree
+            tree={project.controllers}
+            onSelect={(controller) => {
+		        selected = controller;
+	        }}
+    />
+
+    {#if selected}
+        <hr>
+
+        <h2>{selected.name}</h2>
+
+        <div>Method: {selected.method}</div>
+        <div>Path: {selected.path}</div>
+        <div>Response ID: {selected.responseId}</div>
+    {/if}
 {:else}
     <p>Loading...</p>
 {/if}

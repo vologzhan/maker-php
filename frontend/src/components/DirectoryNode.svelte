@@ -1,11 +1,12 @@
 <script lang="ts">
-    import type { ControllerDirectory } from '../types/project';
+    import type { Controller, ControllerDirectory } from '../types/project';
 
     interface Props {
         directory: ControllerDirectory;
+        onSelect: (controller: Controller) => void;
     }
 
-    let { directory }: Props = $props();
+    let { directory, onSelect }: Props = $props();
 </script>
 
 <li>
@@ -13,7 +14,11 @@
 
     <ul>
         {#each directory.files as controller}
-            <li>{controller.name}</li>
+            <li>
+                <button onclick={() => onSelect(controller)}>
+                    {controller.name}
+                </button>
+            </li>
         {/each}
     </ul>
 </li>
