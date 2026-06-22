@@ -1,1 +1,1 @@
-export const message = 'hello from $lib/message';
+export const message = 'add a todo:';
