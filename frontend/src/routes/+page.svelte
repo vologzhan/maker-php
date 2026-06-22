@@ -1,2 +1,6 @@
+<script lang="ts">
+    import {message} from '$lib/message';
+</script>
+
 <h1>home</h1>
-<p>this is the home page.</p>
+<p>{message}</p>
