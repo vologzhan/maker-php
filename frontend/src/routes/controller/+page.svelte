@@ -16,9 +16,36 @@
 </script>
 
 {#if project}
-    <Directory dir={project.controllers} expanded={true}/>
+    <div class="layout">
+        <aside class="sidebar">
+            <Directory dir={project.controllers} expanded={true} />
+        </aside>
+
+        <main class="content">
+            <!-- todo форма редактирования -->
+            Select item
+        </main>
+    </div>
 {:else if error}
     Error: {error}
 {:else}
     Loading...
 {/if}
+
+<style>
+    .layout {
+        display: grid;
+        grid-template-columns: 320px 1fr;
+        height: 100vh;
+    }
+
+    .sidebar {
+        border-right: 1px solid #ddd;
+        overflow: auto;
+    }
+
+    .content {
+        overflow: auto;
+        padding: 12px;
+    }
+</style>
