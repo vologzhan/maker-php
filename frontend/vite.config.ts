@@ -16,5 +16,15 @@ export default defineConfig({
 			// See https://svelte.dev/docs/kit/adapters for more information about adapters.
 			adapter: adapter()
 		})
-	]
+	],
+
+	// чтобы не было ошибок CORS
+	server: {
+		proxy: {
+			'/api': {
+				target: 'http://localhost:51234',
+				changeOrigin: true
+			}
+		}
+	},
 });

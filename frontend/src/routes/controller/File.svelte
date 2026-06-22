@@ -1,14 +1,15 @@
 <script>
     let { name } = $props();
-    let type = $derived(name.slice(name.lastIndexOf('.') + 1));
 </script>
 
-<span style="background-image: url(/tutorial/icons/{type}.svg)">{name}</span>
+<span>{name}</span>
 
 <style>
     span {
         padding: 0 0 0 1.5em;
-        background: 0 0.1em no-repeat;
+        background: url($lib/icons/file.svg) 0 0.1em no-repeat;
         background-size: 1em 1em;
+        font-size: 14px;
+        cursor: pointer;
     }
 </style>

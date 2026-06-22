@@ -1,26 +1,34 @@
-<script>
+<script lang="ts">
     import File from './File.svelte';
-    import Folder from './Folder.svelte';
+    import Directory from './Directory.svelte';
     import { slide } from 'svelte/transition';
+    import type {DirItem} from "$lib/response/project/controller/dir-item";
 
-    let { expanded = $bindable(false), name, files } = $props();
+    let {
+        dir,
+        expanded = $bindable(false)
+    }: {
+        dir: DirItem
+        expanded?: boolean
+    } = $props();
 
     function toggle() {
         expanded = !expanded;
     }
 </script>
 
-<button class:expanded onclick={toggle}>{name}</button>
+<button class:expanded onclick={toggle}>{dir.name}</button>
 
 {#if expanded}
     <ul transition:slide={{ duration: 300 }}>
-        {#each files as file}
+        {#each dir.directories as directory}
             <li>
-                {#if file.type === 'folder'}
-                    <Folder {...file} />
-                {:else}
-                    <File {...file} />
-                {/if}
+                <Directory dir={directory} />
+            </li>
+        {/each}
+        {#each dir.files as file}
+            <li>
+                <File {...file} />
             </li>
         {/each}
     </ul>
