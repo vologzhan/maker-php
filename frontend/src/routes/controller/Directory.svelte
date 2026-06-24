@@ -2,7 +2,7 @@
     import File from './File.svelte';
     import Directory from './Directory.svelte';
     import { slide } from 'svelte/transition';
-    import type {DirItem} from "$lib/response/project/controller/dir-item";
+    import type {DirItem} from "$lib/response/project/controller/DirItem";
 
     let {
         dir,
@@ -11,13 +11,11 @@
         dir: DirItem
         expanded?: boolean
     } = $props();
-
-    function toggle() {
-        expanded = !expanded;
-    }
 </script>
 
-<button class:expanded onclick={toggle}>{dir.name}</button>
+<button class:expanded onclick={() => expanded = !expanded}>
+    {dir.name}
+</button>
 
 {#if expanded}
     <ul transition:slide={{ duration: 300 }}>
@@ -28,7 +26,7 @@
         {/each}
         {#each dir.files as file}
             <li>
-                <File {...file} />
+                <File controller={file} />
             </li>
         {/each}
     </ul>

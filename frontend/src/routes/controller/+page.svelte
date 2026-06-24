@@ -2,6 +2,7 @@
     import Directory from './Directory.svelte';
     import {IndexController} from "$lib/controller/project/index-controller";
     import type {ProjectResponse} from "$lib/response/project/project-response";
+    import Viewer from "./Viewer.svelte";
 
     let project = $state<ProjectResponse|null>(null);
     let error = $state('');
@@ -16,14 +17,13 @@
 </script>
 
 {#if project}
-    <div class="layout">
-        <aside class="sidebar">
+    <div>
+        <aside>
             <Directory dir={project.controllers} expanded={true} />
         </aside>
 
-        <main class="content">
-            <!-- todo форма редактирования -->
-            Select item
+        <main>
+            <Viewer />
         </main>
     </div>
 {:else if error}
@@ -33,18 +33,18 @@
 {/if}
 
 <style>
-    .layout {
+    div {
         display: grid;
         grid-template-columns: 320px 1fr;
         height: 100vh;
     }
 
-    .sidebar {
+    aside {
         border-right: 1px solid #ddd;
         overflow: auto;
     }
 
-    .content {
+    main {
         overflow: auto;
         padding: 12px;
     }

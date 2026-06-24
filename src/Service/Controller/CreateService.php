@@ -2,24 +2,37 @@
 
 namespace App\Service\Controller;
 
+use App\Entity\Controller;
+use App\Repository\ControllerRepository;
+use App\Repository\DirectoryRepository;
+use App\Repository\ResponseRepository;
 use App\Request\Controller\CreateRequest;
-use App\Response\Controller\CreateResponse;
-use Symfony\Component\Uid\Uuid;
+use App\Response\Project\Controller\ControllerItem;
+use App\Serializer\ControllerSerializer;
 
 final readonly class CreateService
 {
     public function __construct(
         private ControllerHelper $controllerHelper,
+        private ControllerRepository $controllerRepository,
+        private ControllerSerializer $controllerSerializer,
+        private DirectoryRepository $directoryRepository,
+        private ResponseRepository $responseRepository,
     ) {}
 
-    public function __invoke(CreateRequest $request): CreateResponse
+    public function __invoke(CreateRequest $request): ControllerItem
     {
-        $uuid = Uuid::fromString("019e98a9-592b-7988-8d91-6893b70e38c5"); // todo hardcode
+        $dir = $this->directoryRepository->findById($request->directoryId);
+        $response = $this->responseRepository->findByProjectAndName($dir->getProject(), 'SuccessResponse');
 
-        $className = $this->controllerHelper->nameToClassName($request->name);
-        $method = $request->method;
-        $path = $request->path;
+        $name = $this->generateUniqueName($dir);
+        $className = $this->controllerHelper->nameToClassName($name);
+        $filepath = sprintf('/%s/%s.php', $dir->path(), $className);
+        $method = 'GET';
+        $path = '';
 
+        // todo dynamic namespace
+        // todo dynamic response
         $content = <<<PHP
             <?php declare(strict_types=1);
 
@@ -39,8 +52,41 @@ final readonly class CreateService
 
             PHP;
 
-        file_put_contents("/tmp/$className.php", $content); // todo hardcode
+        file_put_contents($filepath, $content);
 
-        return new CreateResponse($uuid);
+        $controller = new Controller()
+            ->setName($name)
+            ->setProject($dir->getProject())
+            ->setResponse($response)
+            ->setPath($path)
+            ->setMethod($method)
+            ->setFilepath($filepath);
+
+        $this->controllerRepository->save($controller);
+
+        return $this->controllerSerializer->controllerItem($controller);
+    }
+
+    private function generateUniqueName($dir): string
+    {
+        $counter = 1;
+
+        while (true) {
+            $suffix = $counter === 1 ? '' : " $counter";
+            $counter++;
+            $name = sprintf('New controller%s',  $suffix);
+
+            $isFound = false;
+            foreach ($dir->getFiles() as $file) {
+                $isFound = $file->name() === $name;
+                if ($isFound) {
+                    break;
+                }
+            }
+
+            if (!$isFound) {
+                return $name;
+            }
+        }
     }
 }

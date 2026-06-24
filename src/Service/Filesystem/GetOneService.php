@@ -1,17 +1,17 @@
 <?php declare(strict_types=1);
 
-namespace App\Service\File;
+namespace App\Service\Filesystem;
 
-use App\Request\File\GetOneRequest;
-use App\Response\File\FileResponse;
-use App\Serializer\FileSerializer;
+use App\Request\Filesystem\GetOneRequest;
+use App\Response\Filesystem\FileResponse;
+use App\Serializer\FilesystemSerializer;
 use App\Service\Php\PhpParser;
 
 final readonly class GetOneService
 {
     public function __construct(
         private PhpParser $phpParser,
-        private FileSerializer $fileSerializer,
+        private FilesystemSerializer $fileSerializer,
     ) {}
 
     public function __invoke(GetOneRequest $request): FileResponse

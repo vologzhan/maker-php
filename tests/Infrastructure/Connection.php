@@ -18,8 +18,18 @@ final readonly class Connection
 
     public function assertEquals(array $expected, string $sql): self
     {
-        $actual = $this->connection->executeQuery($sql)->fetchAllNumeric();
-        Assert::assertEquals($expected, $actual, "sql: $sql");
+        $result = $this->connection->executeQuery($sql);
+
+        $columns = [];
+        for ($i = 0; $i < $result->columnCount(); $i++) {
+            $columns[] = $result->getColumnName($i);
+        }
+
+        $rows = $result->fetchAllNumeric();
+
+        $actual = [$columns, ...$rows];
+
+        Assert::assertSame($expected, $actual, "sql: $sql");
 
         return $this;
     }

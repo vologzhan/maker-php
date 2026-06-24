@@ -12,7 +12,7 @@ use App\Repository\FieldRepository;
 use App\Repository\ProjectRepository;
 use App\Repository\ResponseRepository;
 use App\Request\Project\IndexRequest;
-use App\Response\Project\ProjectResponse;
+use App\Response\Project\ProjectItemResponse;
 use App\Serializer\ProjectSerializer;
 use App\Service\Controller\ControllerHelper;
 use App\Service\Php\PhpParser;
@@ -33,7 +33,7 @@ final readonly class IndexService
         private ControllerHelper $controllerService,
     ) {}
 
-    public function __invoke(IndexRequest $request): ProjectResponse
+    public function __invoke(IndexRequest $request): ProjectItemResponse
     {
         if (!is_dir($request->path)) {
             throw new BadRequestException("Directory does not exist '$request->path'");
@@ -50,7 +50,7 @@ final readonly class IndexService
 
         $this->em->flush();
 
-        return $this->projectSerializer->projectResponse($project);
+        return $this->projectSerializer->projectResponseOld($project);
     }
 
     private function scanControllersRecursive(Project $project): void

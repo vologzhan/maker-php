@@ -5,16 +5,35 @@ namespace App\Serializer;
 use App\Entity\Field;
 use App\Entity\Project;
 use App\Entity\Response;
-use App\Response\Project\Controller\ControllerItem;
 use App\Response\Project\Controller\DirItem;
 use App\Response\Project\Controller\FieldItem;
 use App\Response\Project\Controller\ResponseItem;
-use App\Response\Project\ProjectResponse;
+use App\Response\Project\ListResponse;
+use App\Response\Project\ProjectItemResponse;
 use App\Service\Controller\ControllerHelper;
 
 final readonly class ProjectSerializer
 {
-    public function projectResponse(Project $project): ProjectResponse
+    public function __construct(
+        private ControllerSerializer $controllerSerializer,
+    ) {}
+
+    public function listResponse(array $projects): ListResponse
+    {
+        return new ListResponse(
+            items: array_map(fn(Project $project) => $this->projectItemResponse($project), $projects),
+        );
+    }
+
+    public function projectItemResponse(Project $project): ProjectItemResponse
+    {
+        return new ProjectItemResponse(
+            id: $project->getId(),
+            name: $project->getName(),
+        );
+    }
+
+    public function projectResponseOld(Project $project): ProjectItemResponse
     {
         $controllersDir = new DirItem();
 
@@ -34,16 +53,10 @@ final readonly class ProjectSerializer
                 $current = $current->getOrCreateDir($dir);
             }
 
-            $current->files[] = new ControllerItem(
-                id: $controller->getId(),
-                name: $controller->getName(),
-                method: $controller->getMethod(),
-                path: $controller->getPath(),
-                responseId: $controller->getResponse()?->getId(),
-            );
+            $current->files[] = $this->controllerSerializer->controllerItem($controller);
         }
 
-        return new ProjectResponse(
+        return new ProjectItemResponse(
             id: $project->getId(),
             name: $project->getName(),
             controllers: $controllersDir,

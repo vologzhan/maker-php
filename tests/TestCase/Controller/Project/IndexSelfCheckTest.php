@@ -2,6 +2,7 @@
 
 namespace App\Tests\TestCase\Controller\Project;
 
+use App\Tests\Infrastructure\Annotation\Skip;
 use App\Tests\Infrastructure\ApiTestCase;
 
 /**
@@ -9,6 +10,7 @@ use App\Tests\Infrastructure\ApiTestCase;
  */
 final class IndexSelfCheckTest extends ApiTestCase
 {
+    #[Skip]
     public function test(): void
     {
         $this

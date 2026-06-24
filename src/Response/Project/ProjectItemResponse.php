@@ -1,10 +1,11 @@
 <?php declare(strict_types=1);
 
-namespace App\Response\Controller;
+namespace App\Response\Project;
 
-final readonly class CreateResponse
+final readonly class ProjectItemResponse
 {
     public function __construct(
         public int $id,
+        public string $name,
     ) {}
 }

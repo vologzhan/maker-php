@@ -23,4 +23,16 @@ class ProjectRepository extends ServiceEntityRepository
             $this->getEntityManager()->flush();
         }
     }
+
+    /**
+     * @return Project[]
+     */
+    public function findAll(): array
+    {
+        return $this
+            ->createQueryBuilder('p')
+            ->orderBy('p.name', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
 }

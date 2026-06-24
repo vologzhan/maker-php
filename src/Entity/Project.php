@@ -18,9 +18,6 @@ class Project
     #[ORM\Column(length: 255)]
     private string $name;
 
-    #[ORM\Column(length: 255)]
-    private string $path;
-
     /** @var Collection<int, Controller> */
     #[ORM\OneToMany(targetEntity: Controller::class, mappedBy: 'project')]
     private Collection $controllers;
@@ -125,6 +122,4 @@ class Project
 
         return $this;
     }
-
-    # ------------------------------------------------------------------------------------------------------------------
 }

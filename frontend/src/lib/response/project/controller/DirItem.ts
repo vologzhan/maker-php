@@ -1,4 +1,4 @@
-import type {ControllerItem} from "$lib/response/project/controller/controller-item";
+import type {ControllerItem} from "$lib/response/project/controller/ControllerItem";
 
 export interface DirItem {
     name: string

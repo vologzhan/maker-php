@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\Entity\Project;
 use App\Entity\Response;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -22,5 +23,17 @@ class ResponseRepository extends ServiceEntityRepository
         if ($flush) {
             $this->getEntityManager()->flush();
         }
+    }
+
+    public function findByProjectAndName(Project $project, string $name): Response
+    {
+        return $this
+            ->createQueryBuilder('r')
+            ->where('r.project = :project')
+            ->andWhere('r.name = :name')
+            ->setParameter('project', $project)
+            ->setParameter('name', $name)
+            ->getQuery()
+            ->getSingleResult();
     }
 }

@@ -1,15 +1,25 @@
-<script>
-    let { name } = $props();
+<script lang="ts">
+    import type {ControllerItem} from "$lib/response/project/controller/ControllerItem";
+    import {currentController} from "./store";
+
+    let {
+        controller,
+    }: {
+        controller: ControllerItem
+    } = $props();
 </script>
 
-<span>{name}</span>
+<button onclick={() => currentController.set(controller) }>
+    {controller.name}
+</button>
 
 <style>
-    span {
+    button {
         padding: 0 0 0 1.5em;
         background: url($lib/icons/file.svg) 0 0.1em no-repeat;
         background-size: 1em 1em;
-        font-size: 14px;
         cursor: pointer;
+        border: none;
+        font-size: 14px;
     }
 </style>
