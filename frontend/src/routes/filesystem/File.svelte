@@ -1,16 +1,17 @@
 <script lang="ts">
-    import type {ControllerItem} from "$lib/Response/Controller/ControllerItem";
     import {currentController} from "./store";
+    import type {FileItem} from "$lib/Response/Project/Filesystem/FileItem";
 
     let {
-        controller,
+        file,
     }: {
-        controller: ControllerItem
+        file: FileItem
     } = $props();
 </script>
 
-<button onclick={() => currentController.set(controller) }>
-    {controller.name}
+<!-- todo тут другой файл и вообще может быть не контроллер -->
+<button onclick={() => currentController.set(file) }>
+    {file.name}
 </button>
 
 <style>

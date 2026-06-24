@@ -1,14 +1,14 @@
 <script lang="ts">
     import File from './File.svelte';
     import Directory from './Directory.svelte';
-    import { slide } from 'svelte/transition';
-    import type {DirItem} from "$lib/Response/Controller/DirItem";
+    import {slide} from 'svelte/transition';
+    import type {DirectoryItemResponse} from "$lib/Response/Project/Filesystem/DirectoryItemResponse";
 
     let {
         dir,
         expanded = $bindable(false)
     }: {
-        dir: DirItem
+        dir: DirectoryItemResponse
         expanded?: boolean
     } = $props();
 </script>
@@ -26,7 +26,7 @@
         {/each}
         {#each dir.files as file}
             <li>
-                <File controller={file} />
+                <File file={file} />
             </li>
         {/each}
     </ul>

@@ -1,25 +1,34 @@
 <script lang="ts">
     import Directory from './Directory.svelte';
-    import {IndexController} from "$lib/controller/project/index-controller";
-    import type {ProjectResponse} from "$lib/Response/Controller/project-response";
     import Viewer from "./Viewer.svelte";
+    import {GetTree} from "$lib/Controller/Project/Filesystem/GetTreeController";
+    import {currentProject} from "$lib/Store/Project";
+    import type {DirectoryItemResponse} from "$lib/Response/Project/Filesystem/DirectoryItemResponse";
 
-    let project = $state<ProjectResponse|null>(null);
     let error = $state('');
+    let dir = $state<DirectoryItemResponse|null>(null);
 
-    IndexController()
-        .then(data => {
-            project = data;
-        })
-        .catch(err => {
-            error = err instanceof Error ? err.message : String(err);
-        });
+    $effect(() => {
+        const project = $currentProject;
+
+        if (!project) return;
+
+        GetTree(project.id)
+            .then((res: DirectoryItemResponse) => {
+                dir = res;
+                error = '';
+            })
+            .catch(err => {
+                error = err instanceof Error ? err.message : String(err);
+            });
+    });
 </script>
 
-{#if project}
+{#if dir}
+    Current project: {$currentProject?.name ?? '??????'}
     <div>
         <aside>
-            <Directory dir={project.controllers} expanded={true} />
+            <Directory dir={dir} expanded={true} />
         </aside>
 
         <main>
