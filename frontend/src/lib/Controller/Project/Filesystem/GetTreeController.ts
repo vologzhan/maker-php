@@ -1,6 +1,6 @@
-import type {DirItemResponse} from "$lib/Response/Project/Filesystem/DirItemResponse";
+import type {DirectoryItemResponse} from "$lib/Response/Project/Filesystem/DirectoryItemResponse";
 
-export async function GetTree(projectId: number): Promise<DirItemResponse> {
+export async function GetTree(projectId: number): Promise<DirectoryItemResponse> {
     const response = await fetch(`/api/project/${projectId}/filesystem/tree`, {
         method: 'GET',
     });

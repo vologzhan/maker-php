@@ -7,21 +7,21 @@ use App\Entity\Directory;
 use App\Entity\File;
 use App\Response\Filesystem\FileResponse;
 use App\Response\Filesystem\TokenItem;
-use App\Response\Project\Filesystem\DirItemResponse;
+use App\Response\Project\Filesystem\DirectoryItemResponse;
 use App\Response\Project\Filesystem\FileItem;
 
 final readonly class FilesystemSerializer
 {
-    public function dirItemResponse(Directory $dir): DirItemResponse
+    public function directoryItemResponse(Directory $dir): DirectoryItemResponse
     {
-        $out = new DirItemResponse(
+        $out = new DirectoryItemResponse(
             id: $dir->getId(),
             name: basename($dir->getPath()),
             directories: [],
             files: [],
         );
 
-        $out->directories = array_map(fn (Directory $child) => $this->dirItemResponse($child), $dir->getChildren());
+        $out->directories = array_map(fn (Directory $child) => $this->directoryItemResponse($child), $dir->getChildren());
         $out->files = array_map(fn (File $file) => $this->fileItem($file), $dir->getFiles());
 
         return $out;

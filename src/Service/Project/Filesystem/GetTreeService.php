@@ -4,7 +4,7 @@ namespace App\Service\Project\Filesystem;
 
 use App\Repository\DirectoryRepository;
 use App\Request\Project\Filesystem\GetTreeRequest;
-use App\Response\Project\Filesystem\DirItemResponse;
+use App\Response\Project\Filesystem\DirectoryItemResponse;
 use App\Serializer\FilesystemSerializer;
 
 final readonly class GetTreeService
@@ -14,10 +14,10 @@ final readonly class GetTreeService
         private FilesystemSerializer $filesystemSerializer,
     ) {}
 
-    public function __invoke(GetTreeRequest $request): DirItemResponse
+    public function __invoke(GetTreeRequest $request): DirectoryItemResponse
     {
         $dir = $this->directoryRepository->findByProjectId($request->projectId);
 
-        return $this->filesystemSerializer->dirItemResponse($dir);
+        return $this->filesystemSerializer->directoryItemResponse($dir);
     }
 }
