@@ -1,7 +1,7 @@
 <script lang="ts">
     import Directory from './Directory.svelte';
     import {IndexController} from "$lib/controller/project/index-controller";
-    import type {ProjectResponse} from "$lib/response/project/project-response";
+    import type {ProjectResponse} from "$lib/Response/Controller/project-response";
     import Viewer from "./Viewer.svelte";
 
     let project = $state<ProjectResponse|null>(null);

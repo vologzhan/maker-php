@@ -1,4 +1,4 @@
-import type {ProjectResponse} from "$lib/response/project/project-response";
+import type {ProjectResponse} from "$lib/Response/Controller/project-response";
 
 export async function IndexController(): Promise<ProjectResponse> {
     const response = await fetch(`/api/project/index`, {

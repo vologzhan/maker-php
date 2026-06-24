@@ -2,7 +2,7 @@
     import File from './File.svelte';
     import Directory from './Directory.svelte';
     import { slide } from 'svelte/transition';
-    import type {DirItem} from "$lib/response/project/controller/DirItem";
+    import type {DirItem} from "$lib/Response/Controller/DirItem";
 
     let {
         dir,

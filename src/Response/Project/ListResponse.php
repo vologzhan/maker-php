@@ -5,7 +5,7 @@ namespace App\Response\Project;
 final readonly class ListResponse
 {
     public function __construct(
-        /** @var ProjectItemResponse */
+        /** @var ProjectItemResponse[] */
         public array $items,
     ) {}
 }

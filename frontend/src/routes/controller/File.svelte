@@ -1,5 +1,5 @@
 <script lang="ts">
-    import type {ControllerItem} from "$lib/response/project/controller/ControllerItem";
+    import type {ControllerItem} from "$lib/Response/Controller/ControllerItem";
     import {currentController} from "./store";
 
     let {

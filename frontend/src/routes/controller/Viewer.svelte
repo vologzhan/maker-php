@@ -1,6 +1,6 @@
 <script lang="ts">
     import {currentController} from "./store";
-    import type {ControllerItem} from "$lib/response/project/controller/ControllerItem";
+    import type {ControllerItem} from "$lib/Response/Controller/ControllerItem";
 
     let form = $state<ControllerItem>({
         id: 0,

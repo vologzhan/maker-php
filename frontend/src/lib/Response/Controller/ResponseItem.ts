@@ -1,4 +1,4 @@
-import type {FieldItem} from "$lib/response/project/controller/FieldItem";
+import type {FieldItem} from "$lib/Response/Controller/FieldItem";
 
 export interface ResponseItem {
     id: number
