@@ -13,7 +13,7 @@ final class SelfCheckControllerTest extends ApiTestCase
     public function test(): void
     {
         $this
-            ->request('GET', '/')
+            ->request('GET', '/api')
             ->expectedHeader('Content-Type', 'application/json')
             ->expectedCode(200)
             ->expectedJsonContent(<<<JSON

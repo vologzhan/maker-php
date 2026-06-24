@@ -50,12 +50,12 @@ final class IndexDirectoryTest extends ApiTestCase
                 [7, '/app/tests/fixtures/maker-php/src/Response/Project', 1, 5, null],
             ], 'SELECT * FROM directory')
             ->assertEquals([
-                ['id', 'path', 'directory_id'],
-                [1, '/app/tests/fixtures/maker-php/src/Controller/Project/IndexController.php', 4],
-                [2, '/app/tests/fixtures/maker-php/src/Controller/SelfCheckController.php', 3],
-                [3, '/app/tests/fixtures/maker-php/src/Response/Controller/ControllerItem.php', 6],
-                [4, '/app/tests/fixtures/maker-php/src/Response/Project/ProjectResponse.php', 7],
-                [5, '/app/tests/fixtures/maker-php/src/Response/SuccessResponse.php', 5],
+                ['id', 'path', 'directory_id', 'type'],
+                [1, '/app/tests/fixtures/maker-php/src/Controller/Project/IndexController.php', 4, null],
+                [2, '/app/tests/fixtures/maker-php/src/Controller/SelfCheckController.php', 3, null],
+                [3, '/app/tests/fixtures/maker-php/src/Response/Controller/ControllerItem.php', 6, null],
+                [4, '/app/tests/fixtures/maker-php/src/Response/Project/ProjectResponse.php', 7, null],
+                [5, '/app/tests/fixtures/maker-php/src/Response/SuccessResponse.php', 5, null],
             ], 'SELECT * FROM file');
     }
 }
