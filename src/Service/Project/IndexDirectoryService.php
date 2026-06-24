@@ -66,10 +66,9 @@ final readonly class IndexDirectoryService
                 continue;
             }
 
-            $file = new File(
-                directory: $dir,
-                path: $path,
-            );
+            $file = new File()
+                ->setDirectory($dir)
+                ->setPath($path);
             $this->fileRepository->save($file);
         }
     }

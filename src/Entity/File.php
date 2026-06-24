@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Enum\FileType;
 use App\Repository\FileRepository;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -11,32 +12,28 @@ class File
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    private ?int $id = null;
+    private int $id;
 
     #[ORM\Column(length: 255)]
-    private ?string $path = null;
+    private string $path;
 
     #[ORM\ManyToOne(inversedBy: 'files')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?Directory $directory = null;
+    private Directory $directory;
 
-    # --------------------------------------------------------------------------------------------------------------
-    public function __construct(Directory $directory, string $path)
-    {
-        $this->directory = $directory;
-        $this->path = $path;
-    }
+    #[ORM\Column(nullable: true, enumType: FileType::class)]
+    private ?FileType $type = null;
 
     # --------------------------------------------------------------------------------------------------------------
 
-    public function getId(): ?int
+    public function getId(): int
     {
         return $this->id;
     }
 
     # --------------------------------------------------------------------------------------------------------------
 
-    public function getPath(): ?string
+    public function getPath(): string
     {
         return $this->path;
     }
@@ -50,14 +47,28 @@ class File
 
     # --------------------------------------------------------------------------------------------------------------
 
-    public function getDirectory(): ?Directory
+    public function getDirectory(): Directory
     {
         return $this->directory;
     }
 
-    public function setDirectory(?Directory $directory): static
+    public function setDirectory(Directory $directory): static
     {
         $this->directory = $directory;
+
+        return $this;
+    }
+
+    # --------------------------------------------------------------------------------------------------------------
+
+    public function getType(): ?FileType
+    {
+        return $this->type;
+    }
+
+    public function setType(?FileType $type): static
+    {
+        $this->type = $type;
 
         return $this;
     }

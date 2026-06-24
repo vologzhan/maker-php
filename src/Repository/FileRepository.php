@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace App\Repository;
 
@@ -22,5 +22,15 @@ class FileRepository extends ServiceEntityRepository
         if ($flush) {
             $this->getEntityManager()->flush();
         }
+    }
+
+    public function findById(int $Id): File
+    {
+        return $this
+            ->createQueryBuilder('f')
+            ->where('f.id = :id')
+            ->setParameter('id', $Id)
+            ->getQuery()
+            ->getSingleResult();
     }
 }

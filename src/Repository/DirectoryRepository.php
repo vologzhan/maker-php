@@ -25,6 +25,16 @@ class DirectoryRepository extends ServiceEntityRepository
         }
     }
 
+    public function findById(int $directoryId): Directory
+    {
+        return $this
+            ->createQueryBuilder('d')
+            ->andWhere('d.id = :directoryId')
+            ->setParameter('directoryId', $directoryId)
+            ->getQuery()
+            ->getSingleResult();
+    }
+
     public function findByProjectId(int $projectId): Directory
     {
         return $this
