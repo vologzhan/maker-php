@@ -10,7 +10,7 @@
 
 <nav>
 	<a href="/">Projects</a>
-	<a href="/controller">Controllers</a>
+	<a href="/filesystem">Filesystem</a>
 </nav>
 
 {@render children()}
