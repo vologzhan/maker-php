@@ -1,11 +1,11 @@
 <?php declare(strict_types=1);
 
-namespace App\Tests\TestCase\Controller\Project;
+namespace App\Tests\TestCase\Controller\Project\Filesystem;
 
-use App\Controller\Project\GetFilesystemController;
+use App\Controller\Project\Filesystem\GetTreeController;
 use App\Tests\Infrastructure\ApiTestCase;
 
-/** @see GetFilesystemController */
+/** @see GetTreeController */
 final class GetTreeTest extends ApiTestCase
 {
     protected function setUp(): void
@@ -29,7 +29,7 @@ final class GetTreeTest extends ApiTestCase
     public function test(): void
     {
         $this
-            ->request('GET', '/api/project/1/filesystem')
+            ->request('GET', '/api/project/1/filesystem/tree')
             ->expectedCode(200)
             ->expectedJsonContent(<<<JSON
                 {
