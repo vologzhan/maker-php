@@ -1,16 +1,47 @@
 <script lang="ts">
     import {currentController} from "./store";
     import type {FileItem} from "$lib/Response/Project/Filesystem/FileItem";
+    import {contextMenu} from '$lib/Store/ContextMenu';
 
     let {
         file,
     }: {
         file: FileItem
     } = $props();
+
+    function select() {
+        currentController.set(file);
+    }
+
+    function openContextMenu(event: MouseEvent) {
+        event.preventDefault();
+
+        contextMenu.set({
+            visible: true,
+            x: event.clientX,
+            y: event.clientY,
+            items: [
+                {
+                    label: 'Переименовать',
+                    action: () => {
+                        console.log('rename file', file.id);
+                    }
+                },
+                {
+                    label: 'Удалить',
+                    action: () => {
+                        console.log('delete file', file.id);
+                    }
+                }
+            ]
+        });
+    }
 </script>
 
-<!-- todo тут другой файл и вообще может быть не контроллер -->
-<button onclick={() => currentController.set(file) }>
+<button
+        onclick={select}
+        oncontextmenu={openContextMenu}
+>
     {file.name}
 </button>
 

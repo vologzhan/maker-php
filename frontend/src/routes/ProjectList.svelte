@@ -9,6 +9,7 @@
     GetList()
         .then((res: ListResponse) => {
             projects.set(res.items);
+            currentProject.set(res.items[0] ?? null);
         })
         .catch((err: any) => {
             error = err instanceof Error ? err.message : String(err)

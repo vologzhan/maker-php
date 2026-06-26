@@ -3,28 +3,80 @@
     import Directory from './Directory.svelte';
     import {slide} from 'svelte/transition';
     import type {DirectoryItemResponse} from "$lib/Response/Project/Filesystem/DirectoryItemResponse";
+    import {contextMenu} from '$lib/Store/ContextMenu';
 
     let {
         dir,
-        expanded = $bindable(false)
+        open = $bindable(false)
     }: {
         dir: DirectoryItemResponse
-        expanded?: boolean
+        open?: boolean
     } = $props();
+
+    function openOrClose() {
+        open = !open;
+    }
+
+    function openContextMenu(event: MouseEvent) {
+        event.preventDefault();
+
+        contextMenu.set({
+            visible: true,
+            x: event.clientX,
+            y: event.clientY,
+            items: [
+                {
+                    label: 'Создать файл',
+                    action: () => {
+                        console.log('create file in', dir.name);
+                    }
+                },
+                {
+                    label: 'Создать директорию',
+                    action: () => {
+                        console.log('create directory in', dir.name);
+                    }
+                },
+                {
+                    label: 'Переименовать',
+                    action: () => {
+                        console.log('rename', dir.name);
+                    }
+                },
+                {
+                    label: 'Удалить',
+                    action: () => {
+                        console.log('delete', dir.name);
+                    }
+                },
+                {
+                    label: 'Mark as Controller',
+                    action: () => {
+                        console.log('Mark as Controller', dir.name);
+                    }
+                }
+            ]
+        });
+    }
 </script>
 
-<button class:expanded onclick={() => expanded = !expanded}>
+<button
+        class:open={open}
+        onclick={openOrClose}
+        oncontextmenu={openContextMenu}
+>
     {dir.name}
 </button>
 
-{#if expanded}
+{#if open}
     <ul transition:slide={{ duration: 300 }}>
-        {#each dir.directories as directory}
+        {#each dir.directories as directory (directory.id)}
             <li>
                 <Directory dir={directory} />
             </li>
         {/each}
-        {#each dir.files as file}
+
+        {#each dir.files as file (file.id)}
             <li>
                 <File file={file} />
             </li>
@@ -43,7 +95,7 @@
         font-size: 14px;
     }
 
-    .expanded {
+    .open {
         background-image: url($lib/icons/folder-open.svg);
     }
 

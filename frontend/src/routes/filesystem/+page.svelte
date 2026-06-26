@@ -28,7 +28,7 @@
     Current project: {$currentProject?.name ?? '??????'}
     <div>
         <aside>
-            <Directory dir={dir} expanded={true} />
+            <Directory dir={dir} open={true} />
         </aside>
 
         <main>

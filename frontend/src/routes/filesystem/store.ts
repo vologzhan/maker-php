@@ -1,4 +1,4 @@
 import { writable } from 'svelte/store';
-import type {ControllerItem} from "$lib/Response/Controller/ControllerItem";
+import type {FileItem} from "$lib/Response/Project/Filesystem/FileItem";
 
-export const currentController = writable<ControllerItem | null>(null);
+export const currentController = writable<FileItem | null>(null);
