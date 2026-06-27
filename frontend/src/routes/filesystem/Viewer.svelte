@@ -1,72 +1,106 @@
 <script lang="ts">
-    import {currentController} from "./store";
-    import type {ControllerItem} from "$lib/Response/Controller/ControllerItem";
+    import {currentFile, currentContent} from "$lib/Store/File";
+    import type {TokenItem} from "$lib/Response/Filesystem/File/TokenItem";
+    import {GetContent} from "$lib/Controller/Filesystem/File/GetContentController";
 
-    let form = $state<ControllerItem>({
-        id: 0,
-        name: '',
-        method: '',
-        path: '',
-        responseId: 0
-    });
+    let currentToken: TokenItem|null = $state(null);
+    let error = $state('');
 
     $effect(() => {
-        if ($currentController) {
-            form = { ...$currentController };
-        }
+        const file = $currentFile;
+        if (!file) return;
+
+        GetContent(file.id)
+            .then(res => currentContent.set(res))
+            .catch(err => error = err instanceof Error ? err.message : String(err));
     });
 
-    function save() {
-        console.log('save', form);
+    function renderToken(token: TokenItem): string {
+        if (token.type !== 'whitespace') {
+            return escapeHtml(token.value)
+        }
 
-        // TODO: отправить на сервер
+        return escapeHtml(token.value)
+            .replace(/ /g, '<span style="color: #d7caca">·</span>')
+            .replace(/\t/g, '<span style="color: #d7caca; letter-spacing: -1px">----</span>')
+            .replace(/\n/g, '\n')
+    }
 
-        currentController.set({ ...form });
+    function escapeHtml(text: string): string {
+        return text
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
     }
 </script>
 
-{#if $currentController}
-    <form onsubmit={(e) => {
-        e.preventDefault();
-        save();
-    }}>
-        <div>
-            <label for="name">Name</label>
-            <input
-                    id="name"
-                    bind:value={form.name}
-            />
+{#if $currentContent}
+    <div class="layout">
+        <div class="editor">
+            {#each $currentContent.items as token}
+                <span
+                        class="token"
+                        title={`Type: ${token.type}
+    Pos: ${token.pos}
+    End: ${token.end}`}
+                        onmouseenter={() => currentToken = token}
+                        onmouseleave={() => currentToken = null}
+                >
+                    {@html renderToken(token)}
+                </span>
+            {/each}
         </div>
 
-        <div>
-            <label for="method">Method</label>
-            <input
-                    id="method"
-                    bind:value={form.method}
-            />
-        </div>
+        <div class="sidebar">
+            {#if currentToken}
+                <div><b>Type:</b> {currentToken.type}</div>
+                <div><b>Pos:</b> {currentToken.pos}</div>
+                <div><b>End:</b> {currentToken.end}</div>
 
-        <div>
-            <label for="path">Path</label>
-            <input
-                    id="path"
-                    bind:value={form.path}
-            />
-        </div>
+                <hr>
 
-        <div>
-            <label for="responseId">Response ID</label>
-            <input
-                    id="responseId"
-                    type="number"
-                    bind:value={form.responseId}
-            />
+                <pre>{currentToken.value}</pre>
+            {/if}
         </div>
-
-        <button type="submit">
-            Save
-        </button>
-    </form>
+    </div>
+{:else if error}
+    Error: {error}
 {:else}
     Select item
 {/if}
+
+<style>
+    .layout {
+        display: flex;
+        gap: 20px;
+    }
+
+    .editor {
+        flex: 1;
+        border: 1px solid #ccc;
+        padding: 16px;
+        white-space: pre-wrap;
+        font-family: monospace;
+        overflow: auto;
+    }
+
+    .token:hover {
+        background: #fff3a0;
+    }
+
+    .sidebar {
+        width: 350px;
+        border: 1px solid #ccc;
+        padding: 12px;
+    }
+
+    pre {
+        margin: 0;
+        white-space: pre-wrap;
+    }
+
+    .editor {
+        white-space: pre-wrap;
+        font-family: monospace;
+    }
+</style>

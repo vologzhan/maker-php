@@ -1,7 +1,7 @@
 <script lang="ts">
-    import {currentController} from "./store";
     import type {FileItem} from "$lib/Response/Project/Filesystem/FileItem";
     import {contextMenu} from '$lib/Store/ContextMenu';
+    import {currentFile} from "$lib/Store/File";
 
     let {
         file,
@@ -10,7 +10,7 @@
     } = $props();
 
     function select() {
-        currentController.set(file);
+        currentFile.set(file);
     }
 
     function openContextMenu(event: MouseEvent) {
