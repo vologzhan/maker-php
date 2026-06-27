@@ -34,5 +34,5 @@
         <div style="color: red">Index error: {error}</div>
     {/if}
 
-    <p>Путь в докере. Для maker используется /app</p>
+    <p>Путь в докере. Для maker /app</p>
 </form>
