@@ -31,10 +31,19 @@
             ]
         });
     }
+
+    function getHref(file: FileItem) {
+        switch (file.type) {
+            case 'controller':
+                return `/controller/${file.id}`;
+            default:
+                return `/filesystem/file/${file.id}`;
+        }
+    }
 </script>
 
 <a
-    href={`/filesystem/file/${file.id}`}
+    href={getHref(file)}
     oncontextmenu={openContextMenu}
 >
     {file.name}
