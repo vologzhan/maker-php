@@ -41,6 +41,8 @@
     </div>
 {:else if error}
     Error: {error}
+{:else}
+    Loading...
 {/if}
 
 <style>
