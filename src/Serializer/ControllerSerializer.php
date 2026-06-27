@@ -2,21 +2,25 @@
 
 namespace App\Serializer;
 
+use App\Dto\Php\FileDto;
 use App\Entity\Controller;
 use App\Response\Controller\ControllerResponse;
-use App\Response\Filesystem\File\ContentItemResponse;
 use App\Response\Project\Controller\ControllerItem;
 
 final readonly class ControllerSerializer
 {
-    public function controllerResponse(Controller $controller, ContentItemResponse $content): ControllerResponse
+    public function __construct(
+        private FilesystemSerializer $filesystemSerializer,
+    ) {}
+
+    public function controllerResponse(Controller $controller, FileDto $file): ControllerResponse
     {
         return new ControllerResponse(
             id: $controller->getId(),
             method: $controller->getMethod(),
             path: $controller->getPath(),
             responseId: $controller->getResponse()?->getId(),
-            content: $content,
+            content: $this->filesystemSerializer->tokenItemArray($file->tokens),
         );
     }
 

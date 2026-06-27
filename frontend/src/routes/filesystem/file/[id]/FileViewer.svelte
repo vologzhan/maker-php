@@ -1,11 +1,10 @@
 <script lang="ts">
     import type {TokenItem} from "$lib/Response/Filesystem/File/TokenItem";
-    import type {ContentItemResponse} from "$lib/Response/Filesystem/File/ContentItemResponse";
 
     let {
         content,
     }: {
-        content: ContentItemResponse
+        content: TokenItem[]
     } = $props();
 
     let currentToken: TokenItem|null = $state(null);
@@ -31,7 +30,7 @@
 
 <div class="layout">
     <div class="editor">
-        {#each content.items as token}
+        {#each content as token}
                 <span
                         class="token"
                         title={`Type: ${token.type}

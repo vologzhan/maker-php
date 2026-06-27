@@ -2,7 +2,7 @@
 
 namespace App\Response\Controller;
 
-use App\Response\Filesystem\File\ContentItemResponse;
+use App\Response\Filesystem\File\TokenItem;
 
 final readonly class ControllerResponse
 {
@@ -11,6 +11,7 @@ final readonly class ControllerResponse
         public string $method,
         public string $path,
         public ?int $responseId,
-        public ContentItemResponse $content,
+        /** @var TokenItem[] */
+        public array $content,
     ) {}
 }

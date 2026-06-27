@@ -1,6 +1,6 @@
 <script lang="ts">
     import type {ControllerResponse} from "$lib/Response/Controller/ControllerResponse";
-    import Viewer from "../../file/[id]/Viewer.svelte";
+    import FileViewer from "../../file/[id]/FileViewer.svelte";
 
     let {
         controller,
@@ -48,4 +48,4 @@
     </button>
 </form>
 
-<Viewer content={controller.content} />
+<FileViewer content={controller.content} />

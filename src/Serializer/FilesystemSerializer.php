@@ -48,8 +48,17 @@ final readonly class FilesystemSerializer
     public function contentItemResponse(array $tokens): ContentItemResponse
     {
         return new ContentItemResponse(
-            items: array_map(fn(TokenDto $token) => $this->tokenItem($token), $tokens),
+            items: $this->tokenItemArray($tokens),
         );
+    }
+
+    /**
+     * @param TokenDto[] $tokens
+     * @return TokenItem[]
+     */
+    public function tokenItemArray(array $tokens): array
+    {
+        return array_map(fn(TokenDto $token) => $this->tokenItem($token), $tokens);
     }
 
     private function tokenItem(TokenDto $token): TokenItem

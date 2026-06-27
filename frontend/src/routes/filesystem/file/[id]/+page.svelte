@@ -1,6 +1,6 @@
 <script lang="ts">
     import {page} from '$app/state';
-    import Viewer from "./Viewer.svelte";
+    import FileViewer from "./FileViewer.svelte";
     import {GetContent} from "$lib/Controller/Filesystem/File/GetContentController";
     import type {ContentItemResponse} from "$lib/Response/Filesystem/File/ContentItemResponse";
 
@@ -23,7 +23,7 @@
 
 <main>
     {#if content}
-        <Viewer content={content} />
+        <FileViewer content={content.items} />
     {:else if error}
         Error: {error}
     {:else}
