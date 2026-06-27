@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace App\Response\Filesystem;
+namespace App\Response\Filesystem\File;
 
 readonly class TokenItem
 {

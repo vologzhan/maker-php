@@ -5,8 +5,8 @@ namespace App\Serializer;
 use App\Dto\Php\TokenDto;
 use App\Entity\Directory;
 use App\Entity\File;
-use App\Response\Filesystem\FileResponse;
-use App\Response\Filesystem\TokenItem;
+use App\Response\Filesystem\File\ContentResponse;
+use App\Response\Filesystem\File\TokenItem;
 use App\Response\Project\Filesystem\DirectoryItemResponse;
 use App\Response\Project\Filesystem\FileItem;
 
@@ -38,15 +38,20 @@ final readonly class FilesystemSerializer
     /**
      * @param TokenDto[] $tokens
      */
-    public function fileResponse(array $tokens): FileResponse
+    public function contentResponse(array $tokens): ContentResponse
     {
-        return new FileResponse(
-            tokens: array_map(static fn(TokenDto $token) => new TokenItem(
-                pos: $token->pos,
-                end: $token->end,
-                value: $token->value,
-                type: $token->type,
-            ), $tokens),
+        return new ContentResponse(
+            items: array_map(fn(TokenDto $token) => $this->tokenItem($token), $tokens),
+        );
+    }
+
+    private function tokenItem(TokenDto $token): TokenItem
+    {
+        return new TokenItem(
+            pos: $token->pos,
+            end: $token->end,
+            value: $token->value,
+            type: $token->type,
         );
     }
 }

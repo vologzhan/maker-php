@@ -24,12 +24,12 @@ class FileRepository extends ServiceEntityRepository
         }
     }
 
-    public function findById(int $Id): File
+    public function findById(int $id): File
     {
         return $this
             ->createQueryBuilder('f')
             ->where('f.id = :id')
-            ->setParameter('id', $Id)
+            ->setParameter('id', $id)
             ->getQuery()
             ->getSingleResult();
     }

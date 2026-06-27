@@ -2,12 +2,26 @@
 
 namespace App\Tests\Infrastructure;
 
+use App\Service\Filesystem\FilesystemHelper;
 use App\Tests\Infrastructure\Annotation\Skip;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 class ApiTestCase extends WebTestCase
 {
     private ?Connection $connection = null;
+    private ?Filesystem $filesystem = null;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $reflection = new \ReflectionMethod($this, $this->name());
+        $attributes = $reflection->getAttributes(Skip::class);
+
+        if (!empty($attributes)) {
+            $this->markTestSkipped('#[Skip]');
+        }
+    }
 
     protected function connectionPsql(): Connection
     {
@@ -34,25 +48,11 @@ class ApiTestCase extends WebTestCase
         return new Response($response, $this);
     }
 
-    protected function tmpDir(): string
+    protected function filesystem(): Filesystem
     {
-        return sys_get_temp_dir();
-    }
-
-    protected function fixturesDir(): string
-    {
-        return self::getContainer()->getParameter('kernel.project_dir') . '/tests/Fixtures';
-    }
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-
-        $reflection = new \ReflectionMethod($this, $this->name());
-        $attributes = $reflection->getAttributes(Skip::class);
-
-        if (!empty($attributes)) {
-            $this->markTestSkipped('#[Skip]');
+        if ($this->filesystem === null) {
+            $this->filesystem = new Filesystem(new FilesystemHelper());
         }
+        return $this->filesystem;
     }
 }
