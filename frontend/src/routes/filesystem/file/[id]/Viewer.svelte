@@ -1,19 +1,14 @@
 <script lang="ts">
-    import {currentFile, currentContent} from "$lib/Store/File";
     import type {TokenItem} from "$lib/Response/Filesystem/File/TokenItem";
-    import {GetContent} from "$lib/Controller/Filesystem/File/GetContentController";
+    import type {ContentResponse} from "$lib/Response/Filesystem/File/ContentResponse";
+
+    let {
+        content,
+    }: {
+        content: ContentResponse
+    } = $props();
 
     let currentToken: TokenItem|null = $state(null);
-    let error = $state('');
-
-    $effect(() => {
-        const file = $currentFile;
-        if (!file) return;
-
-        GetContent(file.id)
-            .then(res => currentContent.set(res))
-            .catch(err => error = err instanceof Error ? err.message : String(err));
-    });
 
     function renderToken(token: TokenItem): string {
         if (token.type !== 'whitespace') {
@@ -34,10 +29,9 @@
     }
 </script>
 
-{#if $currentContent}
-    <div class="layout">
-        <div class="editor">
-            {#each $currentContent.items as token}
+<div class="layout">
+    <div class="editor">
+        {#each content.items as token}
                 <span
                         class="token"
                         title={`Type: ${token.type}
@@ -48,26 +42,21 @@
                 >
                     {@html renderToken(token)}
                 </span>
-            {/each}
-        </div>
-
-        <div class="sidebar">
-            {#if currentToken}
-                <div><b>Type:</b> {currentToken.type}</div>
-                <div><b>Pos:</b> {currentToken.pos}</div>
-                <div><b>End:</b> {currentToken.end}</div>
-
-                <hr>
-
-                <pre>{currentToken.value}</pre>
-            {/if}
-        </div>
+        {/each}
     </div>
-{:else if error}
-    Error: {error}
-{:else}
-    Select item
-{/if}
+
+    <div class="sidebar">
+        {#if currentToken}
+            <div><b>Type:</b> {currentToken.type}</div>
+            <div><b>Pos:</b> {currentToken.pos}</div>
+            <div><b>End:</b> {currentToken.end}</div>
+
+            <hr>
+
+            <pre>{currentToken.value}</pre>
+        {/if}
+    </div>
+</div>
 
 <style>
     .layout {
