@@ -44,13 +44,13 @@ final class UpdateDirectoryTypeTest extends ApiTestCase
         $this
             ->connectionPsql()
             ->assertEquals([
-                ['id', 'path', 'project_id', 'parent_id', 'type'],
-                [1, '/app/maker-php', 1, null, 'project'],
-                [2, '/app/maker-php/Controller', 1, 1, 'controller'],
+                ['id', 'path', 'type', 'project_id', 'parent_id'],
+                [1, '/app/maker-php', 'project', 1, null],
+                [2, '/app/maker-php/Controller', 'controller', 1, 1],
             ], 'SELECT * FROM directory')
             ->assertEquals([
-                ['id', 'path', 'directory_id', 'type'],
-                [1, '/app/maker-php/Controller/SelfCheckController.php', 2, 'controller'],
+                ['id', 'path', 'type', 'directory_id'],
+                [1, '/app/maker-php/Controller/SelfCheckController.php', 'controller', 2],
             ], 'SELECT * FROM file');
     }
 }

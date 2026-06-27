@@ -9,14 +9,12 @@ use App\Tests\Infrastructure\ApiTestCase;
 /** @see IndexDirectoryController */
 final class IndexDirectoryTest extends ApiTestCase
 {
-    protected function setUp(): void
-    {
-        $this->connectionPsql()->execute('TRUNCATE TABLE project RESTART IDENTITY CASCADE');
-    }
-
     #[Skip]
     public function test(): void
     {
+        $this->connectionPsql()->execute('TRUNCATE TABLE project RESTART IDENTITY CASCADE');
+        # --------------------------------------------------------------------------------------------------------------
+
         $this
             ->request('POST', '/api/project/index', <<<JSON
                 {
