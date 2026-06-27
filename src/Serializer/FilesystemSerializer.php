@@ -3,8 +3,10 @@
 namespace App\Serializer;
 
 use App\Dto\Php\TokenDto;
+use App\Entity\Controller;
 use App\Entity\Directory;
 use App\Entity\File;
+use App\Enum\FileType;
 use App\Response\Filesystem\File\ContentResponse;
 use App\Response\Filesystem\File\TokenItem;
 use App\Response\Project\Filesystem\DirectoryItemResponse;
@@ -33,7 +35,10 @@ final readonly class FilesystemSerializer
         return new FileItem(
             id: $file->getId(),
             name: basename($file->getPath()),
-            type: $file->getType(),
+            type: match (true) {
+                $file->getController() instanceof Controller => FileType::Controller,
+                default => null,
+            },
         );
     }
 

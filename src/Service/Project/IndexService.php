@@ -2,35 +2,29 @@
 
 namespace App\Service\Project;
 
-use App\Entity\Controller;
 use App\Entity\Field;
 use App\Entity\Project;
 use App\Entity\Response;
 use App\Enum\Type;
-use App\Repository\ControllerRepository;
 use App\Repository\FieldRepository;
 use App\Repository\ProjectRepository;
 use App\Repository\ResponseRepository;
 use App\Request\Project\IndexRequest;
 use App\Response\Project\ProjectItemResponse;
 use App\Serializer\ProjectSerializer;
-use App\Service\Controller\ControllerHelper;
 use App\Service\Php\PhpParser;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Exception\BadRequestException;
-use Symfony\Component\Routing\Attribute\Route;
 
 final readonly class IndexService
 {
     public function __construct(
         private ProjectRepository $projectRepository,
-        private ControllerRepository $controllerRepository,
         private ResponseRepository $responseRepository,
         private FieldRepository $fieldRepository,
         private PhpParser $phpParser,
         private EntityManagerInterface $em,
         private ProjectSerializer $projectSerializer,
-        private ControllerHelper $controllerService,
     ) {}
 
     public function __invoke(IndexRequest $request): ProjectItemResponse
@@ -102,32 +96,6 @@ final readonly class IndexService
 
             $fileCallback($project, $path);
         }
-    }
-
-    private function indexControllerFile(Project $project, string $filepath): void
-    {
-        $file = $this->phpParser->parseFile($filepath);
-        $class = $file->classes[0];
-        $className = $class->name;
-        $routeAttribute = $class->attribute(Route::class);
-
-        $methodInvoke = $class->method('__invoke');
-        $responseClassName = $methodInvoke->return->value;
-        $responseMap = $project->getResponsesMap();
-        $response = $responseMap[$responseClassName] ?? null;
-
-        $name = $this->controllerService->classNameToName($className->value);
-
-        $controller = new Controller()
-            ->setName($name)
-            ->setPath($routeAttribute->args[0]->value->value)
-            ->setMethod($routeAttribute->args[1]->value->value[0])
-            ->setFilepath($filepath)
-            ->setResponse($response);
-
-        $project->addController($controller);
-
-        $this->controllerRepository->save($controller);
     }
 
     private function indexResponseFile(Project $project, string $filepath): void

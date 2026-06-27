@@ -8,26 +8,41 @@ use App\Tests\Infrastructure\ApiTestCase;
 /** @see UpdateDirectoryTypeController */
 final class UpdateDirectoryTypeTest extends ApiTestCase
 {
-    protected function setUp(): void
+    public function test(): void
     {
+        $this->filesystem()->createFile(
+            '/tmp/tests/update_directory_type/SelfCheckController.php',
+            <<<PHP
+            <?php declare(strict_types=1);
+            
+            namespace Fixtures\Controller;
+            
+            use App\Response\SuccessResponse;
+            use Symfony\Component\Routing\Attribute\Route;
+            
+            #[Route('/', methods: ['GET'])]
+            final readonly class SelfCheckController
+            {
+                public function __invoke(): SuccessResponse
+                {
+                    return new SuccessResponse();
+                }
+            }
+            PHP
+        );
+
         $this->connectionPsql()->execute(<<<SQL
             TRUNCATE TABLE project RESTART IDENTITY CASCADE;
             INSERT INTO project (id, name) VALUES (1, 'maker-php');
-
-            INSERT INTO directory (id, path, project_id, parent_id, type)
-            VALUES (1, '/app/maker-php', 1, null, 'project'),
-                   (2, '/app/maker-php/Controller', 1, 1, null);
-            
-            INSERT INTO file (id, path, directory_id, type)
-            VALUES (1, '/app/maker-php/Controller/SelfCheckController.php', 2, null);
+            INSERT INTO directory (id, path, project_id, parent_id, type) VALUES (1, '', 1, null, null);
+            INSERT INTO file (id, path, directory_id) VALUES (1, '/tmp/tests/update_directory_type/SelfCheckController.php', 1);
             SQL
         );
-    }
 
-    public function test(): void
-    {
+        # --------------------------------------------------------------------------------------------------------------
+
         $this
-            ->request('PUT', '/api/filesystem/directory/2/type', body: <<<JSON
+            ->request('PUT', '/api/filesystem/directory/1/type', body: <<<JSON
                 {
                   "type": "controller"
                 }
@@ -45,12 +60,15 @@ final class UpdateDirectoryTypeTest extends ApiTestCase
             ->connectionPsql()
             ->assertEquals([
                 ['id', 'path', 'type', 'project_id', 'parent_id'],
-                [1, '/app/maker-php', 'project', 1, null],
-                [2, '/app/maker-php/Controller', 'controller', 1, 1],
+                [1, '', 'controller', 1, null],
             ], 'SELECT * FROM directory')
             ->assertEquals([
-                ['id', 'path', 'type', 'directory_id'],
-                [1, '/app/maker-php/Controller/SelfCheckController.php', 'controller', 2],
-            ], 'SELECT * FROM file');
+                ['id', 'path', 'directory_id'],
+                [1, '/tmp/tests/update_directory_type/SelfCheckController.php', 1],
+            ], 'SELECT * FROM file')
+            ->assertEquals([
+                ['id', 'path', 'method', 'project_id', 'response_id', 'file_id'],
+                [1, '/', 'GET', 1, null, 1]
+            ], 'SELECT * FROM controller');
     }
 }

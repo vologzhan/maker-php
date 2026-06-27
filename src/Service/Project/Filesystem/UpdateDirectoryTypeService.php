@@ -8,11 +8,13 @@ use App\Enum\FileType;
 use App\Repository\DirectoryRepository;
 use App\Repository\FileRepository;
 use App\Request\Project\Filesystem\UpdateDirectoryTypeRequest;
+use App\Service\Controller\IndexController;
 use Doctrine\ORM\EntityManagerInterface;
 
 final readonly class UpdateDirectoryTypeService
 {
     public function __construct(
+        private IndexController $indexController,
         private DirectoryRepository $directoryRepository,
         private FileRepository $fileRepository,
         private EntityManagerInterface $em,
@@ -42,7 +44,9 @@ final readonly class UpdateDirectoryTypeService
         }
 
         foreach ($dir->getFiles() as $file) {
-            $file->setType($fileType);
+            if ($dirType === DirectoryType::Controller) {
+                $this->indexController->__invoke($dir->getProject(), $file);
+            }
             $this->fileRepository->save($file);
         }
     }

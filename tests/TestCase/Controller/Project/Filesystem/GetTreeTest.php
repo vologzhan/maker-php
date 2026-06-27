@@ -8,7 +8,7 @@ use App\Tests\Infrastructure\ApiTestCase;
 /** @see GetTreeController */
 final class GetTreeTest extends ApiTestCase
 {
-    protected function setUp(): void
+    public function test(): void
     {
         $this->connectionPsql()->execute(<<<SQL
             TRUNCATE TABLE project RESTART IDENTITY CASCADE;
@@ -20,14 +20,15 @@ final class GetTreeTest extends ApiTestCase
                    (2, '/app/tests/fixtures/maker-php/src', 1, 1, null),
                    (3, '/app/tests/fixtures/maker-php/src/Controller', 1, 2, 'controller');
             
-            INSERT INTO file (id, path, directory_id, type)
-            VALUES (1, '/app/tests/fixtures/maker-php/src/Controller/SelfCheckController.php', 3, 'controller');
+            INSERT INTO file (id, path, directory_id)
+            VALUES (1, '/app/tests/fixtures/maker-php/src/Controller/SelfCheckController.php', 3);
+
+            INSERT INTO controller (id, path, method, project_id, response_id, file_id) VALUES (1, '/', 'GET', 1, null, 1);
             SQL
         );
-    }
 
-    public function test(): void
-    {
+        # --------------------------------------------------------------------------------------------------------------
+
         $this
             ->request('GET', '/api/project/1/filesystem/tree')
             ->expectedCode(200)
