@@ -112,25 +112,30 @@ class Directory
 
     public function removeFile(File $file): static
     {
-        if ($this->files->removeElement($file)) {
-            // set the owning side to null (unless already changed)
-            if ($file->getDirectory() === $this) {
-                $file->setDirectory(null);
-            }
-        }
+        $this->files->removeElement($file);
 
         return $this;
     }
 
     # --------------------------------------------------------------------------------------------------------------
 
-    public function setParent(Directory $dir): self
+    public function getParent(): ?Directory
+    {
+        return $this->parent;
+    }
+
+    public function setParent(?Directory $dir): self
     {
         $this->parent = $dir;
         return $this;
     }
 
     # --------------------------------------------------------------------------------------------------------------
+
+    public function getType(): ?DirectoryType
+    {
+        return $this->type;
+    }
 
     public function setType(?DirectoryType $isRoot): self
     {

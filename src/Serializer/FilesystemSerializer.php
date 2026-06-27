@@ -17,6 +17,7 @@ final readonly class FilesystemSerializer
         $out = new DirectoryItemResponse(
             id: $dir->getId(),
             name: basename($dir->getPath()),
+            type: $dir->getType(),
             directories: [],
             files: [],
         );
@@ -32,6 +33,7 @@ final readonly class FilesystemSerializer
         return new FileItem(
             id: $file->getId(),
             name: basename($file->getPath()),
+            type: $file->getType(),
         );
     }
 

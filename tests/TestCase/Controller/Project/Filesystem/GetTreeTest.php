@@ -18,10 +18,10 @@ final class GetTreeTest extends ApiTestCase
             INSERT INTO directory (id, path, project_id, parent_id, type)
             VALUES (1, '/app/tests/fixtures/maker-php', 1, null, 'project'),
                    (2, '/app/tests/fixtures/maker-php/src', 1, 1, null),
-                   (3, '/app/tests/fixtures/maker-php/src/Controller', 1, 2, null);
+                   (3, '/app/tests/fixtures/maker-php/src/Controller', 1, 2, 'controller');
             
-            INSERT INTO file (id, path, directory_id)
-            VALUES (1, '/app/tests/fixtures/maker-php/src/Controller/SelfCheckController.php', 3);
+            INSERT INTO file (id, path, directory_id, type)
+            VALUES (1, '/app/tests/fixtures/maker-php/src/Controller/SelfCheckController.php', 3, 'controller');
             SQL
         );
     }
@@ -35,21 +35,25 @@ final class GetTreeTest extends ApiTestCase
                 {
                   "id": 1,
                   "name": "maker-php",
+                  "type": "project",
                   "files": [],
                   "directories": [
                     {
                         "id": 2,
                         "name": "src",
+                        "type": null,
                         "files": [],
                         "directories": [
                           {
                             "id": 3,
                             "name": "Controller",
+                            "type": "controller",
                             "directories": [],
                             "files": [
                               {
                                 "id": 1,
-                                "name": "SelfCheckController.php"
+                                "name": "SelfCheckController.php",
+                                "type": "controller"
                               }
                             ]
                           }
