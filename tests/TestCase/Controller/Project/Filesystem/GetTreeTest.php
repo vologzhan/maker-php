@@ -5,7 +5,9 @@ namespace App\Tests\TestCase\Controller\Project\Filesystem;
 use App\Controller\Project\Filesystem\GetTreeController;
 use App\Tests\Infrastructure\ApiTestCase;
 
-/** @see GetTreeController */
+/**
+ * @see GetTreeController
+ */
 final class GetTreeTest extends ApiTestCase
 {
     public function test(): void

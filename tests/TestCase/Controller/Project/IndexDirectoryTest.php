@@ -3,16 +3,15 @@
 namespace App\Tests\TestCase\Controller\Project;
 
 use App\Controller\Project\IndexDirectoryController;
-use App\Tests\Infrastructure\Annotation\Skip;
 use App\Tests\Infrastructure\ApiTestCase;
 
 /** @see IndexDirectoryController */
 final class IndexDirectoryTest extends ApiTestCase
 {
-    #[Skip]
     public function test(): void
     {
         $this->connectionPsql()->execute('TRUNCATE TABLE project RESTART IDENTITY CASCADE');
+
         # --------------------------------------------------------------------------------------------------------------
 
         $this
@@ -38,22 +37,22 @@ final class IndexDirectoryTest extends ApiTestCase
                 [1, 'maker-php'],
             ], 'SELECT * FROM project')
             ->assertEquals([
-                ['id', 'path', 'project_id', 'parent_id', 'type'],
-                [1, '/app/tests/fixtures/maker-php', 1, null, 'project'],
-                [2, '/app/tests/fixtures/maker-php/src', 1, 1, null],
-                [3, '/app/tests/fixtures/maker-php/src/Controller', 1, 2, null],
-                [4, '/app/tests/fixtures/maker-php/src/Controller/Project', 1, 3, null],
-                [5, '/app/tests/fixtures/maker-php/src/Response', 1, 2, null],
-                [6, '/app/tests/fixtures/maker-php/src/Response/Controller', 1, 5, null],
-                [7, '/app/tests/fixtures/maker-php/src/Response/Project', 1, 5, null],
+                ['id', 'path', 'type', 'project_id', 'parent_id'],
+                [1, '/app/tests/fixtures/maker-php', 'project', 1, null],
+                [2, '/app/tests/fixtures/maker-php/src', null, 1, 1],
+                [3, '/app/tests/fixtures/maker-php/src/Controller', null, 1, 2],
+                [4, '/app/tests/fixtures/maker-php/src/Controller/Project', null, 1, 3],
+                [5, '/app/tests/fixtures/maker-php/src/Response', null, 1, 2],
+                [6, '/app/tests/fixtures/maker-php/src/Response/Controller', null, 1, 5],
+                [7, '/app/tests/fixtures/maker-php/src/Response/Project', null, 1, 5],
             ], 'SELECT * FROM directory')
             ->assertEquals([
-                ['id', 'path', 'directory_id', 'type'],
-                [1, '/app/tests/fixtures/maker-php/src/Controller/Project/IndexController.php', 4, null],
-                [2, '/app/tests/fixtures/maker-php/src/Controller/SelfCheckController.php', 3, null],
-                [3, '/app/tests/fixtures/maker-php/src/Response/Controller/ControllerItem.php', 6, null],
-                [4, '/app/tests/fixtures/maker-php/src/Response/Project/ProjectResponse.php', 7, null],
-                [5, '/app/tests/fixtures/maker-php/src/Response/SuccessResponse.php', 5, null],
+                ['id', 'path', 'directory_id'],
+                [1, '/app/tests/fixtures/maker-php/src/Controller/Project/IndexController.php', 4],
+                [2, '/app/tests/fixtures/maker-php/src/Controller/SelfCheckController.php', 3],
+                [3, '/app/tests/fixtures/maker-php/src/Response/Controller/ControllerItem.php', 6],
+                [4, '/app/tests/fixtures/maker-php/src/Response/Project/ProjectResponse.php', 7],
+                [5, '/app/tests/fixtures/maker-php/src/Response/SuccessResponse.php', 5],
             ], 'SELECT * FROM file');
     }
 }

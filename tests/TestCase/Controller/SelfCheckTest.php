@@ -8,7 +8,7 @@ use App\Tests\Infrastructure\ApiTestCase;
 /**
  * @see SelfCheckController
  */
-final class SelfCheckControllerTest extends ApiTestCase
+final class SelfCheckTest extends ApiTestCase
 {
     public function test(): void
     {
