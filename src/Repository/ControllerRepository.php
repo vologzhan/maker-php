@@ -24,6 +24,14 @@ class ControllerRepository extends ServiceEntityRepository
         }
     }
 
+    public function delete(Controller $entity, bool $flush = false): void
+    {
+        $this->getEntityManager()->remove($entity);
+        if ($flush) {
+            $this->getEntityManager()->flush();
+        }
+    }
+
     public function findById(int $id): Controller
     {
         return $this
