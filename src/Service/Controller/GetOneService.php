@@ -3,6 +3,7 @@
 namespace App\Service\Controller;
 
 use App\Repository\ControllerRepository;
+use App\Repository\FileRepository;
 use App\Request\Controller\GetOneRequest;
 use App\Response\Controller\ControllerResponse;
 use App\Serializer\ControllerSerializer;
@@ -12,6 +13,7 @@ final readonly class GetOneService
 {
     public function __construct(
         private ControllerRepository $controllerRepository,
+        private FileRepository $fileRepository,
         private ControllerSerializer $controllerSerializer,
         private ParsePhpFileService $parsePhpFileService,
     ) {}
@@ -19,7 +21,9 @@ final readonly class GetOneService
     public function __invoke(GetOneRequest $request): ControllerResponse
     {
         $controller = $this->controllerRepository->findByFileId($request->fileId);
-        $content = $this->parsePhpFileService->__invoke($request->fileId);
+        $file = $this->fileRepository->findById($request->fileId);
+
+        $content = $this->parsePhpFileService->__invoke($file);
 
         return $this->controllerSerializer->controllerResponse($controller, $content);
     }

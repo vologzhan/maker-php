@@ -25,6 +25,16 @@ class ResponseRepository extends ServiceEntityRepository
         }
     }
 
+    public function findById(int $id): Response
+    {
+        return $this
+            ->createQueryBuilder('r')
+            ->andWhere('r.id = :id')
+            ->setParameter('id', $id)
+            ->getQuery()
+            ->getSingleResult();
+    }
+
     public function findByProjectAndName(Project $project, string $name): Response
     {
         return $this

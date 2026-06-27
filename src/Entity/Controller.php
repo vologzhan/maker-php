@@ -28,7 +28,7 @@ class Controller
 
     #[ORM\OneToOne(inversedBy: 'controller', cascade: ['persist', 'remove'])]
     #[ORM\JoinColumn(nullable: false)]
-    private ?File $file = null;
+    private File $file;
 
     # ------------------------------------------------------------------------------------------------------------------
 
@@ -95,7 +95,7 @@ class Controller
 
     # ------------------------------------------------------------------------------------------------------------------
 
-    public function getFile(): ?File
+    public function getFile(): File
     {
         return $this->file;
     }

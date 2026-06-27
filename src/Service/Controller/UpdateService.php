@@ -4,45 +4,36 @@ namespace App\Service\Controller;
 
 use App\Dto\Php\NodeDto;
 use App\Dto\Php\TokenDto;
+use App\Entity\Controller;
+use App\Repository\ControllerRepository;
+use App\Repository\ResponseRepository;
 use App\Request\Controller\UpdateRequest;
-use App\Service\Php\PhpParser;
+use App\Service\Filesystem\File\ParsePhpFileService;
 use App\Service\Php\PhpPrinter;
-use App\Service\String\StrCase;
 use Symfony\Component\Routing\Attribute\Route;
-use Symfony\Component\Uid\Uuid;
 
 final readonly class UpdateService
 {
     public function __construct(
-        private PhpParser $phpParser,
         private PhpPrinter $phpPrinter,
-        private ControllerHelper $controllerHelper,
+        private ControllerRepository $controllerRepository,
+        private ResponseRepository $responseRepository,
+        private ParsePhpFileService $parsePhpFileService,
     ) {}
 
-    public function __invoke(Uuid $uuid, UpdateRequest $request): void
+    public function __invoke(UpdateRequest $request): void
     {
-        $file = $this->phpParser->parseFile('/tmp/SelfCheckController.php');
-        $class = $file->classes[0];
-        $tokens = $file->tokens;
+        $controller = $this->controllerRepository->findById($request->id);
+        $response = $request->responseId ? $this->responseRepository->findById($request->responseId) : null;
 
-        $name = $class->name;
-        $newName = $this->controllerHelper->nameToClassName(StrCase::toPascalCase($request->name));
-        $filepath = $file->path;
-        if ($name->value !== $newName) {
-            unlink($file->path);
-            $this->replaceTokens($tokens, $name, $newName);
-            $filepath = pathinfo($filepath, PATHINFO_DIRNAME) . DIRECTORY_SEPARATOR . $newName . '.php';
-        }
+        $controller
+            ->setMethod($request->method)
+            ->setPath($request->path)
+            ->setResponse($response);
 
-        $route = $class->attribute(Route::class);
+        $this->updateFile($controller);
 
-        $method = $route->args[1]->value;
-        $this->replaceTokens($tokens, $method, "['$request->method']");
-
-        $path = $route->args[0]->value;
-        $this->replaceTokens($tokens, $path, "'$request->path'");
-
-        $this->phpPrinter->saveFile($filepath, $tokens);
+        $this->controllerRepository->save($controller, true);
     }
 
     public function replaceTokens(array &$tokens, NodeDto $node, string $value): void
@@ -62,5 +53,25 @@ final readonly class UpdateService
             [$newToken],
             array_slice($tokens, $end + 1, null, true),
         );
+    }
+
+    private function updateFile(Controller $controller): void
+    {
+        // todo не обновляется Response
+        $file = $controller->getFile();
+        $fileDto = $this->parsePhpFileService->__invoke($file);
+
+        $class = $fileDto->classes[0];
+        $tokens = $fileDto->tokens;
+
+        $route = $class->attribute(Route::class);
+
+        $method = $route->args[1]->value;
+        $this->replaceTokens($tokens, $method, sprintf("['%s']", $controller->getMethod()));
+
+        $path = $route->args[0]->value;
+        $this->replaceTokens($tokens, $path, sprintf("'%s'", $controller->getPath()));
+
+        $this->phpPrinter->saveFile($file->getPath(), $tokens);
     }
 }

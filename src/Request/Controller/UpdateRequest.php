@@ -4,7 +4,10 @@ namespace App\Request\Controller;
 
 final class UpdateRequest
 {
-    public string $name;
-    public string $method;
-    public string $path;
+    public function __construct(
+        public int $id,
+        public string $method,
+        public string $path,
+        public ?int $responseId,
+    ) {}
 }
