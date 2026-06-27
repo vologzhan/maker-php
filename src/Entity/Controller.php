@@ -14,16 +14,10 @@ class Controller
     private int $id;
 
     #[ORM\Column(length: 255)]
-    private string $name;
-
-    #[ORM\Column(length: 255)]
     private string $path;
 
     #[ORM\Column(length: 255)]
     private string $method;
-
-    #[ORM\Column(length: 255)]
-    private string $filepath;
 
     #[ORM\ManyToOne(inversedBy: 'controllers')]
     #[ORM\JoinColumn(nullable: false)]
@@ -32,22 +26,18 @@ class Controller
     #[ORM\ManyToOne]
     private ?Response $response = null;
 
+    #[ORM\OneToOne(inversedBy: 'controller', cascade: ['persist', 'remove'])]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?File $file = null;
+
+    # ------------------------------------------------------------------------------------------------------------------
+
     public function getId(): int
     {
         return $this->id;
     }
 
-    public function getName(): string
-    {
-        return $this->name;
-    }
-
-    public function setName(string $name): static
-    {
-        $this->name = $name;
-
-        return $this;
-    }
+    # ------------------------------------------------------------------------------------------------------------------
 
     public function getPath(): string
     {
@@ -61,6 +51,8 @@ class Controller
         return $this;
     }
 
+    # ------------------------------------------------------------------------------------------------------------------
+
     public function getMethod(): string
     {
         return $this->method;
@@ -73,17 +65,7 @@ class Controller
         return $this;
     }
 
-    public function getFilepath(): string
-    {
-        return $this->filepath;
-    }
-
-    public function setFilepath(string $filepath): static
-    {
-        $this->filepath = $filepath;
-
-        return $this;
-    }
+    # ------------------------------------------------------------------------------------------------------------------
 
     public function getProject(): Project
     {
@@ -97,6 +79,8 @@ class Controller
         return $this;
     }
 
+    # ------------------------------------------------------------------------------------------------------------------
+
     public function getResponse(): ?Response
     {
         return $this->response;
@@ -108,4 +92,20 @@ class Controller
 
         return $this;
     }
+
+    # ------------------------------------------------------------------------------------------------------------------
+
+    public function getFile(): ?File
+    {
+        return $this->file;
+    }
+
+    public function setFile(File $file): static
+    {
+        $this->file = $file;
+
+        return $this;
+    }
+
+    # ------------------------------------------------------------------------------------------------------------------
 }

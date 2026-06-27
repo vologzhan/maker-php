@@ -18,11 +18,13 @@ class File
     private string $path;
 
     #[ORM\ManyToOne(inversedBy: 'files')]
-    #[ORM\JoinColumn(nullable: false)]
-    private Directory $directory;
+    private ?Directory $directory = null;
 
     #[ORM\Column(nullable: true, enumType: FileType::class)]
     private ?FileType $type = null;
+
+    #[ORM\OneToOne(mappedBy: 'file')]
+    private ?Controller $controller = null;
 
     # --------------------------------------------------------------------------------------------------------------
 
@@ -47,12 +49,12 @@ class File
 
     # --------------------------------------------------------------------------------------------------------------
 
-    public function getDirectory(): Directory
+    public function getDirectory(): ?Directory
     {
         return $this->directory;
     }
 
-    public function setDirectory(Directory $directory): static
+    public function setDirectory(?Directory $directory): static
     {
         $this->directory = $directory;
 
@@ -69,6 +71,23 @@ class File
     public function setType(?FileType $type): static
     {
         $this->type = $type;
+
+        return $this;
+    }
+
+    public function getController(): ?Controller
+    {
+        return $this->controller;
+    }
+
+    public function setController(Controller $controller): static
+    {
+        // set the owning side of the relation if necessary
+        if ($controller->getFile() !== $this) {
+            $controller->setFile($this);
+        }
+
+        $this->controller = $controller;
 
         return $this;
     }

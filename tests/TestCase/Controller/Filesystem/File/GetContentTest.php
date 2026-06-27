@@ -16,14 +16,8 @@ final class GetContentTest extends ApiTestCase
 
         $this->connectionPsql()->execute(
             <<<SQL
-            TRUNCATE TABLE project RESTART IDENTITY CASCADE;
-            INSERT INTO project (id, name) VALUES (1, 'maker-php');
-
-            INSERT INTO directory (id, path, project_id, parent_id, type)
-            VALUES (1, '/tmp/maker-test/filesystem', 1, null, 'project');
-            
-            INSERT INTO file (id, path, directory_id)
-            VALUES (1, '/tmp/maker-test/filesystem/SelfChekController.php', 1);
+            TRUNCATE TABLE file RESTART IDENTITY CASCADE;
+            INSERT INTO file (id, path, directory_id) VALUES (1, '/tmp/maker-test/filesystem/SelfChekController.php', null);
             SQL
         );
         # --------------------------------------------------------------------------------------------------------------
