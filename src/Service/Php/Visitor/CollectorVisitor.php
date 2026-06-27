@@ -186,6 +186,7 @@ final class CollectorVisitor extends NodeVisitorAbstract
             $value instanceof String_ => $value->value,
             $value instanceof Int_ => $value->value,
             $value instanceof Float_ => $value->value,
+            default => null, // todo иначе падает, что тут за типы
         };
     }
 

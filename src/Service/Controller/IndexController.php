@@ -27,9 +27,12 @@ final readonly class IndexController
         $responseMap = $project->getResponsesMap();
         $response = $responseMap[$responseClassName] ?? null;
 
+        $methods = $routeAttribute->oneOrNullArgument('methods');
+        $firstMethod = $methods?->value?->value[0] ?? null;
+
         $controller = new Controller()
             ->setPath($routeAttribute->args[0]->value->value)
-            ->setMethod($routeAttribute->args[1]->value->value[0])
+            ->setMethod($firstMethod)
             ->setFile($file)
             ->setResponse($response);
 
