@@ -2,18 +2,21 @@
 
 namespace App\Service\Controller;
 
-use App\Service\Php\PhpParser;
-use Symfony\Component\Uid\Uuid;
+use App\Repository\FileRepository;
+use App\Request\Controller\DeleteRequest;
 
 final readonly class DeleteService
 {
     public function __construct(
-        private PhpParser $phpParser,
+        private FileRepository $fileRepository,
     ) {}
 
-    public function __invoke(Uuid $uuid): void
+    public function __invoke(DeleteRequest $request): void
     {
-        $file = $this->phpParser->parseFile('/tmp/SelfCheckController.php'); // todo hardcode
-        unlink($file->path);
+        $file = $this->fileRepository->find($request->id);
+
+        unlink($file->getPath());
+
+        $this->fileRepository->delete($file, true);
     }
 }

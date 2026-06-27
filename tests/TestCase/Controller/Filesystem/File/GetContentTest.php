@@ -12,7 +12,7 @@ final class GetContentTest extends ApiTestCase
 {
     public function test(): void
     {
-        $this->filesystem()->createFile('/tmp/tests/Controller/Filesystem/File/Controller.php', '<?php');
+        $this->filesystem()->createFile('/tmp/tests/Controller/Filesystem/File/GetContentTest/Controller.php', '<?php');
 
         $this->connectionPsql()->execute(
             <<<SQL

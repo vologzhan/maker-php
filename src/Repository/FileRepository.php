@@ -24,6 +24,14 @@ class FileRepository extends ServiceEntityRepository
         }
     }
 
+    public function delete(File $entity, bool $flush = false): void
+    {
+        $this->getEntityManager()->remove($entity);
+        if ($flush) {
+            $this->getEntityManager()->flush();
+        }
+    }
+
     public function findById(int $id): File
     {
         return $this
