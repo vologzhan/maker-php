@@ -61,6 +61,10 @@
             ]
         });
     }
+
+    function deleteFile(id: number) {
+        dir.files = dir.files.filter(f => f.id !== id);
+    }
 </script>
 
 <button
@@ -81,7 +85,7 @@
 
         {#each dir.files as file (file.id)}
             <li>
-                <File file={file} />
+                <File file={file} onDelete={deleteFile} />
             </li>
         {/each}
     </ul>

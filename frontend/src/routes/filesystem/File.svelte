@@ -1,10 +1,14 @@
 <script lang="ts">
     import type {FileItem} from "$lib/Response/Project/Filesystem/FileItem";
     import {contextMenu} from '$lib/Store/ContextMenu';
+    import {DeleteController} from "$lib/Controller/Controller/DeleteController";
+    import {DeleteController as DeleteFile} from "$lib/Controller/Filesystem/File/DeleteController";
 
     let {
+        onDelete,
         file,
     }: {
+        onDelete: any,
         file: FileItem
     } = $props();
 
@@ -25,7 +29,21 @@
                 {
                     label: 'Удалить',
                     action: () => {
-                        console.log('delete file', file.id);
+                        let controller = null
+                        if (file.type === 'controller') {
+                            controller = DeleteController
+                        } else {
+                            controller = DeleteFile
+                        }
+
+                        controller(file.id)
+                            .then(() => {
+                                onDelete(file.id)
+                            })
+                            .catch(err => {
+                                const error = err instanceof Error ? err.message : String(err)
+                                console.log('delete file failed, fileId: ', file.id, 'error: ', error);
+                            })
                     }
                 }
             ]
