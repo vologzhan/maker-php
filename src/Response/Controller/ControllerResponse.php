@@ -2,6 +2,8 @@
 
 namespace App\Response\Controller;
 
+use App\Response\Filesystem\File\ContentItemResponse;
+
 final readonly class ControllerResponse
 {
     public function __construct(
@@ -9,5 +11,6 @@ final readonly class ControllerResponse
         public string $method,
         public string $path,
         public ?int $responseId,
+        public ContentItemResponse $content,
     ) {}
 }

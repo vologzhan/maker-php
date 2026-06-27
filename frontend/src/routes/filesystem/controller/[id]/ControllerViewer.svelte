@@ -1,5 +1,6 @@
 <script lang="ts">
     import type {ControllerResponse} from "$lib/Response/Controller/ControllerResponse";
+    import Viewer from "../../file/[id]/Viewer.svelte";
 
     let {
         controller,
@@ -46,3 +47,5 @@
         Save
     </button>
 </form>
+
+<Viewer content={controller.content} />

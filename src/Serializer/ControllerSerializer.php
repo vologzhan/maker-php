@@ -4,17 +4,19 @@ namespace App\Serializer;
 
 use App\Entity\Controller;
 use App\Response\Controller\ControllerResponse;
+use App\Response\Filesystem\File\ContentItemResponse;
 use App\Response\Project\Controller\ControllerItem;
 
 final readonly class ControllerSerializer
 {
-    public function controllerResponse(Controller $controller): ControllerResponse
+    public function controllerResponse(Controller $controller, ContentItemResponse $content): ControllerResponse
     {
         return new ControllerResponse(
             id: $controller->getId(),
             method: $controller->getMethod(),
             path: $controller->getPath(),
             responseId: $controller->getResponse()?->getId(),
+            content: $content,
         );
     }
 

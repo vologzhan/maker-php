@@ -5,5 +5,5 @@ export interface ControllerResponse {
     method: string
     path: string
     responseId: number|null
-    // content: ContentItemResponse
+    content: ContentItemResponse
 }

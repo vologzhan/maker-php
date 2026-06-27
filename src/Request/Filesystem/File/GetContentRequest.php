@@ -2,7 +2,9 @@
 
 namespace App\Request\Filesystem\File;
 
-final class GetContentRequest
+final readonly class GetContentRequest
 {
-    public int $id;
+    public function __construct(
+        public int $id,
+    ) {}
 }
