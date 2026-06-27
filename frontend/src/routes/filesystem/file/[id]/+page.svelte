@@ -2,9 +2,9 @@
     import {page} from '$app/state';
     import Viewer from "./Viewer.svelte";
     import {GetContent} from "$lib/Controller/Filesystem/File/GetContentController";
-    import type {ContentResponse} from "$lib/Response/Filesystem/File/ContentResponse";
+    import type {ContentItemResponse} from "$lib/Response/Filesystem/File/ContentItemResponse";
 
-    let content: ContentResponse|null = $state(null);
+    let content: ContentItemResponse|null = $state(null);
     let error = $state('');
 
     $effect(() => {
@@ -13,7 +13,7 @@
         if (!id) return;
 
         GetContent(id)
-            .then((res: ContentResponse) => content = res)
+            .then((res: ContentItemResponse) => content = res)
             .catch(err => {
                 error = err instanceof Error ? err.message : String(err);
             });

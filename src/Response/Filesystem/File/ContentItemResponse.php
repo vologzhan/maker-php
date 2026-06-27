@@ -2,7 +2,7 @@
 
 namespace App\Response\Filesystem\File;
 
-final readonly class ContentResponse
+final readonly class ContentItemResponse
 {
     public function __construct(
         /** @var TokenItem[] */

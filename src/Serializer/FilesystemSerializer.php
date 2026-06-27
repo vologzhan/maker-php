@@ -7,7 +7,7 @@ use App\Entity\Controller;
 use App\Entity\Directory;
 use App\Entity\File;
 use App\Enum\FileType;
-use App\Response\Filesystem\File\ContentResponse;
+use App\Response\Filesystem\File\ContentItemResponse;
 use App\Response\Filesystem\File\TokenItem;
 use App\Response\Project\Filesystem\DirectoryItemResponse;
 use App\Response\Project\Filesystem\FileItem;
@@ -45,9 +45,9 @@ final readonly class FilesystemSerializer
     /**
      * @param TokenDto[] $tokens
      */
-    public function contentResponse(array $tokens): ContentResponse
+    public function contentItemResponse(array $tokens): ContentItemResponse
     {
-        return new ContentResponse(
+        return new ContentItemResponse(
             items: array_map(fn(TokenDto $token) => $this->tokenItem($token), $tokens),
         );
     }

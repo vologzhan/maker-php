@@ -1,11 +1,11 @@
 <script lang="ts">
     import type {TokenItem} from "$lib/Response/Filesystem/File/TokenItem";
-    import type {ContentResponse} from "$lib/Response/Filesystem/File/ContentResponse";
+    import type {ContentItemResponse} from "$lib/Response/Filesystem/File/ContentItemResponse";
 
     let {
         content,
     }: {
-        content: ContentResponse
+        content: ContentItemResponse
     } = $props();
 
     let currentToken: TokenItem|null = $state(null);

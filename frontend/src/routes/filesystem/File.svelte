@@ -35,7 +35,7 @@
     function getHref(file: FileItem) {
         switch (file.type) {
             case 'controller':
-                return `/controller/${file.id}`;
+                return `/filesystem/controller/${file.id}`;
             default:
                 return `/filesystem/file/${file.id}`;
         }
