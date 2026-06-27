@@ -98,6 +98,10 @@
         font-size: 14px;
     }
 
+    button:hover {
+        text-decoration: underline; /* или убрать вовсе */
+    }
+
     .open {
         background-image: url($lib/icons/folder-open.svg);
     }
