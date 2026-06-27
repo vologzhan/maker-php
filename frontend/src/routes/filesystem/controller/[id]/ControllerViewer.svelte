@@ -1,6 +1,8 @@
 <script lang="ts">
     import type {ControllerResponse} from "$lib/Response/Controller/ControllerResponse";
     import FileViewer from "../../file/[id]/FileViewer.svelte";
+    import {UpdateController} from "$lib/Controller/Controller/UpdateController";
+    import type {ContentItemResponse} from "$lib/Response/Filesystem/File/ContentItemResponse";
 
     let {
         controller,
@@ -8,9 +10,16 @@
         controller: ControllerResponse
     } = $props();
 
+    let error = $state('')
+
     function save() {
-        console.log('save', controller);
-        // TODO: отправить на сервер
+        UpdateController(controller.id, controller)
+            .then((res: ContentItemResponse) => {
+                controller.content = res.items
+            })
+            .catch((err: any) => {
+                error = err instanceof Error ? err.message : String(err)
+            })
     }
 </script>
 
@@ -46,6 +55,10 @@
     <button type="submit">
         Save
     </button>
+
+    {#if error}
+        Error: {error}
+    {/if}
 </form>
 
 <FileViewer content={controller.content} />

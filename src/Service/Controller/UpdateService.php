@@ -8,6 +8,8 @@ use App\Entity\Controller;
 use App\Repository\ControllerRepository;
 use App\Repository\ResponseRepository;
 use App\Request\Controller\UpdateRequest;
+use App\Response\Filesystem\File\ContentItemResponse;
+use App\Serializer\FilesystemSerializer;
 use App\Service\Filesystem\File\ParsePhpFileService;
 use App\Service\Php\PhpPrinter;
 use Symfony\Component\Routing\Attribute\Route;
@@ -19,9 +21,10 @@ final readonly class UpdateService
         private ControllerRepository $controllerRepository,
         private ResponseRepository $responseRepository,
         private ParsePhpFileService $parsePhpFileService,
+        private FilesystemSerializer $filesystemSerializer,
     ) {}
 
-    public function __invoke(UpdateRequest $request): void
+    public function __invoke(UpdateRequest $request): ContentItemResponse
     {
         $controller = $this->controllerRepository->findById($request->id);
         $response = $request->responseId ? $this->responseRepository->findById($request->responseId) : null;
@@ -31,9 +34,11 @@ final readonly class UpdateService
             ->setPath($request->path)
             ->setResponse($response);
 
-        $this->updateFile($controller);
+        $tokens = $this->updateFile($controller);
 
         $this->controllerRepository->save($controller, true);
+
+        return $this->filesystemSerializer->contentItemResponse($tokens);
     }
 
     public function replaceTokens(array &$tokens, NodeDto $node, string $value): void
@@ -55,7 +60,10 @@ final readonly class UpdateService
         );
     }
 
-    private function updateFile(Controller $controller): void
+    /**
+     * @return TokenDto[]
+     */
+    private function updateFile(Controller $controller): array
     {
         // todo не обновляется Response
         $file = $controller->getFile();
@@ -73,5 +81,7 @@ final readonly class UpdateService
         $this->replaceTokens($tokens, $path, sprintf("'%s'", $controller->getPath()));
 
         $this->phpPrinter->saveFile($file->getPath(), $tokens);
+
+        return $tokens;
     }
 }
