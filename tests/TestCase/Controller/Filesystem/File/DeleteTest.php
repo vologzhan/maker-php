@@ -14,8 +14,10 @@ final class DeleteTest extends ApiTestCase
     {
         $this->connectionPsql()->execute(
             <<<SQL
-            TRUNCATE TABLE file RESTART IDENTITY CASCADE;
+            TRUNCATE TABLE project RESTART IDENTITY CASCADE;
             INSERT INTO file (id, path, directory_id) VALUES (1, '/tmp/tests/Controller/Filesystem/File/DeleteTest/Controller.php', null);
+            INSERT INTO project (id, name) VALUES (1, 'maker-php');
+            INSERT INTO controller (id, path, method, project_id, response_id, file_id) VALUES (1, '/', 'GET', 1, null, 1);
             SQL
         );
 
@@ -28,8 +30,12 @@ final class DeleteTest extends ApiTestCase
 
         self::assertFileDoesNotExist('/tmp/tests/Controller/Filesystem/File/DeleteTest/Controller.php');
 
-        $this->connectionPsql()->assertEquals([
-            ['id', 'path', 'directory_id'],
-        ], 'SELECT * FROM file');
+        $this->connectionPsql()
+            ->assertEquals([
+                ['id', 'path', 'directory_id'],
+            ], 'SELECT * FROM file')
+            ->assertEquals([
+                ['id', 'path', 'method', 'project_id', 'response_id', 'file_id'],
+            ], 'SELECT * FROM controller');
     }
 }

@@ -17,7 +17,7 @@ final class GetContentTest extends ApiTestCase
         $this->connectionPsql()->execute(
             <<<SQL
             TRUNCATE TABLE file RESTART IDENTITY CASCADE;
-            INSERT INTO file (id, path, directory_id) VALUES (1, '/tmp/tests/Controller/Filesystem/File/Controller.php', null);
+            INSERT INTO file (id, path, directory_id) VALUES (1, '/tmp/tests/Controller/Filesystem/File/GetContentTest/Controller.php', null);
             SQL
         );
         # --------------------------------------------------------------------------------------------------------------

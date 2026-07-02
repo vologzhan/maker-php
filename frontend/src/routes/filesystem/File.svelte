@@ -1,8 +1,7 @@
 <script lang="ts">
     import type {FileItem} from "$lib/Response/Project/Filesystem/FileItem";
     import {contextMenu} from '$lib/Store/ContextMenu';
-    import {DeleteController} from "$lib/Controller/Controller/DeleteController";
-    import {DeleteController as DeleteFile} from "$lib/Controller/Filesystem/File/DeleteController";
+    import {DeleteController} from "$lib/Controller/Filesystem/File/DeleteController";
 
     let {
         onDelete,
@@ -29,14 +28,7 @@
                 {
                     label: 'Удалить',
                     action: () => {
-                        let controller = null
-                        if (file.type === 'controller') {
-                            controller = DeleteController
-                        } else {
-                            controller = DeleteFile
-                        }
-
-                        controller(file.id)
+                        DeleteController(file.id)
                             .then(() => {
                                 onDelete(file.id)
                             })

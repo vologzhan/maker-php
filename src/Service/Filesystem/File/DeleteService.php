@@ -2,13 +2,17 @@
 
 namespace App\Service\Filesystem\File;
 
+use App\Repository\ControllerRepository;
 use App\Repository\FileRepository;
 use App\Request\Filesystem\File\DeleteRequest;
+use Doctrine\ORM\EntityManagerInterface;
 
 final readonly class DeleteService
 {
     public function __construct(
         private FileRepository $fileRepository,
+        private ControllerRepository $controllerRepository,
+        private EntityManagerInterface $entityManager,
     ) {}
 
     public function __invoke(DeleteRequest $request): void
@@ -17,6 +21,12 @@ final readonly class DeleteService
 
         unlink($file->getPath());
 
-        $this->fileRepository->delete($file, true);
+        $this->fileRepository->delete($file);
+
+        if ($file->getController()) {
+            $this->controllerRepository->delete($file->getController());
+        }
+
+        $this->entityManager->flush();
     }
 }
