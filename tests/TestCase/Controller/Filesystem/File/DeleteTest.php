@@ -10,7 +10,7 @@ use App\Tests\Infrastructure\ApiTestCase;
  */
 final class DeleteTest extends ApiTestCase
 {
-    public function test(): void
+    protected function setUp(): void
     {
         $this->connectionPsql()->execute(
             <<<SQL
@@ -22,7 +22,10 @@ final class DeleteTest extends ApiTestCase
         );
 
         $this->filesystem()->createFile('/tmp/tests/Controller/Filesystem/File/DeleteTest/Controller.php', '<?php');
+    }
 
+    public function test(): void
+    {
         $this
             ->request('DELETE', '/api/filesystem/file/1')
             ->expectedCode(200)

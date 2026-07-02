@@ -10,7 +10,7 @@ use App\Tests\Infrastructure\ApiTestCase;
  */
 final class UpdateTest extends ApiTestCase
 {
-    public function test(): void
+    protected function setUp(): void
     {
         $this->connectionPsql()->execute(
             <<<SQL
@@ -40,9 +40,10 @@ final class UpdateTest extends ApiTestCase
             }
             PHP
         );
+    }
 
-        # --------------------------------------------------------------------------------------------------------------
-
+    public function test(): void
+    {
         $this
             ->request('PUT', '/api/controller/1', body:
                 <<<JSON

@@ -10,7 +10,7 @@ use App\Tests\Infrastructure\ApiTestCase;
  */
 final class GetOneTest extends ApiTestCase
 {
-    public function test(): void
+    protected function setUp(): void
     {
         $this->filesystem()->createFile('/tmp/tests/Controller/Controller/GetOneTest/Controller.php', '<?php');
 
@@ -22,9 +22,10 @@ final class GetOneTest extends ApiTestCase
             INSERT INTO controller (id, path, method, project_id, response_id, file_id) VALUES (1, '/', 'GET', 1, null, 1);
             SQL
         );
+    }
 
-        # --------------------------------------------------------------------------------------------------------------
-
+    public function test(): void
+    {
         $this
             ->request('GET', '/api/controller/1')
             ->expectedCode(200)

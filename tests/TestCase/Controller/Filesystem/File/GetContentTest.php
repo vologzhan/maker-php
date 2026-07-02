@@ -10,7 +10,7 @@ use App\Tests\Infrastructure\ApiTestCase;
  */
 final class GetContentTest extends ApiTestCase
 {
-    public function test(): void
+    protected function setUp(): void
     {
         $this->filesystem()->createFile('/tmp/tests/Controller/Filesystem/File/GetContentTest/Controller.php', '<?php');
 
@@ -20,8 +20,10 @@ final class GetContentTest extends ApiTestCase
             INSERT INTO file (id, path, directory_id) VALUES (1, '/tmp/tests/Controller/Filesystem/File/GetContentTest/Controller.php', null);
             SQL
         );
-        # --------------------------------------------------------------------------------------------------------------
+    }
 
+    public function test(): void
+    {
         $this
             ->request('GET', '/api/filesystem/file/1')
             ->expectedCode(200)

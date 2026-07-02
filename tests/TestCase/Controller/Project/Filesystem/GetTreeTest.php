@@ -10,7 +10,7 @@ use App\Tests\Infrastructure\ApiTestCase;
  */
 final class GetTreeTest extends ApiTestCase
 {
-    public function test(): void
+    protected function setUp(): void
     {
         $this->connectionPsql()->execute(<<<SQL
             TRUNCATE TABLE project RESTART IDENTITY CASCADE;
@@ -28,9 +28,10 @@ final class GetTreeTest extends ApiTestCase
             INSERT INTO controller (id, path, method, project_id, response_id, file_id) VALUES (1, '/', 'GET', 1, null, 1);
             SQL
         );
+    }
 
-        # --------------------------------------------------------------------------------------------------------------
-
+    public function test(): void
+    {
         $this
             ->request('GET', '/api/project/1/filesystem/tree')
             ->expectedCode(200)

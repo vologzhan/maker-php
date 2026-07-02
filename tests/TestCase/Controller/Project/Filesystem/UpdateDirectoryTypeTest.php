@@ -8,7 +8,7 @@ use App\Tests\Infrastructure\ApiTestCase;
 /** @see UpdateDirectoryTypeController */
 final class UpdateDirectoryTypeTest extends ApiTestCase
 {
-    public function test(): void
+    protected function setUp(): void
     {
         $this->filesystem()->createFile(
             '/tmp/tests/update_directory_type/SelfCheckController.php',
@@ -38,9 +38,10 @@ final class UpdateDirectoryTypeTest extends ApiTestCase
             INSERT INTO file (id, path, directory_id) VALUES (1, '/tmp/tests/update_directory_type/SelfCheckController.php', 1);
             SQL
         );
+    }
 
-        # --------------------------------------------------------------------------------------------------------------
-
+    public function test(): void
+    {
         $this
             ->request('PUT', '/api/filesystem/directory/1/type', body: <<<JSON
                 {
