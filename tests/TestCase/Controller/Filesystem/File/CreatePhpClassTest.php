@@ -8,17 +8,17 @@ use App\Tests\Infrastructure\ApiTestCase;
 /**
  * @see CreateController
  */
-final class CreateFileTest extends ApiTestCase
+final class CreatePhpClassTest extends ApiTestCase
 {
     protected function setUp(): void
     {
-        unlink('/tmp/tests/Controller/Filesystem/File/CreateFileTest/file.txt');
+        unlink('/tmp/tests/Controller/Filesystem/File/CreatePhpClass/MyClass.php');
 
         $this->connectionPsql()->execute(
             <<<SQL
             TRUNCATE TABLE project RESTART IDENTITY CASCADE;
             INSERT INTO project (id, name) VALUES (1, 'maker-php');
-            INSERT INTO directory (id, path, type, project_id, parent_id) VALUES (2, '/tmp/tests/Controller/Filesystem/File/CreateFileTest', null, 1, null);
+            INSERT INTO directory (id, path, type, project_id, parent_id) VALUES (2, '/tmp/tests/Controller/Filesystem/File/CreatePhpClass', null, 1, null);
             SQL
         );
     }
@@ -26,12 +26,11 @@ final class CreateFileTest extends ApiTestCase
     public function test(): void
     {
         $this
-            ->request('POST', '/api/filesystem/file', body:
-                <<<JSON
+            ->request('POST', '/api/filesystem/file', body: <<<JSON
                 {
                   "directoryId": 2,
-                  "name": "file.txt",
-                  "type": null
+                  "name": "MyClass",
+                  "type": "php_class"
                 }
                 JSON
             )
@@ -40,18 +39,30 @@ final class CreateFileTest extends ApiTestCase
                 <<<JSON
                 {
                   "id": 1,
-                  "filename": "file.txt"
+                  "filename": "MyClass.php"
                 }
                 JSON
             );
 
-        $this->filesystem()->assertFileContentEquals('/tmp/tests/Controller/Filesystem/File/CreateFileTest/file.txt', '');
+        $this->filesystem()->assertFileContentEquals('/tmp/tests/Controller/Filesystem/File/CreatePhpClass/MyClass.php',
+            <<<PHP
+            <?php declare(strict_types=1);
+
+            namespace App;
+
+            final readonly class MyClass
+            {
+            
+            }
+
+            PHP
+        );
 
         $this
             ->connectionPsql()
             ->assertEquals([
                 ['id', 'path', 'directory_id'],
-                [1, '/tmp/tests/Controller/Filesystem/File/CreateFileTest/file.txt', 2],
+                [1, '/tmp/tests/Controller/Filesystem/File/CreatePhpClass/MyClass.php', 2],
             ], 'SELECT * FROM file');
     }
 }

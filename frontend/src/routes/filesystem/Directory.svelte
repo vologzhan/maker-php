@@ -32,29 +32,13 @@
                 {
                     label: 'Create file',
                     action: () => {
-                        const name = prompt('Enter file name');
-                        if (!name) {
-                            return;
-                        }
-
-                        const req: CreateRequest = {
-                            directoryId: dir.id,
-                            name: name,
-                        }
-
-                        CreateController(req)
-                            .then((res: CreateResponse) => {
-                                dir.files.push({
-                                    id: res.id,
-                                    name: name,
-                                });
-                            })
-                            .catch((err: any) => {
-                                const error = err instanceof Error ? err.message : String(err)
-                                console.log('create file failed: ', error);
-                            })
-
-                        console.log('create file in', dir.name + '/' + name);
+                        createFile('File name', null)
+                    }
+                },
+                {
+                    label: 'Create PHP Class',
+                    action: () => {
+                        createFile('Class name', 'php_class')
                     }
                 },
                 {
@@ -82,13 +66,40 @@
                             .catch((err: any) => {
                                 console.error(err);
                             })
-                }
+                },
             ]
         });
     }
 
     function deleteFile(id: number) {
         dir.files = dir.files.filter(f => f.id !== id);
+    }
+
+    function createFile(message: string, type: string|null) {
+        const filename = prompt(message);
+        if (!filename) {
+            return;
+        }
+
+        const req: CreateRequest = {
+            directoryId: dir.id,
+            name: filename,
+            type: type
+        }
+
+        CreateController(req)
+            .then((res: CreateResponse) => {
+                dir.files.push({
+                    id: res.id,
+                    name: res.filename,
+                });
+            })
+            .catch((err: any) => {
+                const error = err instanceof Error ? err.message : String(err)
+                console.log('create file failed: ', error);
+            })
+
+        console.log('create file in', dir.name + '/' + filename);
     }
 </script>
 

@@ -3,11 +3,11 @@
 namespace App\Service\Filesystem\File;
 
 use App\Entity\File;
+use App\Enum\FileType;
 use App\Repository\DirectoryRepository;
 use App\Repository\FileRepository;
 use App\Request\Filesystem\File\CreateRequest;
 use App\Response\Filesystem\File\CreateResponse;
-use App\Response\SuccessResponse;
 use App\Service\Filesystem\FilesystemHelper;
 
 final readonly class CreateService
@@ -20,11 +20,30 @@ final readonly class CreateService
 
     public function __invoke(CreateRequest $request): CreateResponse
     {
+        if ($request->type === FileType::PhpClass) {
+            $filename = $request->name . '.php';
+
+            // todo namespace
+            $content = <<<PHP
+            <?php declare(strict_types=1);
+
+            namespace App;
+
+            final readonly class $request->name
+            {
+            
+            }
+
+            PHP;
+        } else {
+            $filename = $request->name;
+            $content = '';
+        }
+
         $dir = $this->directoryRepository->findById($request->directoryId);
 
-        $filepath = $this->fileSystemHelper->joinPath($dir->getPath(), $request->name);
-
-        $this->fileSystemHelper->createFile($filepath, '');
+        $filepath = $this->fileSystemHelper->joinPath($dir->getPath(), $filename);
+        $this->fileSystemHelper->createFile($filepath, $content);
 
         $file = new File()
             ->setPath($filepath)
@@ -34,6 +53,7 @@ final readonly class CreateService
 
         return new CreateResponse(
             id: $file->getId(),
+            filename: $filename,
         );
     }
 

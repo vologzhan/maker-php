@@ -1,3 +1,4 @@
 export interface CreateResponse {
-    int: number
+    id: number
+    filename: string
 }
