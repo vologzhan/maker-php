@@ -3,14 +3,14 @@
 namespace App\Controller\Controller;
 
 use App\Request\Controller\CreateRequest;
-use App\Response\Project\Controller\ControllerItem;
+use App\Response\SuccessResponse;
 use App\Service\Controller\CreateService;
 use Symfony\Component\Routing\Attribute\Route;
 
 #[Route('/api/controller', methods: ['POST'])]
 final readonly class CreateController
 {
-    public function __invoke(CreateRequest $request, CreateService $service): ControllerItem
+    public function __invoke(CreateRequest $request, CreateService $service): SuccessResponse
     {
         return $service->__invoke($request);
     }

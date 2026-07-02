@@ -1,35 +1,26 @@
 <?php declare(strict_types=1);
 
-namespace App\Tests\TestCase\Controller\Controller;
+namespace App\Tests\TestCase\Controller\Filesystem\File;
 
 use App\Controller\Controller\CreateController;
-use App\Tests\Infrastructure\Attribute\Skip;
 use App\Tests\Infrastructure\ApiTestCase;
+use App\Tests\Infrastructure\Attribute\Skip;
 
 /**
  * @see CreateController
  */
 #[Skip]
-final class CreateTest extends ApiTestCase
+final class CreateControllerTest extends ApiTestCase
 {
     protected function setUp(): void
     {
         unlink('/tmp/tests/Controller/Controller/CreateTest/Controller.php');
 
-        $this->connectionPsql()->execute(<<<SQL
+        $this->connectionPsql()->execute(
+            <<<SQL
             TRUNCATE TABLE project RESTART IDENTITY CASCADE;
-
-            BEGIN;
-            INSERT INTO project (id, name, path) VALUES (1, 'maker-php', '/tmp/tests/maker-php');
-
-            INSERT INTO directory (id, project_id, path)
-            VALUES (1, 1, 'src/Controller'),
-                   (2, 1, 'src/Response');
-
-            INSERT INTO response (id, name, filepath, project_id, class_name)
-            VALUES (1, 'SuccessResponse', 'src/Response/SuccessResponse.php', 1, 'App\Response\SuccessResponse');
-
-            COMMIT;
+            INSERT INTO project (id, name) VALUES (1, 'maker-php');
+            INSERT INTO directory (id, path, type, project_id, parent_id) VALUES (1, '/tmp/tests/Controller/Controller/CreateTest', 'controller', 1, null);
             SQL
         );
     }
@@ -37,14 +28,16 @@ final class CreateTest extends ApiTestCase
     public function test(): void
     {
         $this
-            ->request('POST', '/api/controller', body: <<<JSON
+            ->request('POST', '/api/controller', body:
+                <<<JSON
                 {
                   "directoryId": 1
                 }
                 JSON
             )
             ->expectedCode(200)
-            ->expectedJsonContent(<<<JSON
+            ->expectedJsonContent(
+                <<<JSON
                 {
                   "id": 1,
                   "name": "New controller",
@@ -55,7 +48,8 @@ final class CreateTest extends ApiTestCase
                 JSON
             );
 
-        self::assertFileContentEquals(<<<PHP
+        $this->filesystem()->assertFileContentEquals('/tmp/tests/maker-php/src/Controller/NewController.php',
+            <<<PHP
             <?php declare(strict_types=1);
 
             namespace App\Controller;
@@ -72,12 +66,18 @@ final class CreateTest extends ApiTestCase
                 }
             }
 
-            PHP, '/tmp/tests/maker-php/src/Controller/NewController.php');
+            PHP
+        );
 
-        $this->connectionPsql()
+        $this
+            ->connectionPsql()
             ->assertEquals([
-                ['id', 'name', 'path', 'method', 'filepath', 'project_id', 'response_id'],
-                [1, 'New controller', '/', 'GET', '/tmp/tests/maker-php/src/Controller/NewController.php', 1, 1],
-            ], 'SELECT * FROM controller');
+                ['id', 'path', 'method', 'project_id', 'response_id', 'file_id'],
+                [1, '/', 'GET', 1, null, 1],
+            ], 'SELECT * FROM controller')
+            ->assertEquals([
+                ['id', 'path', 'directory_id'],
+                [1, '/tmp/tests/Controller/Controller/CreateTest/Controller.php', 1],
+            ], 'SELECT * FROM file');
     }
 }

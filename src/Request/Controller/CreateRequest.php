@@ -6,5 +6,6 @@ final class CreateRequest
 {
     public function __construct(
         public int $directoryId,
+        public string $name,
     ) {}
 }

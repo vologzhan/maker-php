@@ -13,7 +13,7 @@ final readonly class Filesystem
 
     public function createFile(string $name, string $content): void
     {
-        $this->filesystemHelper->create($name, $content, replaceIfExist: true);
+        $this->filesystemHelper->createFile($name, $content, replaceIfExist: true);
     }
 
     public function assertFileContentEquals(string $filepath, string $expectedContent): void

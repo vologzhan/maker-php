@@ -4,7 +4,12 @@ namespace App\Service\Filesystem;
 
 final readonly class FilesystemHelper
 {
-    public function create(string $name, string $content, bool $replaceIfExist = false): void
+    public function joinPath(string ...$parts): string
+    {
+        return implode('/', $parts);
+    }
+
+    public function createFile(string $name, string $content, bool $replaceIfExist = false): void
     {
         if (!$replaceIfExist && file_exists($name)) {
             throw new \Exception("File already exists: $name");
@@ -20,7 +25,7 @@ final readonly class FilesystemHelper
         }
 
         $ok = file_put_contents($name, $content);
-        if (!$ok) {
+        if ($ok === false) {
             throw new \Exception("Unable to write file: $name");
         }
     }
