@@ -18,7 +18,7 @@ final class CreateFileTest extends ApiTestCase
             <<<SQL
             TRUNCATE TABLE project RESTART IDENTITY CASCADE;
             INSERT INTO project (id, name) VALUES (1, 'maker-php');
-            INSERT INTO directory (id, path, type, project_id, parent_id) VALUES (2, '/tmp/tests/Controller/Filesystem/File/CreateFileTest', null, 1, null);
+            INSERT INTO directory (id, path, type, project_id, parent_id) VALUES (1, '/tmp/tests/Controller/Filesystem/File/CreateFileTest', null, 1, null);
             SQL
         );
     }
@@ -29,7 +29,7 @@ final class CreateFileTest extends ApiTestCase
             ->request('POST', '/api/filesystem/file', body:
                 <<<JSON
                 {
-                  "directoryId": 2,
+                  "directoryId": 1,
                   "name": "file.txt",
                   "type": null
                 }
@@ -51,7 +51,7 @@ final class CreateFileTest extends ApiTestCase
             ->connectionPsql()
             ->assertEquals([
                 ['id', 'path', 'directory_id'],
-                [1, '/tmp/tests/Controller/Filesystem/File/CreateFileTest/file.txt', 2],
+                [1, '/tmp/tests/Controller/Filesystem/File/CreateFileTest/file.txt', 1],
             ], 'SELECT * FROM file');
     }
 }

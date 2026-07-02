@@ -18,7 +18,7 @@ final class CreatePhpClassTest extends ApiTestCase
             <<<SQL
             TRUNCATE TABLE project RESTART IDENTITY CASCADE;
             INSERT INTO project (id, name) VALUES (1, 'maker-php');
-            INSERT INTO directory (id, path, type, project_id, parent_id) VALUES (2, '/tmp/tests/Controller/Filesystem/File/CreatePhpClass', null, 1, null);
+            INSERT INTO directory (id, path, type, project_id, parent_id) VALUES (1, '/tmp/tests/Controller/Filesystem/File/CreatePhpClass', null, 1, null);
             SQL
         );
     }
@@ -28,7 +28,7 @@ final class CreatePhpClassTest extends ApiTestCase
         $this
             ->request('POST', '/api/filesystem/file', body: <<<JSON
                 {
-                  "directoryId": 2,
+                  "directoryId": 1,
                   "name": "MyClass",
                   "type": "php_class"
                 }
@@ -62,7 +62,7 @@ final class CreatePhpClassTest extends ApiTestCase
             ->connectionPsql()
             ->assertEquals([
                 ['id', 'path', 'directory_id'],
-                [1, '/tmp/tests/Controller/Filesystem/File/CreatePhpClass/MyClass.php', 2],
+                [1, '/tmp/tests/Controller/Filesystem/File/CreatePhpClass/MyClass.php', 1],
             ], 'SELECT * FROM file');
     }
 }
