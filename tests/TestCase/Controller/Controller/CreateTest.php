@@ -3,37 +3,37 @@
 namespace App\Tests\TestCase\Controller\Controller;
 
 use App\Controller\Controller\CreateController;
-use App\Tests\Infrastructure\Annotation\Skip;
+use App\Tests\Infrastructure\Attribute\Skip;
 use App\Tests\Infrastructure\ApiTestCase;
 
 /**
  * @see CreateController
  */
-final class CreateControllerTest extends ApiTestCase
+#[Skip]
+final class CreateTest extends ApiTestCase
 {
-//    protected function setUp(): void
-//    {
-//        unlink('/tmp/tests/maker-php/src/Controller/NewController.php');
-//
-//        $this->connectionPsql()->execute(<<<SQL
-//            TRUNCATE TABLE project RESTART IDENTITY CASCADE;
-//
-//            BEGIN;
-//            INSERT INTO project (id, name, path) VALUES (1, 'maker-php', '/tmp/tests/maker-php');
-//
-//            INSERT INTO directory (id, project_id, path)
-//            VALUES (1, 1, 'src/Controller'),
-//                   (2, 1, 'src/Response');
-//
-//            INSERT INTO response (id, name, filepath, project_id, class_name)
-//            VALUES (1, 'SuccessResponse', 'src/Response/SuccessResponse.php', 1, 'App\Response\SuccessResponse');
-//
-//            COMMIT;
-//            SQL
-//        );
-//    }
+    protected function setUp(): void
+    {
+        unlink('/tmp/tests/Controller/Controller/CreateTest/Controller.php');
 
-    #[Skip]
+        $this->connectionPsql()->execute(<<<SQL
+            TRUNCATE TABLE project RESTART IDENTITY CASCADE;
+
+            BEGIN;
+            INSERT INTO project (id, name, path) VALUES (1, 'maker-php', '/tmp/tests/maker-php');
+
+            INSERT INTO directory (id, project_id, path)
+            VALUES (1, 1, 'src/Controller'),
+                   (2, 1, 'src/Response');
+
+            INSERT INTO response (id, name, filepath, project_id, class_name)
+            VALUES (1, 'SuccessResponse', 'src/Response/SuccessResponse.php', 1, 'App\Response\SuccessResponse');
+
+            COMMIT;
+            SQL
+        );
+    }
+
     public function test(): void
     {
         $this

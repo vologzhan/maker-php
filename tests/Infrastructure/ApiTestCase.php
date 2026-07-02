@@ -3,7 +3,7 @@
 namespace App\Tests\Infrastructure;
 
 use App\Service\Filesystem\FilesystemHelper;
-use App\Tests\Infrastructure\Annotation\Skip;
+use App\Tests\Infrastructure\Attribute\Skip;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 class ApiTestCase extends WebTestCase
@@ -11,16 +11,22 @@ class ApiTestCase extends WebTestCase
     private ?Connection $connection = null;
     private ?Filesystem $filesystem = null;
 
+    public static function setUpBeforeClass(): void
+    {
+        $ref = new \ReflectionClass(static::class);
+        if ($ref->getAttributes(Skip::class) !== []) {
+            self::markTestSkipped('#[Skip]');
+        }
+    }
+
     protected function setUp(): void
     {
-        parent::setUp();
-
-        $reflection = new \ReflectionMethod($this, $this->name());
-        $attributes = $reflection->getAttributes(Skip::class);
-
-        if (!empty($attributes)) {
+        $ref = new \ReflectionMethod($this, $this->name());
+        if ($ref->getAttributes(Skip::class) !== []) {
             $this->markTestSkipped('#[Skip]');
         }
+
+        parent::setUp();
     }
 
     protected function connectionPsql(): Connection

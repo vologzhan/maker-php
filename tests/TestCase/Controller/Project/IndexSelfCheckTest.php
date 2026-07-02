@@ -2,7 +2,7 @@
 
 namespace App\Tests\TestCase\Controller\Project;
 
-use App\Tests\Infrastructure\Annotation\Skip;
+use App\Tests\Infrastructure\Attribute\Skip;
 use App\Tests\Infrastructure\ApiTestCase;
 
 /**
