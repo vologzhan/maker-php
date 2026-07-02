@@ -26,7 +26,7 @@ final class CreateFileTest extends ApiTestCase
     public function test(): void
     {
         $this
-            ->request('POST', '/api/controller', body:
+            ->request('POST', '/api/filesystem/file', body:
                 <<<JSON
                 {
                   "directoryId": 2,
@@ -38,7 +38,7 @@ final class CreateFileTest extends ApiTestCase
             ->expectedJsonContent(
                 <<<JSON
                 {
-                  "success": true
+                  "id": 1
                 }
                 JSON
             );

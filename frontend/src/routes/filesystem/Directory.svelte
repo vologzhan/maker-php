@@ -5,6 +5,9 @@
     import type {DirectoryItemResponse} from "$lib/Response/Project/Filesystem/DirectoryItemResponse";
     import {contextMenu} from '$lib/Store/ContextMenu';
     import {UpdateDirectoryType} from "$lib/Controller/Project/Filesystem/UpdateDirectoryTypeController";
+    import {CreateController} from "$lib/Controller/Filesystem/File/CreateController";
+    import type {CreateRequest} from "$lib/Request/Filesystem/File/CreateRequest";
+    import type {CreateResponse} from "$lib/Response/Filesystem/File/CreateResponse";
 
     let {
         dir,
@@ -27,25 +30,47 @@
             y: event.clientY,
             items: [
                 {
-                    label: 'Создать файл',
+                    label: 'Create file',
                     action: () => {
-                        console.log('create file in', dir.name);
+                        const name = prompt('Enter file name');
+                        if (!name) {
+                            return;
+                        }
+
+                        const req: CreateRequest = {
+                            directoryId: dir.id,
+                            name: name,
+                        }
+
+                        CreateController(req)
+                            .then((res: CreateResponse) => {
+                                dir.files.push({
+                                    id: res.id,
+                                    name: name,
+                                });
+                            })
+                            .catch((err: any) => {
+                                const error = err instanceof Error ? err.message : String(err)
+                                console.log('create file failed: ', error);
+                            })
+
+                        console.log('create file in', dir.name + '/' + name);
                     }
                 },
                 {
-                    label: 'Создать директорию',
+                    label: 'Create directory',
                     action: () => {
                         console.log('create directory in', dir.name);
                     }
                 },
                 {
-                    label: 'Переименовать',
+                    label: 'Rename',
                     action: () => {
                         console.log('rename', dir.name);
                     }
                 },
                 {
-                    label: 'Удалить',
+                    label: 'Delete',
                     action: () => {
                         console.log('delete', dir.name);
                     }

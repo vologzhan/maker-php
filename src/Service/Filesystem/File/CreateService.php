@@ -6,6 +6,7 @@ use App\Entity\File;
 use App\Repository\DirectoryRepository;
 use App\Repository\FileRepository;
 use App\Request\Filesystem\File\CreateRequest;
+use App\Response\Filesystem\File\CreateResponse;
 use App\Response\SuccessResponse;
 use App\Service\Filesystem\FilesystemHelper;
 
@@ -17,7 +18,7 @@ final readonly class CreateService
         private FileSystemHelper $fileSystemHelper,
     ) {}
 
-    public function __invoke(CreateRequest $request): SuccessResponse
+    public function __invoke(CreateRequest $request): CreateResponse
     {
         $dir = $this->directoryRepository->findById($request->directoryId);
 
@@ -31,7 +32,9 @@ final readonly class CreateService
 
         $this->fileRepository->save($file, true);
 
-        return new SuccessResponse(); // todo
+        return new CreateResponse(
+            id: $file->getId(),
+        );
     }
 
 //    public function __invoke(CreateRequest $request): ControllerItem
