@@ -1,10 +1,10 @@
 <?php declare(strict_types=1);
 
-namespace App\Controller\Controller;
+namespace App\Controller\Filesystem\File;
 
-use App\Request\Controller\CreateRequest;
+use App\Request\Filesystem\File\CreateRequest;
 use App\Response\SuccessResponse;
-use App\Service\Controller\CreateService;
+use App\Service\Filesystem\File\CreateService;
 use Symfony\Component\Routing\Attribute\Route;
 
 #[Route('/api/controller', methods: ['POST'])]

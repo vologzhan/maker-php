@@ -1,11 +1,11 @@
 <?php declare(strict_types=1);
 
-namespace App\Service\Controller;
+namespace App\Service\Filesystem\File;
 
 use App\Entity\File;
 use App\Repository\DirectoryRepository;
 use App\Repository\FileRepository;
-use App\Request\Controller\CreateRequest;
+use App\Request\Filesystem\File\CreateRequest;
 use App\Response\SuccessResponse;
 use App\Service\Filesystem\FilesystemHelper;
 

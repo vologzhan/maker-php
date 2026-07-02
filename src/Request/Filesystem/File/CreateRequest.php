@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace App\Request\Controller;
+namespace App\Request\Filesystem\File;
 
 final class CreateRequest
 {
