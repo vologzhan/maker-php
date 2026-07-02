@@ -15,7 +15,7 @@ final class PhpParserTest extends ApiTestCase
 {
     public function test(): void
     {
-        $content = <<<'PHP'
+        $content = <<<PHP
             <?php declare(strict_types=1);
             
             namespace Fixtures\Controller;

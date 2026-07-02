@@ -14,7 +14,8 @@ final class IndexSelfCheckTest extends ApiTestCase
     public function test(): void
     {
         $this
-            ->request('POST', '/api/project/index', body: <<<JSON
+            ->request('POST', '/api/project/index', body:
+                <<<JSON
                 {
                   "path": "/app"
                 }

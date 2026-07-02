@@ -16,14 +16,16 @@ final class IndexDirectoryTest extends ApiTestCase
     public function test(): void
     {
         $this
-            ->request('POST', '/api/project/index', <<<JSON
+            ->request('POST', '/api/project/index',
+                <<<JSON
                 {
                   "path": "/app/tests/fixtures/maker-php"
                 }
                 JSON
             )
             ->expectedCode(200)
-            ->expectedJsonContent(<<<JSON
+            ->expectedJsonContent(
+                <<<JSON
                 {
                   "id": 1,
                   "name": "maker-php"

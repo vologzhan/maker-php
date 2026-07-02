@@ -31,7 +31,8 @@ final class UpdateDirectoryTypeTest extends ApiTestCase
             PHP
         );
 
-        $this->connectionPsql()->execute(<<<SQL
+        $this->connectionPsql()->execute(
+            <<<SQL
             TRUNCATE TABLE project RESTART IDENTITY CASCADE;
             INSERT INTO project (id, name) VALUES (1, 'maker-php');
             INSERT INTO directory (id, path, project_id, parent_id, type) VALUES (1, '', 1, null, null);
@@ -43,14 +44,16 @@ final class UpdateDirectoryTypeTest extends ApiTestCase
     public function test(): void
     {
         $this
-            ->request('PUT', '/api/filesystem/directory/1/type', body: <<<JSON
+            ->request('PUT', '/api/filesystem/directory/1/type', body:
+                <<<JSON
                 {
                   "type": "controller"
                 }
                 JSON
             )
             ->expectedCode(200)
-            ->expectedJsonContent(<<<JSON
+            ->expectedJsonContent(
+                <<<JSON
                 {
                   "success": true
                 }

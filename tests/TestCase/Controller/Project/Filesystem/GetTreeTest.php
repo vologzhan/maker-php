@@ -12,7 +12,8 @@ final class GetTreeTest extends ApiTestCase
 {
     protected function setUp(): void
     {
-        $this->connectionPsql()->execute(<<<SQL
+        $this->connectionPsql()->execute(
+            <<<SQL
             TRUNCATE TABLE project RESTART IDENTITY CASCADE;
 
             INSERT INTO project (id, name) VALUES (1, 'maker-php');
@@ -35,7 +36,8 @@ final class GetTreeTest extends ApiTestCase
         $this
             ->request('GET', '/api/project/1/filesystem/tree')
             ->expectedCode(200)
-            ->expectedJsonContent(<<<JSON
+            ->expectedJsonContent(
+                <<<JSON
                 {
                   "id": 1,
                   "name": "maker-php",

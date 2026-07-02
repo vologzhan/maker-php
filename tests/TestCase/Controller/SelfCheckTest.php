@@ -16,7 +16,8 @@ final class SelfCheckTest extends ApiTestCase
             ->request('GET', '/api')
             ->expectedHeader('Content-Type', 'application/json')
             ->expectedCode(200)
-            ->expectedJsonContent(<<<JSON
+            ->expectedJsonContent(
+                <<<JSON
                 {
                   "success": true
                 }
