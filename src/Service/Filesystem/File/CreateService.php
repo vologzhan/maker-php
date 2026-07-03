@@ -10,7 +10,8 @@ use App\Repository\DirectoryRepository;
 use App\Repository\FileRepository;
 use App\Repository\ProjectRepository;
 use App\Request\Filesystem\File\CreateRequest;
-use App\Response\Filesystem\File\CreateResponse;
+use App\Response\Project\Filesystem\FileItem;
+use App\Serializer\FilesystemSerializer;
 use App\Service\Filesystem\FilesystemHelper;
 use Doctrine\ORM\EntityManagerInterface;
 
@@ -23,9 +24,10 @@ final readonly class CreateService
         private FileSystemHelper $fileSystemHelper,
         private EntityManagerInterface $entityManager,
         private ProjectRepository $projectRepository,
+        private FilesystemSerializer $filesystemSerializer,
     ) {}
 
-    public function __invoke(CreateRequest $request): CreateResponse
+    public function __invoke(CreateRequest $request): FileItem
     {
         if ($request->type === FileType::PhpClass) {
             $filename = $request->name . '.php';
@@ -86,9 +88,10 @@ final readonly class CreateService
             $controller = new Controller()
                 ->setPath($path)
                 ->setMethod($method)
-                ->setFile($file)
                 ->setProject($project) // todo
                 ->setResponse(null); // todo
+
+            $file->setController($controller);
 
             $this->controllerRepository->save($controller);
         }
@@ -97,10 +100,7 @@ final readonly class CreateService
 
         $this->entityManager->flush();
 
-        return new CreateResponse(
-            id: $file->getId(),
-            filename: $filename,
-        );
+        return $this->filesystemSerializer->fileItem($file);
     }
 
 //    public function __invoke(CreateRequest $request): ControllerItem

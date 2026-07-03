@@ -7,7 +7,7 @@
     import {UpdateDirectoryType} from "$lib/Controller/Project/Filesystem/UpdateDirectoryTypeController";
     import {CreateController} from "$lib/Controller/Filesystem/File/CreateController";
     import type {CreateRequest} from "$lib/Request/Filesystem/File/CreateRequest";
-    import type {CreateResponse} from "$lib/Response/Filesystem/File/CreateResponse";
+    import type {FileItem} from "$lib/Response/Project/Filesystem/FileItem";
 
     let {
         dir,
@@ -39,6 +39,12 @@
                     label: 'Create PHP Class',
                     action: () => {
                         createFile('Class name', 'php_class')
+                    }
+                },
+                {
+                    label: 'Create Controller',
+                    action: () => {
+                        createFile('Controller name', 'controller')
                     }
                 },
                 {
@@ -88,11 +94,8 @@
         }
 
         CreateController(req)
-            .then((res: CreateResponse) => {
-                dir.files.push({
-                    id: res.id,
-                    name: res.filename,
-                });
+            .then((res: FileItem) => {
+                dir.files.push(res);
             })
             .catch((err: any) => {
                 const error = err instanceof Error ? err.message : String(err)

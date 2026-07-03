@@ -67,11 +67,7 @@ class File
 
     public function setController(Controller $controller): static
     {
-        // set the owning side of the relation if necessary
-        if ($controller->getFile() !== $this) {
-            $controller->setFile($this);
-        }
-
+        $controller->setFile($this);
         $this->controller = $controller;
 
         return $this;

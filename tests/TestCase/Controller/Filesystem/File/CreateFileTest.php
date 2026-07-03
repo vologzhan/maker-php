@@ -40,7 +40,8 @@ final class CreateFileTest extends ApiTestCase
                 <<<JSON
                 {
                   "id": 1,
-                  "filename": "file.txt"
+                  "name": "file.txt",
+                  "type": null
                 }
                 JSON
             );

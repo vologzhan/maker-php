@@ -39,7 +39,8 @@ final class CreateControllerTest extends ApiTestCase
                 <<<JSON
                 {
                   "id": 1,
-                  "filename": "NewController.php"
+                  "name": "NewController.php",
+                  "type": "controller"
                 }
                 JSON
             );

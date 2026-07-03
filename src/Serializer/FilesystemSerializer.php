@@ -30,7 +30,7 @@ final readonly class FilesystemSerializer
         return $out;
     }
 
-    private function fileItem(File $file): FileItem
+    public function fileItem(File $file): FileItem
     {
         return new FileItem(
             id: $file->getId(),

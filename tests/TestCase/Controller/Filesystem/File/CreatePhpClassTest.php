@@ -39,7 +39,8 @@ final class CreatePhpClassTest extends ApiTestCase
                 <<<JSON
                 {
                   "id": 1,
-                  "filename": "MyClass.php"
+                  "name": "MyClass.php",
+                  "type": null
                 }
                 JSON
             );
