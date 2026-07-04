@@ -4,7 +4,7 @@ namespace App\Request\Dir;
 
 use App\Enum\DirType;
 
-final readonly class SetDirTypeRequest
+final readonly class SetTypeRequest
 {
     public function __construct(
         public int $id,

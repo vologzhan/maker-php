@@ -5,14 +5,14 @@ namespace App\Controller\Dir;
 use App\Entity\Project;
 use App\Repository\DirRepository;
 use App\Repository\ProjectRepository;
-use App\Request\Dir\SetDirTypeRequest;
+use App\Request\Dir\SetTypeRequest;
 use App\Response\SuccessResponse;
 use App\Service\Filesystem\FilesystemHelper;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Routing\Requirement\Requirement;
 
 #[Route(path: '/api/dir/{id}/type', requirements: ['id' => Requirement::DIGITS], methods: ['PUT'])]
-final readonly class SetDirType
+final readonly class SetType
 {
     public function __construct(
         private DirRepository $dirRepository,
@@ -20,7 +20,7 @@ final readonly class SetDirType
         private FilesystemHelper $filesystemHelper,
     ) {}
 
-    public function __invoke(SetDirTypeRequest $request): SuccessResponse
+    public function __invoke(SetTypeRequest $request): SuccessResponse
     {
         $dir = $this->dirRepository->findById($request->id);
 

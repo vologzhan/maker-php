@@ -2,13 +2,13 @@
 
 namespace App\Tests\TestCase\Controller\Dir;
 
-use App\Controller\Dir\SetDirType;
+use App\Controller\Dir\SetType;
 use App\Tests\Infrastructure\ApiTestCase;
 
 /**
- * @see SetDirType
+ * @see SetType
  */
-final class SetDirTypeTest extends ApiTestCase
+final class SetTypeTest extends ApiTestCase
 {
     protected function setUp(): void
     {
@@ -26,11 +26,11 @@ final class SetDirTypeTest extends ApiTestCase
     {
         $this
             ->request('PUT', '/api/dir/1/type', body:
-            <<<JSON
-            {
-              "type": "project"
-            }
-            JSON
+                <<<JSON
+                {
+                  "type": "project"
+                }
+                JSON
             )
             ->expectedCode(200)
             ->expectedJsonContent(
