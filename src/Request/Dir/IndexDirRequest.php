@@ -1,8 +1,8 @@
 <?php declare(strict_types=1);
 
-namespace App\Request\Project;
+namespace App\Request\Dir;
 
-final class IndexRequest
+final readonly class IndexDirRequest
 {
     public function __construct(
         public string $path,

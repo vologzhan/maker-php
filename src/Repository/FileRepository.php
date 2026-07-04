@@ -16,29 +16,9 @@ class FileRepository extends ServiceEntityRepository
         parent::__construct($registry, File::class);
     }
 
-    public function save(File $entity, bool $flush = false): void
+    public function save(File $entity): File
     {
         $this->getEntityManager()->persist($entity);
-        if ($flush) {
-            $this->getEntityManager()->flush();
-        }
-    }
-
-    public function delete(File $entity, bool $flush = false): void
-    {
-        $this->getEntityManager()->remove($entity);
-        if ($flush) {
-            $this->getEntityManager()->flush();
-        }
-    }
-
-    public function findById(int $id): File
-    {
-        return $this
-            ->createQueryBuilder('f')
-            ->where('f.id = :id')
-            ->setParameter('id', $id)
-            ->getQuery()
-            ->getSingleResult();
+        return $entity;
     }
 }

@@ -1,8 +1,7 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace App\Entity;
 
-use App\Enum\FileType;
 use App\Repository\FileRepository;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -12,27 +11,20 @@ class File
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    private int $id;
+    private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    private string $path;
+    private ?string $path = null;
 
     #[ORM\ManyToOne(inversedBy: 'files')]
-    private ?Directory $directory = null;
+    private ?Dir $Dir = null;
 
-    #[ORM\OneToOne(mappedBy: 'file')]
-    private ?Controller $controller = null;
-
-    # ------------------------------------------------------------------------------------------------------------------
-
-    public function getId(): int
+    public function getId(): ?int
     {
         return $this->id;
     }
 
-    # ------------------------------------------------------------------------------------------------------------------
-
-    public function getPath(): string
+    public function getPath(): ?string
     {
         return $this->path;
     }
@@ -44,34 +36,15 @@ class File
         return $this;
     }
 
-    # ------------------------------------------------------------------------------------------------------------------
-
-    public function getDirectory(): ?Directory
+    public function getDir(): ?Dir
     {
-        return $this->directory;
+        return $this->Dir;
     }
 
-    public function setDirectory(?Directory $directory): static
+    public function setDir(?Dir $Dir): static
     {
-        $this->directory = $directory;
+        $this->Dir = $Dir;
 
         return $this;
     }
-
-    # ------------------------------------------------------------------------------------------------------------------
-
-    public function getController(): ?Controller
-    {
-        return $this->controller;
-    }
-
-    public function setController(Controller $controller): static
-    {
-        $controller->setFile($this);
-        $this->controller = $controller;
-
-        return $this;
-    }
-
-    # ------------------------------------------------------------------------------------------------------------------
 }
