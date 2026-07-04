@@ -16,6 +16,11 @@ final readonly class Filesystem
         $this->filesystemHelper->createFile($name, $content, replaceIfExist: true);
     }
 
+    public function createDir(string $name): void
+    {
+        $this->filesystemHelper->createDir($name, replaceIfExist: true);
+    }
+
     public function assertFileContentEquals(string $filepath, string $expectedContent): void
     {
         $actual = file_get_contents($filepath);

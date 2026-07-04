@@ -11,8 +11,12 @@ final readonly class FilesystemHelper
 
     public function createFile(string $name, string $content, bool $replaceIfExist = false): void
     {
-        if (!$replaceIfExist && file_exists($name)) {
-            throw new \Exception("File already exists: $name");
+        if (file_exists($name)) {
+            if (!$replaceIfExist) {
+                throw new \Exception("File already exists: $name");
+            }
+
+            $this->delete($name);
         }
 
         $dir = dirname($name);
@@ -27,6 +31,50 @@ final readonly class FilesystemHelper
         $ok = file_put_contents($name, $content);
         if ($ok === false) {
             throw new \Exception("Unable to write file: $name");
+        }
+    }
+
+    public function createDir(string $name, bool $replaceIfExist = false): void
+    {
+        if (file_exists($name)) {
+            if (!$replaceIfExist) {
+                throw new \Exception("Directory already exists: $name");
+            }
+
+            $this->delete($name);
+        }
+
+        $ok = mkdir($name, recursive: true);
+        if (!$ok) {
+            throw new \Exception("Unable to create directory: $name");
+        }
+    }
+
+    private function delete(string $dir): void
+    {
+        if (is_file($dir)) {
+            unlink($dir);
+            return;
+        }
+
+        if (!is_dir($dir)) {
+            throw new \Exception("Unable to delete file or directory: $dir");
+        }
+
+        $items = scandir($dir);
+        foreach ($items as $item) {
+            if ($item === '.' || $item === '..') {
+                continue;
+            }
+
+            $path = $dir . DIRECTORY_SEPARATOR . $item;
+
+            $this->delete($path);
+        }
+
+        $ok = rmdir($dir);
+        if (!$ok) {
+            throw new \Exception("Unable to delete directory: $dir");
         }
     }
 }

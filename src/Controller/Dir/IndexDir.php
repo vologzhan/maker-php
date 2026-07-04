@@ -10,7 +10,6 @@ use App\Repository\FileRepository;
 use App\Repository\ProjectRepository;
 use App\Request\Dir\IndexDirRequest;
 use App\Response\SuccessResponse;
-use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Routing\Attribute\Route;
 
 #[Route(path: '/api/dir/index', methods: ['POST'])]
@@ -20,7 +19,6 @@ final readonly class IndexDir
         private DirRepository $dirRepository,
         private FileRepository $fileRepository,
         private ProjectRepository $projectRepository,
-        private EntityManagerInterface $entityManager,
     ) {}
 
     public function __invoke(IndexDirRequest $request): SuccessResponse
@@ -32,8 +30,6 @@ final readonly class IndexDir
         );
 
         $this->indexDirRecursive($dir);
-
-        $this->entityManager->flush();
 
         return new SuccessResponse();
     }

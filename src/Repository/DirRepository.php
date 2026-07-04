@@ -21,4 +21,14 @@ class DirRepository extends ServiceEntityRepository
         $this->getEntityManager()->persist($dir);
         return $dir;
     }
+
+    public function findById(int $id): Dir
+    {
+        return $this
+            ->createQueryBuilder('d')
+            ->where('d.id = :id')
+            ->setParameter('id', $id)
+            ->getQuery()
+            ->getSingleResult();
+    }
 }

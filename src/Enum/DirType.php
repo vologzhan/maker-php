@@ -2,7 +2,7 @@
 
 namespace App\Enum;
 
-enum DirectoryType: string
+enum DirType: string
 {
     case Project = 'project';
     case Controller = 'controller';

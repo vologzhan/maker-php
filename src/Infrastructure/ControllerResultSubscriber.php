@@ -2,6 +2,7 @@
 
 namespace App\Infrastructure;
 
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpKernel\Event\ViewEvent;
@@ -12,6 +13,7 @@ final readonly class ControllerResultSubscriber implements EventSubscriberInterf
 {
     public function __construct(
         private SerializerInterface $serializer,
+        private EntityManagerInterface $entityManager,
     ) {
     }
 
@@ -28,6 +30,8 @@ final readonly class ControllerResultSubscriber implements EventSubscriberInterf
         }
 
         $json = $this->serializer->serialize($controllerResult, 'json');
+
+        $this->entityManager->flush();
 
         $event->setResponse(
             new JsonResponse($json, json: true)
