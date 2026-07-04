@@ -13,19 +13,21 @@ final readonly class FsTreeSerializer
     /**
      * @param Dir[] $dirs
      */
-    public function treeResponse(array $dirs): TreeResponse
+    public function treeResponse(array $dirs, int $depth): TreeResponse
     {
+        $dirs = $this->dirItemArray($dirs, $depth);
+
         return new TreeResponse(
-            dirs: $this->dirItemArray($dirs),
+            dirs: $dirs,
         );
     }
 
-    private function dirItem(Dir $dir): DirItem
+    private function dirItem(Dir $dir, int $depth): DirItem
     {
         return new DirItem(
             id: $dir->getId(),
             name: basename($dir->getPath()),
-            dirs: $this->dirItemArray($dir->getChildren()),
+            dirs: $this->dirItemArray($dir->getChildren(), $depth),
             files: $this->fileItemArray($dir->getFiles()),
         );
     }
@@ -34,11 +36,16 @@ final readonly class FsTreeSerializer
      * @param Dir[] $dirs
      * @return DirItem[]
      */
-    private function dirItemArray(array $dirs): array
+    private function dirItemArray(array $dirs, int $depth): array
     {
+        $depth--;
+        if ($depth < 0) {
+            return [];
+        }
+
         $out = [];
         foreach ($dirs as $dir) {
-            $out[] = $this->dirItem($dir);
+            $out[] = $this->dirItem($dir, $depth);
         }
         return $out;
     }

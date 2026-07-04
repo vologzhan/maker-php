@@ -19,6 +19,6 @@ final readonly class GetTree
     {
         $dirs = $this->dirRepository->findRoots();
 
-        return $this->fsTreeSerializer->treeResponse($dirs);
+        return $this->fsTreeSerializer->treeResponse($dirs, 2);
     }
 }
