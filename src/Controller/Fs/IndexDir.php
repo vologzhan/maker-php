@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace App\Controller\Dir;
+namespace App\Controller\Fs;
 
 use App\Entity\Dir;
 use App\Entity\File;
@@ -8,11 +8,11 @@ use App\Entity\Project;
 use App\Repository\DirRepository;
 use App\Repository\FileRepository;
 use App\Repository\ProjectRepository;
-use App\Request\Dir\IndexDirRequest;
+use App\Request\Fs\IndexDirRequest;
 use App\Response\SuccessResponse;
 use Symfony\Component\Routing\Attribute\Route;
 
-#[Route(path: '/api/dir/index', methods: ['POST'])]
+#[Route(path: '/api/fs', methods: ['POST'])]
 final readonly class IndexDir
 {
     public function __construct(

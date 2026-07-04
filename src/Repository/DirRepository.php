@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Dir;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -25,10 +26,27 @@ class DirRepository extends ServiceEntityRepository
     public function findById(int $id): Dir
     {
         return $this
-            ->createQueryBuilder('d')
-            ->where('d.id = :id')
+            ->createQb()
+            ->andWhere('d.id = :id')
             ->setParameter('id', $id)
             ->getQuery()
             ->getSingleResult();
+    }
+
+    /**
+     * @return Dir[]
+     */
+    public function findRoots(): array
+    {
+        return $this
+            ->createQb()
+            ->andWhere('d.parent IS NULL')
+            ->getQuery()
+            ->getResult();
+    }
+
+    private function createQb(string $alias = 'd'): QueryBuilder
+    {
+        return $this->createQueryBuilder($alias);
     }
 }

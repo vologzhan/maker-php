@@ -72,11 +72,11 @@ class Dir
     }
 
     /**
-     * @return Collection<int, self>
+     * @return Dir[]
      */
-    public function getChildren(): Collection
+    public function getChildren(): array
     {
-        return $this->children;
+        return $this->children->getValues();
     }
 
     public function addChild(self $child): static
@@ -102,11 +102,11 @@ class Dir
     }
 
     /**
-     * @return Collection<int, File>
+     * @return File[]
      */
-    public function getFiles(): Collection
+    public function getFiles(): array
     {
-        return $this->files;
+        return $this->files->getValues();
     }
 
     public function addFile(File $file): static

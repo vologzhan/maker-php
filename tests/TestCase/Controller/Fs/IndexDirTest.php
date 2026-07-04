@@ -1,8 +1,8 @@
 <?php declare(strict_types=1);
 
-namespace App\Tests\TestCase\Controller\Dir;
+namespace App\Tests\TestCase\Controller\Fs;
 
-use App\Controller\Dir\IndexDir;
+use App\Controller\Fs\IndexDir;
 use App\Tests\Infrastructure\ApiTestCase;
 
 /**
@@ -12,18 +12,22 @@ final class IndexDirTest extends ApiTestCase
 {
     protected function setUp(): void
     {
-        $this->filesystem()->createFile('/tmp/tests/Controller/Dir/IndexTest/maker-php/project.maker', '');
+        $this->filesystem()->createFile('/tmp/tests/Controller/Fs/IndexDirTest/maker-php/project.maker', '');
 
-        $this->connectionPsql()->execute('TRUNCATE TABLE dir RESTART IDENTITY CASCADE');
+        $this->connectionPsql()->execute(
+            <<<SQL
+            TRUNCATE TABLE dir RESTART IDENTITY CASCADE;
+            SQL
+        );
     }
 
     public function test(): void
     {
         $this
-            ->request('POST', '/api/dir/index',
+            ->request('POST', '/api/fs',
                 <<<JSON
                 {
-                  "path":"/tmp/tests/Controller/Dir/IndexTest/maker-php"
+                  "path":"/tmp/tests/Controller/Fs/IndexDirTest/maker-php"
                 }
                 JSON
             )
@@ -40,11 +44,11 @@ final class IndexDirTest extends ApiTestCase
             ->connectionPsql()
             ->assertEquals([
                 ['id', 'path', 'parent_id'],
-                [1, '/tmp/tests/Controller/Dir/IndexTest/maker-php', null],
+                [1, '/tmp/tests/Controller/Fs/IndexDirTest/maker-php', null],
             ], 'SELECT * FROM dir')
             ->assertEquals([
                 ['id', 'path', 'dir_id'],
-                [1, '/tmp/tests/Controller/Dir/IndexTest/maker-php/project.maker', 1],
+                [1, '/tmp/tests/Controller/Fs/IndexDirTest/maker-php/project.maker', 1],
             ], 'SELECT * FROM file')
             ->assertEquals([
                 ['id', 'dir_id'],
