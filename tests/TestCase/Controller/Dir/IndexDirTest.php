@@ -45,6 +45,10 @@ final class IndexDirTest extends ApiTestCase
             ->assertEquals([
                 ['id', 'path', 'dir_id'],
                 [1, '/tmp/tests/Controller/Dir/IndexTest/maker-php/project.maker', 1],
-            ], 'SELECT * FROM file');
+            ], 'SELECT * FROM file')
+            ->assertEquals([
+                ['id', 'dir_id'],
+                [1, 1],
+            ], 'SELECT * FROM project');
     }
 }

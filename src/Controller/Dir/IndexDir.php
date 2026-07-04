@@ -4,8 +4,10 @@ namespace App\Controller\Dir;
 
 use App\Entity\Dir;
 use App\Entity\File;
+use App\Entity\Project;
 use App\Repository\DirRepository;
 use App\Repository\FileRepository;
+use App\Repository\ProjectRepository;
 use App\Request\Dir\IndexDirRequest;
 use App\Response\SuccessResponse;
 use Doctrine\ORM\EntityManagerInterface;
@@ -17,6 +19,7 @@ final readonly class IndexDir
     public function __construct(
         private DirRepository $dirRepository,
         private FileRepository $fileRepository,
+        private ProjectRepository $projectRepository,
         private EntityManagerInterface $entityManager,
     ) {}
 
@@ -28,14 +31,14 @@ final readonly class IndexDir
                 ->setParent(null)
         );
 
-        $this->scanDirRecursive($dir);
+        $this->indexDirRecursive($dir);
 
         $this->entityManager->flush();
 
         return new SuccessResponse();
     }
 
-    private function scanDirRecursive(Dir $dir): void
+    private function indexDirRecursive(Dir $dir): void
     {
         $items = scandir($dir->getPath());
 
@@ -46,23 +49,29 @@ final readonly class IndexDir
 
             $path = $dir->getPath() . '/' . $item;
 
-            if (is_file($path)) {
-                $this->fileRepository->save(
-                    new File()
+            if (is_dir($path)) {
+                $child = $this->dirRepository->save(
+                    new Dir()
                         ->setPath($path)
-                        ->setDir($dir)
+                        ->setParent($dir)
                 );
 
+                $this->indexDirRecursive($child);
                 continue;
             }
 
-            $child = $this->dirRepository->save(
-                new Dir()
+            $this->fileRepository->save(
+                new File()
                     ->setPath($path)
-                    ->setParent($dir)
+                    ->setDir($dir)
             );
 
-            $this->scanDirRecursive($child);
+            if ($item === 'project.maker') {
+                $this->projectRepository->save(
+                    new Project()
+                        ->setDir($dir)
+                );
+            }
         }
     }
 }

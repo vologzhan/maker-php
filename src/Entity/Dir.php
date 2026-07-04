@@ -33,6 +33,9 @@ class Dir
     #[ORM\OneToMany(targetEntity: File::class, mappedBy: 'Dir')]
     private Collection $files;
 
+    #[ORM\OneToOne(mappedBy: 'dir', cascade: ['persist', 'remove'])]
+    private ?Project $project = null;
+
     public function __construct()
     {
         $this->children = new ArrayCollection();
@@ -124,6 +127,28 @@ class Dir
                 $file->setDir(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getProject(): ?Project
+    {
+        return $this->project;
+    }
+
+    public function setProject(?Project $project): static
+    {
+        // unset the owning side of the relation if necessary
+        if ($project === null && $this->project !== null) {
+            $this->project->setDir(null);
+        }
+
+        // set the owning side of the relation if necessary
+        if ($project !== null && $project->getDir() !== $this) {
+            $project->setDir($this);
+        }
+
+        $this->project = $project;
 
         return $this;
     }
