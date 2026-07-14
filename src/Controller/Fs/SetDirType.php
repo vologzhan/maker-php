@@ -3,13 +3,15 @@
 namespace App\Controller\Fs;
 
 use App\Entity\Directory;
+use App\Entity\File;
+use App\Entity\Project;
 use App\Enum\DirectoryType;
-use App\Enum\FileType;
 use App\Repository\DirectoryRepository;
 use App\Repository\FileRepository;
+use App\Repository\ProjectRepository;
 use App\Request\Fs\SetDirTypeRequest;
 use App\Response\SuccessResponse;
-use App\Service\Controller\IndexController;
+use App\Service\Filesystem\FilesystemHelper;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Routing\Requirement\Requirement;
@@ -18,9 +20,10 @@ use Symfony\Component\Routing\Requirement\Requirement;
 final readonly class SetDirType
 {
     public function __construct(
-        private IndexController $indexController,
         private DirectoryRepository $dirRepository,
         private FileRepository $fileRepository,
+        private ProjectRepository $projectRepository,
+        private FilesystemHelper $filesystemHelper,
         private EntityManagerInterface $em,
     ) {}
 
@@ -28,33 +31,40 @@ final readonly class SetDirType
     {
         $dir = $this->dirRepository->findById($request->id);
 
-        $dirType = $request->type;
-        $fileType = match ($dirType) {
-            DirectoryType::Controller => FileType::Controller,
-            DirectoryType::Project,
-            null => null,
+        match ($request->type) {
+            DirectoryType::Project => $this->setProject($dir),
+            DirectoryType::Controller => $this->setController($dir),
         };
 
-        $this->recursiveUpdateType($dir, $dirType, $fileType);
         $this->em->flush();
 
         return new SuccessResponse();
     }
 
-    private function recursiveUpdateType(Directory $dir, ?DirectoryType $dirType, ?FileType $fileType): void
+    private function setProject(Directory $dir): void
     {
-        $dir->setType($dirType);
-        $this->dirRepository->save($dir);
+        $this->createFile($dir, 'project.maker');
 
-        foreach ($dir->getChildren() as $child) {
-            $this->recursiveUpdateType($child, $dirType, $fileType);
-        }
+        $this->projectRepository->save(
+            new Project()
+                ->setDir($dir)
+        );
+    }
 
-        foreach ($dir->getFiles() as $file) {
-            if ($dirType === DirectoryType::Controller) {
-                $this->indexController->__invoke($dir->getProject(), $file);
-            }
-            $this->fileRepository->save($file);
-        }
+    private function setController(Directory $dir): void
+    {
+        $this->createFile($dir, 'controller.maker');
+    }
+
+    private function createFile(Directory $dir, string $filename): void
+    {
+        $filepath = $dir->getPath() . '/' . $filename;
+        $this->filesystemHelper->createFile($filepath, '');
+
+        $this->fileRepository->save(
+            new File()
+                ->setPath($filepath)
+                ->setDirectory($dir)
+        );
     }
 }

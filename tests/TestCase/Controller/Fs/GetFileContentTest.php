@@ -23,7 +23,7 @@ final class GetFileContentTest extends ApiTestCase
             TRUNCATE TABLE project RESTART IDENTITY CASCADE;
 
             INSERT INTO file (id, path, directory_id) VALUES (1, '/tmp/app/src/Controller/SelfCheck.php', null);
-            INSERT INTO project (id, name) VALUES (1, '');
+            INSERT INTO project (id, dir_id) VALUES (1, null);
             INSERT INTO controller (id, path, method, project_id, response_id, file_id) VALUES (1, '/api', 'GET', 1, null, 1);
             SQL
         );

@@ -5,7 +5,6 @@ namespace App\Service\Project;
 use App\Entity\Directory;
 use App\Entity\File;
 use App\Entity\Project;
-use App\Enum\DirectoryType;
 use App\Repository\DirectoryRepository;
 use App\Repository\FileRepository;
 use App\Repository\ProjectRepository;
@@ -18,7 +17,7 @@ final readonly class IndexDirectoryService
 {
     public function __construct(
         private ProjectRepository $projectRepository,
-        private DirectoryRepository $directoryRepository,
+        private DirectoryRepository $dirRepository,
         private FileRepository $fileRepository,
         private ProjectSerializer $projectSerializer,
         private EntityManagerInterface $entityManager,
@@ -26,17 +25,17 @@ final readonly class IndexDirectoryService
 
     public function __invoke(IndexDirectoryRequest $request): ProjectItemResponse
     {
-        $project = new Project()
-            ->setName(basename($request->path));
-        $this->projectRepository->save($project);
+        $dir = $this->dirRepository->save(
+            new Directory()
+                ->setPath($request->path)
+        );
 
-        $directory = new Directory()
-            ->setProject($project)
-            ->setPath($request->path)
-            ->setType(DirectoryType::Project);
-        $this->directoryRepository->save($directory);
+        $project = $this->projectRepository->save(
+            new Project()
+                ->setDir($dir)
+        );
 
-        $this->scanDirRecursive($project, $directory);
+        $this->scanDirRecursive($project, $dir);
 
         $this->entityManager->flush();
 
@@ -55,21 +54,22 @@ final readonly class IndexDirectoryService
             $path = $dir->getPath() . '/' . $item;
 
             if (is_dir($path)) {
-                $children = new Directory()
-                    ->setProject($project)
-                    ->setParent($dir)
-                    ->setPath($path);
-                $this->directoryRepository->save($children);
+                $children = $this->dirRepository->save(
+                    new Directory()
+                        ->setParent($dir)
+                        ->setPath($path)
+                );
 
                 $this->scanDirRecursive($project, $children);
 
                 continue;
             }
 
-            $file = new File()
-                ->setDirectory($dir)
-                ->setPath($path);
-            $this->fileRepository->save($file);
+            $this->fileRepository->save(
+                new File()
+                    ->setDirectory($dir)
+                    ->setPath($path)
+            );
         }
     }
 }

@@ -29,7 +29,7 @@ final readonly class ProjectSerializer
     {
         return new ProjectItemResponse(
             id: $project->getId(),
-            name: $project->getName(),
+            name: basename($project->getPath()),
         );
     }
 
@@ -58,7 +58,7 @@ final readonly class ProjectSerializer
 
         return new ProjectItemResponse(
             id: $project->getId(),
-            name: $project->getName(),
+            name: basename($project->getPath()),
             controllers: $controllersDir,
             responses: array_map(
                 fn (Response $response) => $this->responseItem($response),

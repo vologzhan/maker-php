@@ -11,33 +11,18 @@ final class SetDirTypeTest extends ApiTestCase
 {
     protected function setUp(): void
     {
-        $this->filesystem()->createFile(
-            '/tmp/tests/update_directory_type/SelfCheckController.php',
-            <<<PHP
-            <?php declare(strict_types=1);
-            
-            namespace Fixtures\Controller;
-            
-            use App\Response\SuccessResponse;
-            use Symfony\Component\Routing\Attribute\Route;
-            
-            #[Route('/', methods: ['GET'])]
-            final readonly class SelfCheckController
-            {
-                public function __invoke(): SuccessResponse
-                {
-                    return new SuccessResponse();
-                }
-            }
-            PHP
-        );
+        $this
+            ->filesystem()
+            ->deleteDir('/tmp/app')
+            ->createDir('/tmp/app');
 
         $this->connectionPsql()->execute(
             <<<SQL
             TRUNCATE TABLE project RESTART IDENTITY CASCADE;
-            INSERT INTO project (id, name) VALUES (1, 'maker-php');
-            INSERT INTO directory (id, path, project_id, parent_id, type) VALUES (1, '', 1, null, null);
-            INSERT INTO file (id, path, directory_id) VALUES (1, '/tmp/tests/update_directory_type/SelfCheckController.php', 1);
+            TRUNCATE TABLE directory RESTART IDENTITY CASCADE;
+            TRUNCATE TABLE file RESTART IDENTITY CASCADE;
+
+            INSERT INTO directory (id, path, parent_id) VALUES (1, '/tmp/app', null);
             SQL
         );
     }
@@ -45,10 +30,10 @@ final class SetDirTypeTest extends ApiTestCase
     public function test(): void
     {
         $this
-            ->request('POST', '/api/dir/1/type', body:
+            ->request('POST', '/api/dir/1/type',
                 <<<JSON
                 {
-                  "type": "controller"
+                  "type": "project"
                 }
                 JSON
             )
@@ -61,19 +46,17 @@ final class SetDirTypeTest extends ApiTestCase
                 JSON
             );
 
+        $this->filesystem()->assertFileContentEquals('/tmp/app/project.maker', '');
+
         $this
             ->connectionPsql()
             ->assertEquals([
-                ['id', 'path', 'type', 'project_id', 'parent_id'],
-                [1, '', 'controller', 1, null],
-            ], 'SELECT * FROM directory')
+                ['id', 'dir_id'],
+                [1, 1],
+            ], 'SELECT * FROM project')
             ->assertEquals([
                 ['id', 'path', 'directory_id'],
-                [1, '/tmp/tests/update_directory_type/SelfCheckController.php', 1],
-            ], 'SELECT * FROM file')
-            ->assertEquals([
-                ['id', 'path', 'method', 'project_id', 'response_id', 'file_id'],
-                [1, '/', 'GET', 1, null, 1]
-            ], 'SELECT * FROM controller');
+                [1, '/tmp/app/project.maker', 1],
+            ], 'SELECT * FROM file');
     }
 }

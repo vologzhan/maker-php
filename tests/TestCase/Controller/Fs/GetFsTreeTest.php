@@ -16,9 +16,9 @@ final class GetFsTreeTest extends ApiTestCase
             <<<SQL
             TRUNCATE TABLE directory RESTART IDENTITY CASCADE;
 
-            INSERT INTO directory (id, path, type, project_id, parent_id) VALUES
-                  (1, '/tmp/app', null, null, null),
-                  (2, '/tmp/app/src', null, null, 1);
+            INSERT INTO directory (id, path, parent_id) VALUES
+                  (1, '/tmp/app', null),
+                  (2, '/tmp/app/src', 1);
             INSERT INTO file (id, path, directory_id) VALUES (1, '/tmp/app/project.maker', 1);
             SQL
         );

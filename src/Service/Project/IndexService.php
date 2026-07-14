@@ -34,7 +34,6 @@ final readonly class IndexService
         }
 
         $project = new Project()
-            ->setName(basename($request->path))
             ->setPath($request->path);
 
         $this->projectRepository->save($project);

@@ -19,7 +19,6 @@ final readonly class FilesystemSerializer
         $out = new DirectoryItemResponse(
             id: $dir->getId(),
             name: basename($dir->getPath()),
-            type: $dir->getType(),
             directories: [],
             files: [],
         );

@@ -15,8 +15,8 @@ class Project
     #[ORM\Column]
     private int $id;
 
-    #[ORM\Column(length: 255)]
-    private string $name;
+    #[ORM\OneToOne(inversedBy: 'projectNew', cascade: ['persist', 'remove'])]
+    private ?Directory $dir = null;
 
     /** @var Collection<int, Controller> */
     #[ORM\OneToMany(targetEntity: Controller::class, mappedBy: 'project')]
@@ -26,40 +26,36 @@ class Project
     #[ORM\OneToMany(targetEntity: Response::class, mappedBy: 'project')]
     private Collection $responses;
 
+    # ------------------------------------------------------------------------------------------------------------------
+
     public function __construct()
     {
         $this->controllers = new ArrayCollection();
         $this->responses = new ArrayCollection();
     }
 
+    # ------------------------------------------------------------------------------------------------------------------
+
     public function getId(): int
     {
         return $this->id;
     }
 
-    public function getName(): string
+    # ------------------------------------------------------------------------------------------------------------------
+
+    public function getDir(): ?Directory
     {
-        return $this->name;
+        return $this->dir;
     }
 
-    public function setName(string $name): static
+    public function setDir(?Directory $dir): static
     {
-        $this->name = $name;
+        $this->dir = $dir;
 
         return $this;
     }
 
-    public function getPath(): string
-    {
-        return $this->path;
-    }
-
-    public function setPath(string $path): static
-    {
-        $this->path = $path;
-
-        return $this;
-    }
+    # ------------------------------------------------------------------------------------------------------------------
 
     /**
      * @return Controller[]
@@ -122,4 +118,6 @@ class Project
 
         return $this;
     }
+
+    # ------------------------------------------------------------------------------------------------------------------
 }

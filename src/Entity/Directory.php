@@ -2,7 +2,6 @@
 
 namespace App\Entity;
 
-use App\Enum\DirectoryType;
 use App\Repository\DirectoryRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -19,12 +18,8 @@ class Directory
     #[ORM\Column(length: 255)]
     private string $path;
 
-    #[ORM\Column(nullable: true, enumType: DirectoryType::class)]
-    private ?DirectoryType $type = null;
-
-    #[ORM\ManyToOne]
-    #[ORM\JoinColumn(nullable: true)]
-    private ?Project $project;
+    #[ORM\OneToOne(mappedBy: 'dir', cascade: ['persist', 'remove'])]
+    private ?Project $project = null;
 
     #[ORM\ManyToOne(inversedBy: 'children')]
     private ?Directory $parent;
@@ -37,7 +32,7 @@ class Directory
     #[ORM\OneToMany(targetEntity: File::class, mappedBy: 'directory')]
     private Collection $files;
 
-    # --------------------------------------------------------------------------------------------------------------
+    # ------------------------------------------------------------------------------------------------------------------
 
     public function __construct()
     {
@@ -45,14 +40,14 @@ class Directory
         $this->files = new ArrayCollection();
     }
 
-    # --------------------------------------------------------------------------------------------------------------
+    # ------------------------------------------------------------------------------------------------------------------
 
     public function getId(): int
     {
         return $this->id;
     }
 
-    # --------------------------------------------------------------------------------------------------------------
+    # ------------------------------------------------------------------------------------------------------------------
 
     public function getProject(): ?Project
     {
@@ -80,7 +75,7 @@ class Directory
         return $this;
     }
 
-    # --------------------------------------------------------------------------------------------------------------
+    # ------------------------------------------------------------------------------------------------------------------
 
     /**
      * @return Directory[]
@@ -96,7 +91,7 @@ class Directory
         return $this;
     }
 
-    # --------------------------------------------------------------------------------------------------------------
+    # ------------------------------------------------------------------------------------------------------------------
 
     /**
      * @return File[]
@@ -119,7 +114,7 @@ class Directory
         return $this;
     }
 
-    # --------------------------------------------------------------------------------------------------------------
+    # ------------------------------------------------------------------------------------------------------------------
 
     public function getParent(): ?Directory
     {
@@ -132,16 +127,5 @@ class Directory
         return $this;
     }
 
-    # --------------------------------------------------------------------------------------------------------------
-
-    public function getType(): ?DirectoryType
-    {
-        return $this->type;
-    }
-
-    public function setType(?DirectoryType $isRoot): self
-    {
-        $this->type = $isRoot;
-        return $this;
-    }
+    # ------------------------------------------------------------------------------------------------------------------
 }
