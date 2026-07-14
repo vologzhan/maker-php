@@ -23,8 +23,8 @@ class Directory
     private ?DirectoryType $type = null;
 
     #[ORM\ManyToOne]
-    #[ORM\JoinColumn(nullable: false)]
-    private Project $project;
+    #[ORM\JoinColumn(nullable: true)]
+    private ?Project $project;
 
     #[ORM\ManyToOne(inversedBy: 'children')]
     private ?Directory $parent;
@@ -54,12 +54,12 @@ class Directory
 
     # --------------------------------------------------------------------------------------------------------------
 
-    public function getProject(): Project
+    public function getProject(): ?Project
     {
         return $this->project;
     }
 
-    public function setProject(Project $project): static
+    public function setProject(?Project $project): static
     {
         $this->project = $project;
 
@@ -102,11 +102,7 @@ class Directory
 
     public function addFile(File $file): static
     {
-        if (!$this->files->contains($file)) {
-            $this->files->add($file);
-            $file->setDirectory($this);
-        }
-
+        $this->files->add($file);
         return $this;
     }
 

@@ -16,12 +16,10 @@ class FileRepository extends ServiceEntityRepository
         parent::__construct($registry, File::class);
     }
 
-    public function save(File $entity, bool $flush = false): void
+    public function save(File $entity): File
     {
         $this->getEntityManager()->persist($entity);
-        if ($flush) {
-            $this->getEntityManager()->flush();
-        }
+        return $entity;
     }
 
     public function delete(File $entity, bool $flush = false): void

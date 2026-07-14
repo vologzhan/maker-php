@@ -11,15 +11,23 @@ final readonly class Filesystem
         private FilesystemHelper $filesystemHelper,
     ) {}
 
-    public function createFile(string $name, string $content): void
+    public function createFile(string $name, string $content = ''): Filesystem
     {
         $this->filesystemHelper->createFile($name, $content, replaceIfExist: true);
+        return $this;
     }
 
-    public function assertFileContentEquals(string $filepath, string $expectedContent): void
+    public function assertFileContentEquals(string $filepath, string $expectedContent): Filesystem
     {
         $actual = file_get_contents($filepath);
-
         Assert::AssertSame($expectedContent, $actual);
+
+        return $this;
+    }
+
+    public function deleteDir(string $path): Filesystem
+    {
+        $this->filesystemHelper->deleteDir($path);
+        return $this;
     }
 }

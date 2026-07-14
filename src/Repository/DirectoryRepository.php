@@ -17,12 +17,10 @@ class DirectoryRepository extends ServiceEntityRepository
         parent::__construct($registry, Directory::class);
     }
 
-    public function save(Directory $entity, bool $flush = false): void
+    public function save(Directory $entity): Directory
     {
         $this->getEntityManager()->persist($entity);
-        if ($flush) {
-            $this->getEntityManager()->flush();
-        }
+        return $entity;
     }
 
     public function findById(int $directoryId): Directory
@@ -46,5 +44,14 @@ class DirectoryRepository extends ServiceEntityRepository
             ->orderBy('d.path', 'ASC')
             ->getQuery()
             ->getSingleResult();
+    }
+
+    public function findRootOrNull(): ?Directory
+    {
+        return $this
+            ->createQueryBuilder('d')
+            ->andWhere('d.parent IS NULL')
+            ->getQuery()
+            ->getOneOrNullResult();
     }
 }

@@ -29,4 +29,28 @@ final readonly class FilesystemHelper
             throw new \Exception("Unable to write file: $name");
         }
     }
+
+    public function deleteDir(string $dir): void
+    {
+        if (!is_dir($dir)) {
+            return;
+        }
+
+        $items = scandir($dir);
+        foreach ($items as $item) {
+            if ($item === '.' || $item === '..') {
+                continue;
+            }
+
+            $path = $dir . DIRECTORY_SEPARATOR . $item;
+
+            if (is_dir($path)) {
+                $this->deleteDir($path);
+            } else {
+                unlink($path);
+            }
+        }
+
+        rmdir($dir);
+    }
 }
