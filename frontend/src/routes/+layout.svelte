@@ -1,7 +1,7 @@
 <script lang="ts">
 	import Directory from './Directory.svelte';
 	import {GetFsTree} from "$lib/Controller/Fs/GetFsTree";
-	import type {DirItem} from "$lib/Response/Fs/DirItem";
+	import type {DirItem} from "$lib/Response/Fs/Tree/DirItem";
 	import ContextMenu from "./ContextMenu.svelte";
 
 	let error = $state('');

@@ -1,5 +1,5 @@
 <script lang="ts">
-    import type {FileItem} from "$lib/Response/Fs/FileItem";
+    import type {FileItem} from "$lib/Response/Fs/Tree/FileItem";
     import {contextMenu} from '$lib/Store/ContextMenu';
     import {DeleteController} from "$lib/Controller/Filesystem/File/DeleteController";
 

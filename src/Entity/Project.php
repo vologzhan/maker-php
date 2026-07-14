@@ -15,7 +15,7 @@ class Project
     #[ORM\Column]
     private int $id;
 
-    #[ORM\OneToOne(inversedBy: 'projectNew', cascade: ['persist', 'remove'])]
+    #[ORM\OneToOne(inversedBy: 'project', cascade: ['persist', 'remove'])]
     private ?Directory $dir = null;
 
     /** @var Collection<int, Controller> */

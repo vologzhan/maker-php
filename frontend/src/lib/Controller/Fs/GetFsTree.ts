@@ -1,4 +1,4 @@
-import type {DirItem} from "$lib/Response/Fs/DirItem";
+import type {DirItem} from "$lib/Response/Fs/Tree/DirItem";
 
 export async function GetFsTree(): Promise<DirItem> {
     const response = await fetch(`/api/fs`, {

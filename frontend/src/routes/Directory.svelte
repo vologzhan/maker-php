@@ -2,12 +2,12 @@
     import File from './File.svelte';
     import Directory from './Directory.svelte';
     import {slide} from 'svelte/transition';
-    import type {DirItem} from "$lib/Response/Fs/DirItem";
+    import type {DirItem} from "$lib/Response/Fs/Tree/DirItem";
     import {contextMenu} from '$lib/Store/ContextMenu';
-    import {UpdateDirectoryType} from "$lib/Controller/Project/Filesystem/UpdateDirectoryTypeController";
+    import {SetDirType} from "$lib/Controller/Fs/SetDirType";
     import {CreateController} from "$lib/Controller/Filesystem/File/CreateController";
     import type {CreateRequest} from "$lib/Request/Filesystem/File/CreateRequest";
-    import type {FileItem} from "$lib/Response/Fs/FileItem";
+    import type {FileItem} from "$lib/Response/Fs/Tree/FileItem";
 
     let {
         dir,
@@ -66,9 +66,17 @@
                     }
                 },
                 {
+                    label: 'Set type Project',
+                    action: () =>
+                        SetDirType(dir.id, {type: 'project'})
+                            .catch((err: any) => {
+                                console.error(err);
+                            })
+                },
+                {
                     label: 'Set type Controller',
                     action: () =>
-                        UpdateDirectoryType(dir.id, {type: 'controller'})
+                        SetDirType(dir.id, {type: 'controller'})
                             .catch((err: any) => {
                                 console.error(err);
                             })
