@@ -1,6 +1,6 @@
 <script lang="ts">
 	import Directory from './Directory.svelte';
-	import {GetTree} from "$lib/Controller/Fs/GetTree";
+	import {GetFsTree} from "$lib/Controller/Fs/GetFsTree";
 	import type {DirItem} from "$lib/Response/Fs/DirItem";
 	import ContextMenu from "./ContextMenu.svelte";
 
@@ -9,7 +9,7 @@
 	let { children } = $props();
 
 	$effect(() => {
-		GetTree()
+		GetFsTree()
 			.then((res: DirItem) => {
 				dir = res;
 				error = '';

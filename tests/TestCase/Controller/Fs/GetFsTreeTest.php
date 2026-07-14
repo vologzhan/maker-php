@@ -2,13 +2,13 @@
 
 namespace App\Tests\TestCase\Controller\Fs;
 
-use App\Controller\Fs\GetTree;
+use App\Controller\Fs\GetFsTree;
 use App\Tests\Infrastructure\ApiTestCase;
 
 /**
- * @see GetTree
+ * @see GetFsTree
  */
-final class GetTreeTest extends ApiTestCase
+final class GetFsTreeTest extends ApiTestCase
 {
     protected function setUp(): void
     {

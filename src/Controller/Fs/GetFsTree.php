@@ -11,7 +11,7 @@ use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\Routing\Attribute\Route;
 
 #[Route(path: '/api/fs', methods: ['GET'])]
-final readonly class GetTree
+final readonly class GetFsTree
 {
     public function __construct(
         private DirectoryRepository $dirRepository,
