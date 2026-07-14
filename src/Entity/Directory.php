@@ -90,6 +90,12 @@ class Directory
         return $this->children->getValues();
     }
 
+    public function addChild(Directory $child): self
+    {
+        $this->children->add($child);
+        return $this;
+    }
+
     # --------------------------------------------------------------------------------------------------------------
 
     /**

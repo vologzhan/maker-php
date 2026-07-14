@@ -16,17 +16,21 @@ final readonly class FilesystemHelper
         }
 
         $dir = dirname($name);
-
         if (!is_dir($dir)) {
-            $ok = mkdir($dir, 0777, true);
-            if (!$ok) {
-                throw new \Exception("Unable to create directory: $dir");
-            }
+            $this->createDir($dir);
         }
 
         $ok = file_put_contents($name, $content);
         if ($ok === false) {
             throw new \Exception("Unable to write file: $name");
+        }
+    }
+
+    public function createDir(string $path): void
+    {
+        $ok = mkdir($path, 0777, true);
+        if (!$ok) {
+            throw new \Exception("Unable to create directory: $path");
         }
     }
 

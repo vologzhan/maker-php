@@ -1,42 +1,33 @@
 <script lang="ts">
     import Directory from './Directory.svelte';
-    import {GetTree} from "$lib/Controller/Project/Filesystem/GetTreeController";
-    import {currentProject} from "$lib/Store/Project";
-    import type {DirectoryItemResponse} from "$lib/Response/Project/Filesystem/DirectoryItemResponse";
+    import {GetTree} from "$lib/Controller/Fs/GetTree";
+    import type {DirItem} from "$lib/Response/Fs/DirItem";
     import ContextMenu from "./ContextMenu.svelte";
 
     let error = $state('');
-    let dir = $state<DirectoryItemResponse|null>(null);
+    let dir = $state<DirItem|null>(null);
+    let { children } = $props();
 
     $effect(() => {
-        const project = $currentProject;
-
-        if (!project) return;
-
-        GetTree(project.id)
-            .then((res: DirectoryItemResponse) => {
+        GetTree()
+            .then((res: DirItem) => {
                 dir = res;
                 error = '';
             })
-            .catch(err => {
+            .catch((err: any) => {
                 error = err instanceof Error ? err.message : String(err);
             });
     });
-
-    let { children } = $props();
 </script>
 
 {#if dir}
-    Current project: {$currentProject?.name ?? '??????'}
     <div>
         <aside>
             <Directory dir={dir} open={true} />
         </aside>
 
         <main>
-            {#if $currentProject}
-                {@render children()}
-            {/if}
+            {@render children()}
         </main>
     </div>
 {:else if error}

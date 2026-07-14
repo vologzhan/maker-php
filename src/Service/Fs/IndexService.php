@@ -43,6 +43,7 @@ final readonly class IndexService
                         ->setParent($dir)
                         ->setPath($path)
                 );
+                $dir->addChild($child);
 
                 $this->scanDirRecursive($child);
 

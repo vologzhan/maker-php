@@ -2,18 +2,18 @@
     import File from './File.svelte';
     import Directory from './Directory.svelte';
     import {slide} from 'svelte/transition';
-    import type {DirectoryItemResponse} from "$lib/Response/Project/Filesystem/DirectoryItemResponse";
+    import type {DirItem} from "$lib/Response/Fs/DirItem";
     import {contextMenu} from '$lib/Store/ContextMenu';
     import {UpdateDirectoryType} from "$lib/Controller/Project/Filesystem/UpdateDirectoryTypeController";
     import {CreateController} from "$lib/Controller/Filesystem/File/CreateController";
     import type {CreateRequest} from "$lib/Request/Filesystem/File/CreateRequest";
-    import type {FileItem} from "$lib/Response/Project/Filesystem/FileItem";
+    import type {FileItem} from "$lib/Response/Fs/FileItem";
 
     let {
         dir,
         open = $bindable(false)
     }: {
-        dir: DirectoryItemResponse
+        dir: DirItem
         open?: boolean
     } = $props();
 
@@ -116,7 +116,7 @@
 
 {#if open}
     <ul transition:slide={{ duration: 300 }}>
-        {#each dir.directories as directory (directory.id)}
+        {#each dir.dirs as directory (directory.id)}
             <li>
                 <Directory dir={directory} />
             </li>

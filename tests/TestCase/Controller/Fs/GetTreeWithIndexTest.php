@@ -15,6 +15,7 @@ final class GetTreeWithIndexTest extends ApiTestCase
         $this
             ->filesystem()
             ->deleteDir('/tmp/app')
+            ->createDir('/tmp/app/src')
             ->createFile('/tmp/app/project.maker');
 
         $this->connectionPsql()->execute(
@@ -34,7 +35,14 @@ final class GetTreeWithIndexTest extends ApiTestCase
                 {
                   "id": 1,
                   "name": "app",
-                  "dirs": [],
+                  "dirs": [
+                    {
+                      "id": 2,
+                      "name": "src",
+                      "dirs": [],
+                      "files": []
+                    }
+                  ],
                   "files": [
                     {
                       "id": 1,

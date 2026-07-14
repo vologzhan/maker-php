@@ -11,9 +11,9 @@ final readonly class Filesystem
         private FilesystemHelper $filesystemHelper,
     ) {}
 
-    public function createFile(string $name, string $content = ''): Filesystem
+    public function createFile(string $filepath, string $content = ''): Filesystem
     {
-        $this->filesystemHelper->createFile($name, $content, replaceIfExist: true);
+        $this->filesystemHelper->createFile($filepath, $content, replaceIfExist: true);
         return $this;
     }
 
@@ -22,6 +22,12 @@ final readonly class Filesystem
         $actual = file_get_contents($filepath);
         Assert::AssertSame($expectedContent, $actual);
 
+        return $this;
+    }
+
+    public function createDir(string $path): Filesystem
+    {
+        $this->filesystemHelper->createDir($path);
         return $this;
     }
 
