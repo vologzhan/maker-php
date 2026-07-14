@@ -1,12 +1,13 @@
 <?php declare(strict_types=1);
 
-namespace App\Tests\TestCase\Controller\Project\Filesystem;
+namespace App\Tests\TestCase\Controller\Fs;
 
-use App\Controller\Project\Filesystem\UpdateDirectoryTypeController;
 use App\Tests\Infrastructure\ApiTestCase;
 
-/** @see UpdateDirectoryTypeController */
-final class UpdateDirectoryTypeTest extends ApiTestCase
+/**
+ * @see SetDirType
+ */
+final class SetDirTypeTest extends ApiTestCase
 {
     protected function setUp(): void
     {
@@ -44,7 +45,7 @@ final class UpdateDirectoryTypeTest extends ApiTestCase
     public function test(): void
     {
         $this
-            ->request('PUT', '/api/filesystem/directory/1/type', body:
+            ->request('POST', '/api/dir/1/type', body:
                 <<<JSON
                 {
                   "type": "controller"

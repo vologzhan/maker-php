@@ -1,13 +1,13 @@
 <?php declare(strict_types=1);
 
-namespace App\Request\Project\Filesystem;
+namespace App\Request\Fs;
 
 use App\Enum\DirectoryType;
 
-final readonly class UpdateDirectoryTypeRequest
+final readonly class SetDirTypeRequest
 {
     public function __construct(
-        public int $directoryId,
+        public int $id,
         public ?DirectoryType $type,
     ) {}
 }
