@@ -2,10 +2,13 @@
 
 namespace App\Serializer;
 
+use App\Dto\Php\TokenDto;
 use App\Entity\Directory;
 use App\Entity\File;
-use App\Response\Fs\DirItem;
-use App\Response\Fs\FileItem;
+use App\Response\Fs\Content\FileContent;
+use App\Response\Fs\Content\TokenItem;
+use App\Response\Fs\Tree\DirItem;
+use App\Response\Fs\Tree\FileItem;
 
 final readonly class FsSerializer
 {
@@ -24,6 +27,26 @@ final readonly class FsSerializer
         return new FileItem(
             id: $file->getId(),
             name: basename($file->getPath()),
+        );
+    }
+
+    /**
+     * @param TokenDto[] $tokens
+     */
+    public function fileContent(array $tokens): FileContent
+    {
+        return new FileContent(
+            tokens: array_map(fn (TokenDto $token) => $this->tokenItem($token), $tokens),
+        );
+    }
+
+    private function tokenItem(TokenDto $token): TokenItem
+    {
+        return new TokenItem(
+            pos: $token->pos,
+            end: $token->end,
+            value: $token->value,
+            type: $token->type,
         );
     }
 }

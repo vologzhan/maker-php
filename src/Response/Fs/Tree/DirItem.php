@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace App\Response\Fs;
+namespace App\Response\Fs\Tree;
 
 final readonly class DirItem
 {

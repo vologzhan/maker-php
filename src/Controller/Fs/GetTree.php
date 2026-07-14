@@ -3,7 +3,7 @@
 namespace App\Controller\Fs;
 
 use App\Repository\DirectoryRepository;
-use App\Response\Fs\DirItem;
+use App\Response\Fs\Tree\DirItem;
 use App\Serializer\FsSerializer;
 use App\Service\Fs\IndexService;
 use Doctrine\ORM\EntityManagerInterface;
