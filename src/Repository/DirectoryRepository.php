@@ -3,7 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Directory;
-use App\Enum\DirectoryType;
+use App\Enum\DirType;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -39,7 +39,7 @@ class DirectoryRepository extends ServiceEntityRepository
             ->createQueryBuilder('d')
             ->andWhere('d.type = :type')
             ->andWhere('d.project = :projectId')
-            ->setParameter('type', DirectoryType::Project)
+            ->setParameter('type', DirType::Project)
             ->setParameter('projectId', $projectId)
             ->orderBy('d.path', 'ASC')
             ->getQuery()

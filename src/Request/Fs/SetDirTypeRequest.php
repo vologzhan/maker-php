@@ -2,12 +2,12 @@
 
 namespace App\Request\Fs;
 
-use App\Enum\DirectoryType;
+use App\Enum\DirType;
 
 final readonly class SetDirTypeRequest
 {
     public function __construct(
         public int $id,
-        public ?DirectoryType $type,
+        public ?DirType $type,
     ) {}
 }

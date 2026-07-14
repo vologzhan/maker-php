@@ -5,7 +5,7 @@ namespace App\Controller\Fs;
 use App\Entity\Directory;
 use App\Entity\File;
 use App\Entity\Project;
-use App\Enum\DirectoryType;
+use App\Enum\DirType;
 use App\Repository\DirectoryRepository;
 use App\Repository\FileRepository;
 use App\Repository\ProjectRepository;
@@ -31,9 +31,18 @@ final readonly class SetDirType
     {
         $dir = $this->dirRepository->findById($request->id);
 
+        $filepath = $dir->getPath() . '/' . $request->type->filename();
+        $this->filesystemHelper->createFile($filepath, '');
+
+        $this->fileRepository->save(
+            new File()
+                ->setPath($filepath)
+                ->setDirectory($dir)
+        );
+
         match ($request->type) {
-            DirectoryType::Project => $this->setProject($dir),
-            DirectoryType::Controller => $this->setController($dir),
+            DirType::Project => $this->setProject($dir),
+            default => null,
         };
 
         $this->em->flush();
@@ -43,28 +52,9 @@ final readonly class SetDirType
 
     private function setProject(Directory $dir): void
     {
-        $this->createFile($dir, 'project.maker');
-
         $this->projectRepository->save(
             new Project()
                 ->setDir($dir)
-        );
-    }
-
-    private function setController(Directory $dir): void
-    {
-        $this->createFile($dir, 'controller.maker');
-    }
-
-    private function createFile(Directory $dir, string $filename): void
-    {
-        $filepath = $dir->getPath() . '/' . $filename;
-        $this->filesystemHelper->createFile($filepath, '');
-
-        $this->fileRepository->save(
-            new File()
-                ->setPath($filepath)
-                ->setDirectory($dir)
         );
     }
 }

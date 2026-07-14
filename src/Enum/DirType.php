@@ -2,8 +2,13 @@
 
 namespace App\Enum;
 
-enum DirectoryType: string
+enum DirType: string
 {
     case Project = 'project';
     case Controller = 'controller';
+
+    public function filename(): string
+    {
+        return sprintf('%s.maker', $this->value);
+    }
 }

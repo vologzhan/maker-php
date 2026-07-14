@@ -12,14 +12,17 @@ final class GetFsTreeTest extends ApiTestCase
 {
     protected function setUp(): void
     {
+        $this
+            ->filesystem()
+            ->deleteDir('/tmp/app')
+            ->createDir('/tmp/app/src')
+            ->createFile('/tmp/app/project.maker');
+
         $this->connectionPsql()->execute(
             <<<SQL
             TRUNCATE TABLE directory RESTART IDENTITY CASCADE;
-
-            INSERT INTO directory (id, path, parent_id) VALUES
-                  (1, '/tmp/app', null),
-                  (2, '/tmp/app/src', 1);
-            INSERT INTO file (id, path, directory_id) VALUES (1, '/tmp/app/project.maker', 1);
+            TRUNCATE TABLE file RESTART IDENTITY CASCADE;
+            TRUNCATE TABLE project RESTART IDENTITY CASCADE;
             SQL
         );
     }
@@ -51,5 +54,21 @@ final class GetFsTreeTest extends ApiTestCase
                 }
                 JSON
             );
+
+        $this
+            ->connectionPsql()
+            ->assertEquals([
+                ['id', 'path', 'parent_id'],
+                [1, '/tmp/app', null],
+                [2, '/tmp/app/src', 1],
+            ], 'SELECT * FROM directory')
+            ->assertEquals([
+                ['id', 'path', 'directory_id'],
+                [1, '/tmp/app/project.maker', 1],
+            ], 'SELECT * FROM file')
+            ->assertEquals([
+                ['id', 'dir_id'],
+                [1, 1],
+            ], 'SELECT * FROM project');
     }
 }
