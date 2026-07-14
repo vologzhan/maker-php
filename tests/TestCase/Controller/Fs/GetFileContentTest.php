@@ -14,14 +14,17 @@ final class GetFileContentTest extends ApiTestCase
     {
         $this
             ->filesystem()
-            ->deleteDir('/tmp/app')
-            ->createFile('/tmp/app/index.php', '<?php');
+            ->deleteDir('/tmp/app/src/Controller')
+            ->createFile('/tmp/app/src/Controller/SelfCheck.php', '<?php');
 
         $this->connectionPsql()->execute(
             <<<SQL
             TRUNCATE TABLE file RESTART IDENTITY CASCADE;
+            TRUNCATE TABLE project RESTART IDENTITY CASCADE;
 
-            INSERT INTO file (id, path, directory_id) VALUES (1, '/tmp/app/index.php', null);
+            INSERT INTO file (id, path, directory_id) VALUES (1, '/tmp/app/src/Controller/SelfCheck.php', null);
+            INSERT INTO project (id, name) VALUES (1, '');
+            INSERT INTO controller (id, path, method, project_id, response_id, file_id) VALUES (1, '/api', 'GET', 1, null, 1);
             SQL
         );
     }
@@ -41,7 +44,13 @@ final class GetFileContentTest extends ApiTestCase
                         "value": "<?php",
                         "type": "T_OPEN_TAG"
                     }
-                  ]
+                  ],
+                  "controller": {
+                    "id": 1,
+                    "method": "GET",
+                    "path": "/api",
+                    "responseId": null
+                  }
                 }
                 JSON
             );

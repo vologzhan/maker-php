@@ -12,6 +12,10 @@ use App\Response\Fs\Tree\FileItem;
 
 final readonly class FsSerializer
 {
+    public function __construct(
+        private ControllerSerializer $controllerSerializer,
+    ) {}
+
     public function dirItem(Directory $dir): DirItem
     {
         return new DirItem(
@@ -33,10 +37,11 @@ final readonly class FsSerializer
     /**
      * @param TokenDto[] $tokens
      */
-    public function fileContent(array $tokens): FileContent
+    public function fileContent(File $file, array $tokens): FileContent
     {
         return new FileContent(
             tokens: array_map(fn (TokenDto $token) => $this->tokenItem($token), $tokens),
+            controller: $this->controllerSerializer->controllerItem($file->getController()),
         );
     }
 

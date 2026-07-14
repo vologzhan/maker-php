@@ -4,8 +4,8 @@ namespace App\Serializer;
 
 use App\Dto\Php\FileDto;
 use App\Entity\Controller;
+use App\Response\Controller\ControllerItem;
 use App\Response\Controller\ControllerResponse;
-use App\Response\Project\Controller\ControllerItem;
 
 final readonly class ControllerSerializer
 {
@@ -24,11 +24,14 @@ final readonly class ControllerSerializer
         );
     }
 
-    public function controllerItem(Controller $controller): ControllerItem
+    public function controllerItem(?Controller $controller): ?ControllerItem
     {
+        if ($controller === null) {
+            return null;
+        }
+
         return new ControllerItem(
             id: $controller->getId(),
-            name: $controller->getName(),
             method: $controller->getMethod(),
             path: $controller->getPath(),
             responseId: $controller->getResponse()?->getId(),

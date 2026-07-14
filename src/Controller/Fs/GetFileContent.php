@@ -24,6 +24,6 @@ final readonly class GetFileContent
         $file = $this->fileRepository->findById($request->id);
         $content = $this->phpParser->parseFile($file->getPath());
 
-        return $this->fsSerializer->fileContent($content->tokens);
+        return $this->fsSerializer->fileContent($file, $content->tokens);
     }
 }
