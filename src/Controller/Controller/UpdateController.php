@@ -86,6 +86,7 @@ final readonly class UpdateController
         $this->replaceTokens($tokens, $path, sprintf("'%s'", $controller->getPath()));
 
         // todo криво обновляется Response
+        // todo обновить импорт в use
         $responseFullClassName = $controller->getResponse()->getClassName();
         $parts = explode('\\', $responseFullClassName);
         $responseClassName = array_pop($parts);
