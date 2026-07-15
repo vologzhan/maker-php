@@ -4,12 +4,10 @@ namespace App\Tests\TestCase\Controller\Controller;
 
 use App\Controller\Controller\UpdateController;
 use App\Tests\Infrastructure\ApiTestCase;
-use App\Tests\Infrastructure\Attribute\Skip;
 
 /**
  * @see UpdateController
  */
-#[Skip]
 final class UpdateControllerTest extends ApiTestCase
 {
     protected function setUp(): void
