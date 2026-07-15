@@ -100,10 +100,7 @@ class Response
 
     public function addField(Field $field): static
     {
-        if (!$this->fields->contains($field)) {
-            $this->fields->add($field);
-            $field->setResponse($this);
-        }
+        $this->fields->add($field);
 
         return $this;
     }

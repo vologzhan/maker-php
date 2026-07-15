@@ -25,6 +25,9 @@ class File
     #[ORM\OneToOne(mappedBy: 'file', cascade: ['persist', 'remove'])]
     private ?Response $response = null;
 
+    #[ORM\OneToOne(mappedBy: 'file', cascade: ['persist', 'remove'])]
+    private ?Request $request = null;
+
     # ------------------------------------------------------------------------------------------------------------------
 
     public function getId(): int
@@ -84,6 +87,20 @@ class File
     public function setResponse(Response $response): static
     {
         $this->response = $response;
+
+        return $this;
+    }
+
+    # ------------------------------------------------------------------------------------------------------------------
+
+    public function getRequest(): ?Request
+    {
+        return $this->request;
+    }
+
+    public function setRequest(?Request $request): static
+    {
+        $this->request = $request;
 
         return $this;
     }

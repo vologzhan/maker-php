@@ -26,12 +26,17 @@ class Project
     #[ORM\OneToMany(targetEntity: Response::class, mappedBy: 'project')]
     private Collection $responses;
 
+    /** @var Collection<int, Request> */
+    #[ORM\OneToMany(targetEntity: Request::class, mappedBy: 'project')]
+    private Collection $requests;
+
     # ------------------------------------------------------------------------------------------------------------------
 
     public function __construct()
     {
         $this->controllers = new ArrayCollection();
         $this->responses = new ArrayCollection();
+        $this->requests = new ArrayCollection();
     }
 
     # ------------------------------------------------------------------------------------------------------------------
@@ -109,6 +114,30 @@ class Project
     public function removeResponse(Response $response): static
     {
         $this->responses->removeElement($response);
+
+        return $this;
+    }
+
+    # ------------------------------------------------------------------------------------------------------------------
+
+    /**
+     * @return Request[]
+     */
+    public function getRequests(): array
+    {
+        return $this->requests->getValues();
+    }
+
+    public function addRequest(Request $request): static
+    {
+        $this->requests->add($request);
+
+        return $this;
+    }
+
+    public function removeRequest(Request $request): static
+    {
+        $this->requests->removeElement($request);
 
         return $this;
     }
