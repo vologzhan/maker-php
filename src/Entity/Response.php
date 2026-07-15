@@ -20,13 +20,11 @@ class Response
     private Project $project;
 
     #[ORM\Column(length: 255)]
-    private string $name;
-
-    #[ORM\Column(length: 255)]
     private string $className;
 
-    #[ORM\Column(length: 255)]
-    private string $filepath;
+    #[ORM\OneToOne(inversedBy: 'response', cascade: ['persist', 'remove'])]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?File $file = null;
 
     /**
      * @var Collection<int, Field>
@@ -34,15 +32,21 @@ class Response
     #[ORM\OneToMany(targetEntity: Field::class, mappedBy: 'response')]
     private Collection $fields;
 
+    # ------------------------------------------------------------------------------------------------------------------
+
     public function __construct()
     {
         $this->fields = new ArrayCollection();
     }
 
+    # ------------------------------------------------------------------------------------------------------------------
+
     public function getId(): int
     {
         return $this->id;
     }
+
+    # ------------------------------------------------------------------------------------------------------------------
 
     public function getProject(): Project
     {
@@ -56,17 +60,7 @@ class Response
         return $this;
     }
 
-    public function getName(): string
-    {
-        return $this->name;
-    }
-
-    public function setName(string $name): static
-    {
-        $this->name = $name;
-
-        return $this;
-    }
+    # ------------------------------------------------------------------------------------------------------------------
 
     public function getClassName(): string
     {
@@ -80,17 +74,21 @@ class Response
         return $this;
     }
 
-    public function getFilepath(): string
+    # ------------------------------------------------------------------------------------------------------------------
+
+    public function getFile(): ?File
     {
-        return $this->filepath;
+        return $this->file;
     }
 
-    public function setFilepath(string $filepath): static
+    public function setFile(File $file): static
     {
-        $this->filepath = $filepath;
+        $this->file = $file;
 
         return $this;
     }
+
+    # ------------------------------------------------------------------------------------------------------------------
 
     /**
      * @return Field[]
@@ -116,4 +114,6 @@ class Response
 
         return $this;
     }
+
+    # ------------------------------------------------------------------------------------------------------------------
 }

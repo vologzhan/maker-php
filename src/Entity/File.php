@@ -22,6 +22,9 @@ class File
     #[ORM\OneToOne(mappedBy: 'file')]
     private ?Controller $controller = null;
 
+    #[ORM\OneToOne(mappedBy: 'file', cascade: ['persist', 'remove'])]
+    private ?Response $response = null;
+
     # ------------------------------------------------------------------------------------------------------------------
 
     public function getId(): int
@@ -66,8 +69,21 @@ class File
 
     public function setController(Controller $controller): static
     {
-        $controller->setFile($this);
         $this->controller = $controller;
+
+        return $this;
+    }
+
+    # ------------------------------------------------------------------------------------------------------------------
+
+    public function getResponse(): ?Response
+    {
+        return $this->response;
+    }
+
+    public function setResponse(Response $response): static
+    {
+        $this->response = $response;
 
         return $this;
     }

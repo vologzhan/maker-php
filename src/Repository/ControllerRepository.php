@@ -16,12 +16,10 @@ class ControllerRepository extends ServiceEntityRepository
         parent::__construct($registry, Controller::class);
     }
 
-    public function save(Controller $controller, bool $flush = false): void
+    public function save(Controller $entity): Controller
     {
-        $this->getEntityManager()->persist($controller);
-        if ($flush) {
-            $this->getEntityManager()->flush();
-        }
+        $this->getEntityManager()->persist($entity);
+        return $entity;
     }
 
     public function delete(Controller $entity, bool $flush = false): void

@@ -67,10 +67,7 @@ class Project
 
     public function addController(Controller $controller): static
     {
-        if (!$this->controllers->contains($controller)) {
-            $this->controllers->add($controller);
-            $controller->setProject($this);
-        }
+        $controller->setProject($this);
 
         return $this;
     }
@@ -104,10 +101,7 @@ class Project
 
     public function addResponse(Response $response): static
     {
-        if (!$this->responses->contains($response)) {
-            $this->responses->add($response);
-            $response->setProject($this);
-        }
+        $this->responses->add($response);
 
         return $this;
     }

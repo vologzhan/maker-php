@@ -47,14 +47,15 @@ final readonly class IndexControllerService
         $methods = $routeAttribute->oneOrNullArgument('methods');
         $firstMethod = $methods?->value?->value[0] ?? null;
 
-        $controller = new Controller()
-            ->setPath($routeAttribute->args[0]->value->value)
-            ->setMethod($firstMethod)
-            ->setFile($file)
-            ->setResponse($response);
+        $controller = $this->controllerRepository->save(
+            new Controller()
+                ->setPath($routeAttribute->args[0]->value->value)
+                ->setMethod($firstMethod)
+                ->setFile($file)
+                ->setResponse($response)
+                ->setProject($project)
+        );
 
         $project->addController($controller);
-
-        $this->controllerRepository->save($controller);
     }
 }

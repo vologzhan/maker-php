@@ -15,6 +15,7 @@ use App\Serializer\FsSerializer;
 use App\Service\Controller\IndexControllerService;
 use App\Service\Fs\DirHelper;
 use App\Service\Fs\FsHelper;
+use App\Service\Response\IndexResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Routing\Requirement\Requirement;
@@ -29,6 +30,7 @@ final readonly class SetDirType
         private FsHelper $fsHelper,
         private FsSerializer $fsSerializer,
         private IndexControllerService $indexControllerService,
+        private IndexResponseService $indexResponseService,
         private DirHelper $dirHelper,
         private EntityManagerInterface $em,
     ) {}
@@ -49,6 +51,7 @@ final readonly class SetDirType
         match ($request->type) {
             DirType::Project => $this->setProject($dir),
             DirType::Controller => $this->setController($dir),
+            DirType::Response => $this->setResponse($dir),
         };
 
         $this->em->flush();
@@ -69,5 +72,12 @@ final readonly class SetDirType
         $projectDir = $this->dirHelper->getProjectDir($dir);
 
         $this->indexControllerService->indexDirRecursive($projectDir->getProject(), $dir);
+    }
+
+    private function setResponse(Directory $dir): void
+    {
+        $projectDir = $this->dirHelper->getProjectDir($dir);
+
+        $this->indexResponseService->indexDirRecursive($projectDir->getProject(), $dir);
     }
 }

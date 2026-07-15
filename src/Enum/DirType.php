@@ -6,6 +6,7 @@ enum DirType: string
 {
     case Project = 'project';
     case Controller = 'controller';
+    case Response = 'response';
 
     public function filename(): string
     {

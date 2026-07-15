@@ -13,6 +13,7 @@ use App\Repository\ProjectRepository;
 use App\Response\Fs\Tree\DirItem;
 use App\Serializer\FsSerializer;
 use App\Service\Controller\IndexControllerService;
+use App\Service\Response\IndexResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\Routing\Attribute\Route;
@@ -25,6 +26,7 @@ final readonly class GetFsTree
         private FileRepository $fileRepository,
         private ProjectRepository $projectRepository,
         private IndexControllerService $indexControllerService,
+        private IndexResponseService $indexResponseService,
         private FsSerializer $fsSerializer,
         private EntityManagerInterface $entityManager,
         #[Autowire(env: 'PATH_APP')] private string $pathApp,
@@ -113,6 +115,11 @@ final readonly class GetFsTree
                 $struct->controller = $dir;
                 break;
             }
+
+            if ($filename === DirType::Response->filename()) {
+                $struct->response = $dir;
+                break;
+            }
         }
 
         foreach ($dir->getChildren() as $child) {
@@ -138,6 +145,11 @@ final readonly class GetFsTree
         $controllersDir = $struct->controller;
         if ($controllersDir !== null) {
             $this->indexControllerService->indexDirRecursive($project, $controllersDir);
+        }
+
+        $responseDir = $struct->response;
+        if ($responseDir !== null) {
+            $this->indexResponseService->indexDirRecursive($project, $responseDir);
         }
     }
 }

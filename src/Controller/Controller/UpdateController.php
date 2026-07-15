@@ -12,6 +12,7 @@ use App\Response\Fs\Content\FileContent;
 use App\Serializer\FsSerializer;
 use App\Service\Filesystem\File\ParsePhpFileService;
 use App\Service\Php\PhpPrinter;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Routing\Requirement\Requirement;
 
@@ -24,6 +25,7 @@ final readonly class UpdateController
         private ResponseRepository $responseRepository,
         private ParsePhpFileService $parsePhpFileService,
         private FsSerializer $fsSerializer,
+        private EntityManagerInterface $entityManager,
     ) {}
 
     public function __invoke(UpdateRequest $request): FileContent
@@ -38,7 +40,9 @@ final readonly class UpdateController
 
         $tokens = $this->updateFile($controller);
 
-        $this->controllerRepository->save($controller, true);
+        $this->controllerRepository->save($controller);
+
+        $this->entityManager->flush();
 
         return $this->fsSerializer->fileContent($controller->getFile(), $tokens);
     }

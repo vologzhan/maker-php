@@ -16,12 +16,10 @@ class ResponseRepository extends ServiceEntityRepository
         parent::__construct($registry, Response::class);
     }
 
-    public function save(Response $response, bool $flush = false): void
+    public function save(Response $entity): Response
     {
-        $this->getEntityManager()->persist($response);
-        if ($flush) {
-            $this->getEntityManager()->flush();
-        }
+        $this->getEntityManager()->persist($entity);
+        return $entity;
     }
 
     public function findById(int $id): Response
