@@ -1,8 +1,8 @@
 <?php declare(strict_types=1);
 
-namespace App\Service\Filesystem;
+namespace App\Service\Fs;
 
-final readonly class FilesystemHelper
+final readonly class FsHelper
 {
     public function joinPath(string ...$parts): string
     {
@@ -24,6 +24,11 @@ final readonly class FilesystemHelper
         if ($ok === false) {
             throw new \Exception("Unable to write file: $name");
         }
+    }
+
+    public function deleteFile(string $filepath): void
+    {
+        unlink($filepath);
     }
 
     public function createDir(string $path): void
@@ -51,7 +56,7 @@ final readonly class FilesystemHelper
             if (is_dir($path)) {
                 $this->deleteDir($path);
             } else {
-                unlink($path);
+                $this->deleteFile($path);
             }
         }
 

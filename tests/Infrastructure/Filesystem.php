@@ -2,18 +2,24 @@
 
 namespace App\Tests\Infrastructure;
 
-use App\Service\Filesystem\FilesystemHelper;
+use App\Service\Fs\FsHelper;
 use PHPUnit\Framework\Assert;
 
 final readonly class Filesystem
 {
     public function __construct(
-        private FilesystemHelper $filesystemHelper,
+        private FsHelper $filesystemHelper,
     ) {}
 
     public function createFile(string $filepath, string $content = ''): Filesystem
     {
         $this->filesystemHelper->createFile($filepath, $content, replaceIfExist: true);
+        return $this;
+    }
+
+    public function deleteFile(string $filepath): Filesystem
+    {
+        $this->filesystemHelper->deleteFile($filepath);
         return $this;
     }
 

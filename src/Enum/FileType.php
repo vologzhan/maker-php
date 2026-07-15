@@ -2,7 +2,6 @@
 
 namespace App\Enum;
 
-// todo кажется тут нарушается S из SOLID
 enum FileType: string
 {
     case PhpClass = 'php_class';

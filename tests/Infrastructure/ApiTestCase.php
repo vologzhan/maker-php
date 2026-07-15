@@ -2,7 +2,7 @@
 
 namespace App\Tests\Infrastructure;
 
-use App\Service\Filesystem\FilesystemHelper;
+use App\Service\Fs\FsHelper;
 use App\Tests\Infrastructure\Attribute\Skip;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
@@ -57,7 +57,7 @@ class ApiTestCase extends WebTestCase
     protected function filesystem(): Filesystem
     {
         if ($this->filesystem === null) {
-            $this->filesystem = new Filesystem(new FilesystemHelper());
+            $this->filesystem = new Filesystem(new FsHelper());
         }
         return $this->filesystem;
     }

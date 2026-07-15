@@ -1,24 +1,26 @@
 <?php declare(strict_types=1);
 
-namespace App\Tests\TestCase\Controller\Filesystem\File;
+namespace App\Tests\TestCase\Controller\Fs;
 
-use App\Controller\Filesystem\File\CreateController;
+use App\Controller\Fs\CreateFile;
 use App\Tests\Infrastructure\ApiTestCase;
 
 /**
- * @see CreateController
+ * @see CreateFile
  */
 final class CreateFileTest extends ApiTestCase
 {
     protected function setUp(): void
     {
-        unlink('/tmp/tests/Controller/Filesystem/File/CreateFileTest/file.txt');
+        $this
+            ->filesystem()
+            ->deleteDir('/tmp/app')
+            ->createDir('/tmp/app');
 
         $this->connectionPsql()->execute(
             <<<SQL
-            TRUNCATE TABLE project RESTART IDENTITY CASCADE;
-            INSERT INTO project (id, name) VALUES (1, 'maker-php');
-            INSERT INTO directory (id, path, type, project_id, parent_id) VALUES (1, '/tmp/tests/Controller/Filesystem/File/CreateFileTest', null, 1, null);
+            TRUNCATE TABLE directory RESTART IDENTITY CASCADE;
+            INSERT INTO directory (id, path, parent_id) VALUES (1, '/tmp/app', null);
             SQL
         );
     }
@@ -26,7 +28,7 @@ final class CreateFileTest extends ApiTestCase
     public function test(): void
     {
         $this
-            ->request('POST', '/api/filesystem/file', body:
+            ->request('POST', '/api/file',
                 <<<JSON
                 {
                   "directoryId": 1,
@@ -40,19 +42,18 @@ final class CreateFileTest extends ApiTestCase
                 <<<JSON
                 {
                   "id": 1,
-                  "name": "file.txt",
-                  "type": null
+                  "name": "file.txt"
                 }
                 JSON
             );
 
-        $this->filesystem()->assertFileContentEquals('/tmp/tests/Controller/Filesystem/File/CreateFileTest/file.txt', '');
+        $this->filesystem()->assertFileContentEquals('/tmp/app/file.txt', '');
 
         $this
             ->connectionPsql()
             ->assertEquals([
                 ['id', 'path', 'directory_id'],
-                [1, '/tmp/tests/Controller/Filesystem/File/CreateFileTest/file.txt', 1],
+                [1, '/tmp/app/file.txt', 1],
             ], 'SELECT * FROM file');
     }
 }

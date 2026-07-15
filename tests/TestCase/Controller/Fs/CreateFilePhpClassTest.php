@@ -1,24 +1,26 @@
 <?php declare(strict_types=1);
 
-namespace App\Tests\TestCase\Controller\Filesystem\File;
+namespace App\Tests\TestCase\Controller\Fs;
 
-use App\Controller\Filesystem\File\CreateController;
+use App\Controller\Fs\CreateFile;
 use App\Tests\Infrastructure\ApiTestCase;
 
 /**
- * @see CreateController
+ * @see CreateFile
  */
-final class CreatePhpClassTest extends ApiTestCase
+final class CreateFilePhpClassTest extends ApiTestCase
 {
     protected function setUp(): void
     {
-        unlink('/tmp/tests/Controller/Filesystem/File/CreatePhpClass/MyClass.php');
+        $this
+            ->filesystem()
+            ->deleteDir('/tmp/app')
+            ->createDir('/tmp/app');
 
         $this->connectionPsql()->execute(
             <<<SQL
-            TRUNCATE TABLE project RESTART IDENTITY CASCADE;
-            INSERT INTO project (id, name) VALUES (1, 'maker-php');
-            INSERT INTO directory (id, path, type, project_id, parent_id) VALUES (1, '/tmp/tests/Controller/Filesystem/File/CreatePhpClass', null, 1, null);
+            TRUNCATE TABLE directory RESTART IDENTITY CASCADE;
+            INSERT INTO directory (id, path, parent_id) VALUES (1, '/tmp/app', null);
             SQL
         );
     }
@@ -26,7 +28,8 @@ final class CreatePhpClassTest extends ApiTestCase
     public function test(): void
     {
         $this
-            ->request('POST', '/api/filesystem/file', body: <<<JSON
+            ->request('POST', '/api/file',
+                <<<JSON
                 {
                   "directoryId": 1,
                   "name": "MyClass",
@@ -39,13 +42,12 @@ final class CreatePhpClassTest extends ApiTestCase
                 <<<JSON
                 {
                   "id": 1,
-                  "name": "MyClass.php",
-                  "type": null
+                  "name": "MyClass.php"
                 }
                 JSON
             );
 
-        $this->filesystem()->assertFileContentEquals('/tmp/tests/Controller/Filesystem/File/CreatePhpClass/MyClass.php',
+        $this->filesystem()->assertFileContentEquals('/tmp/app/MyClass.php',
             <<<PHP
             <?php declare(strict_types=1);
 
@@ -63,7 +65,7 @@ final class CreatePhpClassTest extends ApiTestCase
             ->connectionPsql()
             ->assertEquals([
                 ['id', 'path', 'directory_id'],
-                [1, '/tmp/tests/Controller/Filesystem/File/CreatePhpClass/MyClass.php', 1],
+                [1, '/tmp/app/MyClass.php', 1],
             ], 'SELECT * FROM file');
     }
 }

@@ -41,14 +41,4 @@ class ControllerRepository extends ServiceEntityRepository
             ->getQuery()
             ->getSingleResult();
     }
-
-    public function findByFileId(int $fileId): Controller
-    {
-        return $this
-            ->createQueryBuilder('c')
-            ->andWhere('c.file = :fileId')
-            ->setParameter('fileId', $fileId)
-            ->getQuery()
-            ->getSingleResult();
-    }
 }

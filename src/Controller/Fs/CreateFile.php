@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace App\Service\Filesystem\File;
+namespace App\Controller\Fs;
 
 use App\Entity\Controller;
 use App\Entity\File;
@@ -8,26 +8,28 @@ use App\Enum\FileType;
 use App\Repository\ControllerRepository;
 use App\Repository\DirectoryRepository;
 use App\Repository\FileRepository;
-use App\Repository\ProjectRepository;
-use App\Request\Filesystem\File\CreateRequest;
-use App\Response\Project\Filesystem\FileItem;
-use App\Serializer\FilesystemSerializer;
-use App\Service\Filesystem\FilesystemHelper;
+use App\Request\Fs\CreateFileRequest;
+use App\Response\Fs\Tree\FileItem;
+use App\Serializer\FsSerializer;
+use App\Service\Fs\DirHelper;
+use App\Service\Fs\FsHelper;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\Routing\Attribute\Route;
 
-final readonly class CreateService
+#[Route('/api/file', methods: ['POST'])]
+final readonly class CreateFile
 {
     public function __construct(
         private DirectoryRepository $directoryRepository,
         private FileRepository $fileRepository,
         private ControllerRepository $controllerRepository,
-        private FileSystemHelper $fileSystemHelper,
+        private FsHelper $fsHelper,
+        private DirHelper $dirHelper,
         private EntityManagerInterface $entityManager,
-        private ProjectRepository $projectRepository,
-        private FilesystemSerializer $filesystemSerializer,
+        private FsSerializer $fsSerializer,
     ) {}
 
-    public function __invoke(CreateRequest $request): FileItem
+    public function __invoke(CreateFileRequest $request): FileItem
     {
         if ($request->type === FileType::PhpClass) {
             $filename = $request->name . '.php';
@@ -44,8 +46,7 @@ final readonly class CreateService
 
                 PHP;
         } else if ($request->type === FileType::Controller) {
-            $controllerName = $request->name . 'Controller';
-            $filename = $controllerName . '.php';
+            $filename = $request->name . '.php';
             $namespace = 'App\Controller'; // todo
             $responseName = 'SuccessResponse'; // todo
             $path = '/';
@@ -59,7 +60,7 @@ final readonly class CreateService
                 use Symfony\Component\Routing\Attribute\Route;
                 
                 #[Route('$path', methods: ['$method'])]
-                final readonly class $controllerName
+                final readonly class $request->name
                 {
                     public function __invoke(): $responseName
                     {
@@ -75,20 +76,20 @@ final readonly class CreateService
 
         $dir = $this->directoryRepository->findById($request->directoryId);
 
-        $filepath = $this->fileSystemHelper->joinPath($dir->getPath(), $filename);
-        $this->fileSystemHelper->createFile($filepath, $content);
+        $filepath = $this->fsHelper->joinPath($dir->getPath(), $filename);
+        $this->fsHelper->createFile($filepath, $content);
 
         $file = new File()
             ->setPath($filepath)
             ->setDirectory($dir);
 
         if ($request->type === FileType::Controller) {
-            $project = $this->projectRepository->findAll()[0]; // todo
+            $projectDir = $this->dirHelper->getProjectDir($dir);
 
             $controller = new Controller()
                 ->setPath($path)
                 ->setMethod($method)
-                ->setProject($project) // todo
+                ->setProject($projectDir->getProject())
                 ->setResponse(null); // todo
 
             $file->setController($controller);
@@ -100,7 +101,7 @@ final readonly class CreateService
 
         $this->entityManager->flush();
 
-        return $this->filesystemSerializer->fileItem($file);
+        return $this->fsSerializer->fileItem($file);
     }
 
 //    public function __invoke(CreateRequest $request): ControllerItem

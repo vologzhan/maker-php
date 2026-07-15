@@ -1,8 +1,7 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace App\Entity;
 
-use App\Enum\FileType;
 use App\Repository\FileRepository;
 use Doctrine\ORM\Mapping as ORM;
 

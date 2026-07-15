@@ -5,8 +5,8 @@
     import type {DirItem} from "$lib/Response/Fs/Tree/DirItem";
     import {contextMenu} from '$lib/Store/ContextMenu';
     import {SetDirType} from "$lib/Controller/Fs/SetDirType";
-    import {CreateController} from "$lib/Controller/Filesystem/File/CreateController";
-    import type {CreateRequest} from "$lib/Request/Filesystem/File/CreateRequest";
+    import {CreateFile} from "$lib/Controller/Fs/CreateFile";
+    import type {CreateFileRequest} from "$lib/Request/Fs/CreateFileRequest";
     import type {FileItem} from "$lib/Response/Fs/Tree/FileItem";
 
     let {
@@ -101,13 +101,13 @@
             return;
         }
 
-        const req: CreateRequest = {
+        const req: CreateFileRequest = {
             directoryId: dir.id,
             name: filename,
             type: type
         }
 
-        CreateController(req)
+        CreateFile(req)
             .then((res: FileItem) => {
                 dir.files.push(res);
             })
