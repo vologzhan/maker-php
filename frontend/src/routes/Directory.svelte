@@ -87,6 +87,17 @@
                                 console.error(err);
                             })
                 },
+                {
+                    label: 'Set type Response',
+                    action: () =>
+                        SetDirType(dir.id, {type: 'response'})
+                            .then((res: FileItem) => {
+                                dir.files.push(res)
+                            })
+                            .catch((err: any) => {
+                                console.error(err);
+                            })
+                },
             ]
         });
     }
