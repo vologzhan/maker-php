@@ -37,14 +37,14 @@ final class UpdateControllerTest extends ApiTestCase
             TRUNCATE TABLE directory RESTART IDENTITY CASCADE;
             TRUNCATE TABLE project RESTART IDENTITY CASCADE;
             INSERT INTO file (id, path, directory_id) VALUES
-                  (1, '/tmp/app/Controller.php', null),
-                  (2, '/tmp/app/SuccessResponse.php', null),
-                  (3, '/tmp/app/OtherResponse.php', null);
+                (1, '/tmp/app/Controller.php', null),
+                (2, '/tmp/app/SuccessResponse.php', null),
+                (3, '/tmp/app/OtherResponse.php', null);
             INSERT INTO project (id, dir_id) VALUES (1, null);
-            INSERT INTO controller (id, path, method, project_id, response_id, file_id) VALUES (1, '/', 'GET', 1, null, 1);
             INSERT INTO response (id, class_name, project_id, file_id) VALUES
-               (1, 'Fixture\Response\SuccessResponse', 1, 2),
-               (2, 'Fixture\Response\OtherResponse', 1, 3);
+                (1, 'Fixture\Response\SuccessResponse', 1, 2),
+                (2, 'Fixture\Response\OtherResponse', 1, 3);
+            INSERT INTO controller (id, path, method, project_id, response_id, file_id) VALUES (1, '/', 'GET', 1, 1, 1);
             SQL
         );
     }
@@ -85,7 +85,7 @@ final class UpdateControllerTest extends ApiTestCase
 
         $this->connectionPsql()->assertEquals([
             ['id', 'path', 'method', 'project_id', 'response_id', 'file_id'],
-            [1, '/self-check', 'POST', 1, null, 1]
+            [1, '/self-check', 'POST', 1, 2, 1]
         ], 'SELECT * FROM controller');
     }
 }

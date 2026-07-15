@@ -49,6 +49,7 @@ final readonly class UpdateController
 
     public function replaceTokens(array &$tokens, NodeDto $node, string $value): void
     {
+        // todo у токенов появляется смещение и поэтому работает обновление только снизу вверх
         $pos = $node->pos;
         $end = $node->end;
 
@@ -77,6 +78,13 @@ final readonly class UpdateController
         $class = $fileDto->classes[0];
         $tokens = $fileDto->tokens;
 
+        // todo обновить импорт в use
+        $responseFullClassName = $controller->getResponse()->getClassName();
+        $parts = explode('\\', $responseFullClassName);
+        $responseClassName = array_pop($parts);
+        $return = $class->method('__invoke')->return;
+        $this->replaceTokens($tokens, $return, $responseClassName);
+
         $route = $class->attribute(Route::class);
 
         $method = $route->args[1]->value;
@@ -84,15 +92,6 @@ final readonly class UpdateController
 
         $path = $route->args[0]->value;
         $this->replaceTokens($tokens, $path, sprintf("'%s'", $controller->getPath()));
-
-        // todo криво обновляется Response
-        // todo обновить импорт в use
-        $responseFullClassName = $controller->getResponse()->getClassName();
-        $parts = explode('\\', $responseFullClassName);
-        $responseClassName = array_pop($parts);
-
-        $invoke = $class->method('__invoke')->return;
-        $this->replaceTokens($tokens, $invoke, $responseClassName);
 
         $this->phpPrinter->saveFile($file->getPath(), $tokens);
 
