@@ -98,6 +98,17 @@
                                 console.error(err);
                             })
                 },
+                {
+                    label: 'Set type Request',
+                    action: () =>
+                        SetDirType(dir.id, {type: 'request'})
+                            .then((res: FileItem) => {
+                                dir.files.push(res)
+                            })
+                            .catch((err: any) => {
+                                console.error(err);
+                            })
+                },
             ]
         });
     }
