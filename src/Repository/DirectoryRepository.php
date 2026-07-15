@@ -33,19 +33,6 @@ class DirectoryRepository extends ServiceEntityRepository
             ->getSingleResult();
     }
 
-    public function findByProjectId(int $projectId): Directory
-    {
-        return $this
-            ->createQueryBuilder('d')
-            ->andWhere('d.type = :type')
-            ->andWhere('d.project = :projectId')
-            ->setParameter('type', DirType::Project)
-            ->setParameter('projectId', $projectId)
-            ->orderBy('d.path', 'ASC')
-            ->getQuery()
-            ->getSingleResult();
-    }
-
     public function findRootOrNull(): ?Directory
     {
         return $this
