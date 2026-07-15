@@ -1,5 +1,5 @@
 <script lang="ts">
-    import type {TokenItem} from "$lib/Response/Filesystem/File/TokenItem";
+    import type {TokenItem} from "$lib/Response/Fs/Content/TokenItem";
 
     let {
         content,

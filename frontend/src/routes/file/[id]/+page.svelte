@@ -11,8 +11,6 @@
     $effect(() => {
         const id = Number(page.params.id);
 
-        if (!id) return;
-
         GetFileContent(id)
             .then((res: FileContent) => content = res)
             .catch(err => {
@@ -20,12 +18,18 @@
             });
     });
 
+    function onControllerUpdate(res: FileContent) {
+        content = res;
+    }
 </script>
 
 <main>
     {#if content}
         {#if content.controller}
-            <ControllerViewer controller={content.controller} />
+            <ControllerViewer
+                controller={content.controller}
+                onUpdate={onControllerUpdate}
+            />
             <br />
         {/if}
         <FileViewer content={content.tokens} />

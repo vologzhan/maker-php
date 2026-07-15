@@ -1,20 +1,22 @@
 <script lang="ts">
     import {UpdateController} from "$lib/Controller/Controller/UpdateController";
-    import type {ContentItemResponse} from "$lib/Response/Filesystem/File/ContentItemResponse";
+    import type {FileContent} from "$lib/Response/Fs/Content/FileContent";
     import type {ControllerItem} from "$lib/Response/Controller/ControllerItem";
 
     let {
         controller,
+        onUpdate,
     }: {
         controller: ControllerItem
+        onUpdate: (content: FileContent) => void
     } = $props();
 
     let error = $state('')
 
     function save() {
         UpdateController(controller.id, controller)
-            .then((res: ContentItemResponse) => {
-                // controller.content = res.items // todo update content
+            .then((res: FileContent) => {
+                onUpdate(res)
             })
             .catch((err: any) => {
                 error = err instanceof Error ? err.message : String(err)

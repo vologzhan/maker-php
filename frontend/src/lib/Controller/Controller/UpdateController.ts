@@ -1,7 +1,7 @@
 import type {UpdateRequest} from "$lib/Request/Controller/UpdateRequest";
-import type {ContentItemResponse} from "$lib/Response/Filesystem/File/ContentItemResponse";
+import type {FileContent} from "$lib/Response/Fs/Content/FileContent";
 
-export async function UpdateController(id: number, body: UpdateRequest): Promise<ContentItemResponse> {
+export async function UpdateController(id: number, body: UpdateRequest): Promise<FileContent> {
     const response = await fetch(`/api/controller/${id}`, {
         method: 'PUT',
         body: JSON.stringify(body)

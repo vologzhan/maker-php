@@ -8,20 +8,11 @@ use App\Tests\Infrastructure\ApiTestCase;
 /**
  * @see UpdateController
  */
-final class UpdateTest extends ApiTestCase
+final class UpdateControllerTest extends ApiTestCase
 {
     protected function setUp(): void
     {
-        $this->connectionPsql()->execute(
-            <<<SQL
-            TRUNCATE TABLE project RESTART IDENTITY CASCADE;
-            INSERT INTO project (id, name) VALUES (1, 'maker-php');
-            INSERT INTO file (id, path, directory_id) VALUES (1, '/tmp/tests/Controller/Controller/UpdateControllerTest/Controller.php', null);
-            INSERT INTO controller (id, path, method, project_id, response_id, file_id) VALUES (1, '/', 'GET', 1, null, 1);
-            SQL
-        );
-
-        $this->filesystem()->createFile('/tmp/tests/Controller/Controller/UpdateControllerTest/Controller.php',
+        $this->filesystem()->createFile('/tmp/app/Controller.php',
             <<<PHP
             <?php declare(strict_types=1);
             
@@ -40,6 +31,16 @@ final class UpdateTest extends ApiTestCase
             }
             PHP
         );
+
+        $this->connectionPsql()->execute(
+            <<<SQL
+            TRUNCATE TABLE directory RESTART IDENTITY CASCADE;
+            TRUNCATE TABLE project RESTART IDENTITY CASCADE;
+            INSERT INTO project (id, dir_id) VALUES (1, null);
+            INSERT INTO file (id, path, directory_id) VALUES (1, '/tmp/app/Controller.php', null);
+            INSERT INTO controller (id, path, method, project_id, response_id, file_id) VALUES (1, '/', 'GET', 1, null, 1);
+            SQL
+        );
     }
 
     public function test(): void
@@ -54,7 +55,7 @@ final class UpdateTest extends ApiTestCase
                 }
                 JSON
             )
-            ->expectedCode(200);
+            ->expectedCode(200); // todo expected content tokens
 
         $this->filesystem()->assertFileContentEquals('/tmp/tests/Controller/Controller/UpdateControllerTest/Controller.php',
             <<<PHP

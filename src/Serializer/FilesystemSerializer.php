@@ -2,13 +2,10 @@
 
 namespace App\Serializer;
 
-use App\Dto\Php\TokenDto;
 use App\Entity\Controller;
 use App\Entity\Directory;
 use App\Entity\File;
 use App\Enum\FileType;
-use App\Response\Filesystem\File\ContentItemResponse;
-use App\Response\Filesystem\File\TokenItem;
 use App\Response\Project\Filesystem\DirectoryItemResponse;
 use App\Response\Project\Filesystem\FileItem;
 
@@ -38,35 +35,6 @@ final readonly class FilesystemSerializer
                 $file->getController() instanceof Controller => FileType::Controller,
                 default => null,
             },
-        );
-    }
-
-    /**
-     * @param TokenDto[] $tokens
-     */
-    public function contentItemResponse(array $tokens): ContentItemResponse
-    {
-        return new ContentItemResponse(
-            items: $this->tokenItemArray($tokens),
-        );
-    }
-
-    /**
-     * @param TokenDto[] $tokens
-     * @return TokenItem[]
-     */
-    public function tokenItemArray(array $tokens): array
-    {
-        return array_map(fn(TokenDto $token) => $this->tokenItem($token), $tokens);
-    }
-
-    private function tokenItem(TokenDto $token): TokenItem
-    {
-        return new TokenItem(
-            pos: $token->pos,
-            end: $token->end,
-            value: $token->value,
-            type: $token->type,
         );
     }
 }
