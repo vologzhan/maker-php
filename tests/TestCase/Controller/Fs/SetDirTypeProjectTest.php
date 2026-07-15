@@ -7,7 +7,7 @@ use App\Tests\Infrastructure\ApiTestCase;
 /**
  * @see SetDirType
  */
-final class SetDirTypeTest extends ApiTestCase
+final class SetDirTypeProjectTest extends ApiTestCase
 {
     protected function setUp(): void
     {
