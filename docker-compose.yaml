@@ -7,6 +7,7 @@ services:
     volumes:
       - ./:/app
       - ./docker/php/usr/local/etc/php/conf.d/xdebug.ini:/usr/local/etc/php/conf.d/xdebug.ini:ro
+      - ./docker/php/usr/local/etc/php/conf.d/memory.ini:/usr/local/etc/php/conf.d/memory.ini:ro
       - ./var/.bash_history:/home/app/.ash_history
     user: "1000:1000"
     environment:
