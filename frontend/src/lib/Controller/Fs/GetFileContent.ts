@@ -1,6 +1,6 @@
 import type {FileContent} from "$lib/Response/Fs/Content/FileContent";
 
-export async function GetContent(id: number): Promise<FileContent> {
+export async function GetFileContent(id: number): Promise<FileContent> {
     const response = await fetch(`/api/file/${id}`, {
         method: 'GET',
     });

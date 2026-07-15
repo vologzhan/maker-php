@@ -1,13 +1,12 @@
 <script lang="ts">
-    import type {ControllerResponse} from "$lib/Response/Controller/ControllerResponse";
-    import FileViewer from "../../file/[id]/FileViewer.svelte";
     import {UpdateController} from "$lib/Controller/Controller/UpdateController";
     import type {ContentItemResponse} from "$lib/Response/Filesystem/File/ContentItemResponse";
+    import type {ControllerItem} from "$lib/Response/Controller/ControllerItem";
 
     let {
         controller,
     }: {
-        controller: ControllerResponse
+        controller: ControllerItem
     } = $props();
 
     let error = $state('')
@@ -15,7 +14,7 @@
     function save() {
         UpdateController(controller.id, controller)
             .then((res: ContentItemResponse) => {
-                controller.content = res.items
+                // controller.content = res.items // todo update content
             })
             .catch((err: any) => {
                 error = err instanceof Error ? err.message : String(err)
@@ -60,5 +59,3 @@
         Error: {error}
     {/if}
 </form>
-
-<FileViewer content={controller.content} />
