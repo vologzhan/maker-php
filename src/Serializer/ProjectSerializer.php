@@ -8,7 +8,6 @@ use App\Entity\Response;
 use App\Response\Project\Controller\DirItem;
 use App\Response\Project\Controller\FieldItem;
 use App\Response\Project\Controller\ResponseItem;
-use App\Response\Project\ListResponse;
 use App\Response\Project\ProjectItemResponse;
 use App\Service\Controller\ControllerHelper;
 
@@ -17,13 +16,6 @@ final readonly class ProjectSerializer
     public function __construct(
         private ControllerSerializer $controllerSerializer,
     ) {}
-
-    public function listResponse(array $projects): ListResponse
-    {
-        return new ListResponse(
-            items: array_map(fn(Project $project) => $this->projectItemResponse($project), $projects),
-        );
-    }
 
     public function projectItemResponse(Project $project): ProjectItemResponse
     {
