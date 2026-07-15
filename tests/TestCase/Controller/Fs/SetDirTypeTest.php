@@ -41,7 +41,8 @@ final class SetDirTypeTest extends ApiTestCase
             ->expectedJsonContent(
                 <<<JSON
                 {
-                  "success": true
+                  "id": 1,
+                  "name": "project.maker"
                 }
                 JSON
             );

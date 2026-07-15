@@ -10,7 +10,8 @@ use App\Repository\DirectoryRepository;
 use App\Repository\FileRepository;
 use App\Repository\ProjectRepository;
 use App\Request\Fs\SetDirTypeRequest;
-use App\Response\SuccessResponse;
+use App\Response\Fs\Tree\FileItem;
+use App\Serializer\FsSerializer;
 use App\Service\Filesystem\FilesystemHelper;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Routing\Attribute\Route;
@@ -24,17 +25,18 @@ final readonly class SetDirType
         private FileRepository $fileRepository,
         private ProjectRepository $projectRepository,
         private FilesystemHelper $filesystemHelper,
+        private FsSerializer $fsSerializer,
         private EntityManagerInterface $em,
     ) {}
 
-    public function __invoke(SetDirTypeRequest $request): SuccessResponse
+    public function __invoke(SetDirTypeRequest $request): FileItem
     {
         $dir = $this->dirRepository->findById($request->id);
 
         $filepath = $dir->getPath() . '/' . $request->type->filename();
         $this->filesystemHelper->createFile($filepath, '');
 
-        $this->fileRepository->save(
+        $file = $this->fileRepository->save(
             new File()
                 ->setPath($filepath)
                 ->setDirectory($dir)
@@ -47,7 +49,7 @@ final readonly class SetDirType
 
         $this->em->flush();
 
-        return new SuccessResponse();
+        return $this->fsSerializer->fileItem($file);
     }
 
     private function setProject(Directory $dir): void

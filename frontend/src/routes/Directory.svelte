@@ -69,6 +69,9 @@
                     label: 'Set type Project',
                     action: () =>
                         SetDirType(dir.id, {type: 'project'})
+                            .then((res: FileItem) => {
+                                dir.files.push(res)
+                            })
                             .catch((err: any) => {
                                 console.error(err);
                             })
@@ -77,6 +80,9 @@
                     label: 'Set type Controller',
                     action: () =>
                         SetDirType(dir.id, {type: 'controller'})
+                            .then((res: FileItem) => {
+                                dir.files.push(res)
+                            })
                             .catch((err: any) => {
                                 console.error(err);
                             })

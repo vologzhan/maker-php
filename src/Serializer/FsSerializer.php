@@ -26,7 +26,7 @@ final readonly class FsSerializer
         );
     }
 
-    private function fileItem(File $file): FileItem
+    public function fileItem(File $file): FileItem
     {
         return new FileItem(
             id: $file->getId(),
