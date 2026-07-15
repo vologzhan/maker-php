@@ -6,7 +6,7 @@ use App\Response\SuccessResponse;
 use Symfony\Component\Routing\Attribute\Route;
 
 #[Route('/api', methods: ['GET'])]
-final readonly class SelfCheckController
+final readonly class SelfCheck
 {
     public function __invoke(): SuccessResponse
     {

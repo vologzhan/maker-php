@@ -2,6 +2,7 @@
 
 namespace App\Controller\Fs;
 
+use App\Dto\Fs\MakerStructure;
 use App\Entity\Directory;
 use App\Entity\File;
 use App\Entity\Project;
@@ -11,6 +12,7 @@ use App\Repository\FileRepository;
 use App\Repository\ProjectRepository;
 use App\Response\Fs\Tree\DirItem;
 use App\Serializer\FsSerializer;
+use App\Service\Controller\IndexControllerService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\Routing\Attribute\Route;
@@ -22,6 +24,7 @@ final readonly class GetFsTree
         private DirectoryRepository $dirRepository,
         private FileRepository $fileRepository,
         private ProjectRepository $projectRepository,
+        private IndexControllerService $indexControllerService,
         private FsSerializer $fsSerializer,
         private EntityManagerInterface $entityManager,
         #[Autowire(env: 'PATH_APP')] private string $pathApp,
@@ -30,16 +33,28 @@ final readonly class GetFsTree
     public function __invoke(): DirItem
     {
         $dir = $this->dirRepository->findRootOrNull();
-
         if ($dir === null) {
-            $dir = $this->indexDirRecursive($this->pathApp, parent: null);
-            $this->entityManager->flush();
+            $dir = $this->index();
         }
 
         return $this->fsSerializer->dirItem($dir);
     }
 
-    private function indexDirRecursive(string $dirPath, ?Directory $parent): Directory
+    private function index(): Directory
+    {
+        $dir = $this->indexDir($this->pathApp, parent: null);
+
+        $structures = $this->collectMakerStructures($dir);
+        foreach ($structures as $struct) {
+            $this->indexMakerStructure($struct);
+        }
+
+        $this->entityManager->flush();
+
+        return $dir;
+    }
+
+    private function indexDir(string $dirPath, ?Directory $parent): Directory
     {
         $dir = $this->dirRepository->save(
             new Directory()
@@ -49,7 +64,6 @@ final readonly class GetFsTree
         $parent?->addChild($dir);
 
         $items = scandir($dirPath);
-
         foreach ($items as $item) {
             if ($item === '.' || $item === '..') {
                 continue;
@@ -58,7 +72,7 @@ final readonly class GetFsTree
             $path = $dirPath . '/' . $item;
 
             if (is_dir($path)) {
-                $this->indexDirRecursive($path, $dir);
+                $this->indexDir($path, $dir);
                 continue;
             }
 
@@ -68,15 +82,58 @@ final readonly class GetFsTree
                     ->setPath($path)
             );
             $dir->addFile($file);
-
-            if ($item === DirType::Project->filename()) {
-                $this->projectRepository->save(
-                    new Project()
-                        ->setDir($dir)
-                );
-            }
         }
 
         return $dir;
+    }
+
+    /**
+     * @return MakerStructure[]
+     */
+    private function collectMakerStructures(
+        Directory $dir,
+        MakerStructure $struct = new MakerStructure,
+    ): array {
+        foreach ($dir->getFiles() as $file) {
+            $filename = basename($file->getPath());
+
+            if ($filename === DirType::Project->filename()) {
+                if ($struct->project === null) {
+                    $struct->project = $dir;
+                    break;
+                }
+
+                $otherStructs = $this->collectMakerStructures($dir);
+
+                return [$struct, ...$otherStructs];
+            }
+
+            if ($filename === DirType::Controller->filename()) {
+                $struct->controller = $dir;
+                break;
+            }
+        }
+
+        foreach ($dir->getChildren() as $child) {
+            $this->collectMakerStructures($child, $struct);
+        }
+
+        if ($struct->project === null) {
+            return [];
+        }
+
+        return [$struct];
+    }
+
+    private function indexMakerStructure(MakerStructure $struct): void
+    {
+        $projectDir = $struct->project;
+        $project = $this->projectRepository->save(
+            new Project()
+                ->setDir($projectDir)
+        );
+        $projectDir->setProject($project);
+
+        $this->indexControllerService->indexDirRecursive($project, $struct->controller);
     }
 }

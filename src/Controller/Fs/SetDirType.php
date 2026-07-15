@@ -12,6 +12,7 @@ use App\Repository\ProjectRepository;
 use App\Request\Fs\SetDirTypeRequest;
 use App\Response\Fs\Tree\FileItem;
 use App\Serializer\FsSerializer;
+use App\Service\Controller\IndexControllerService;
 use App\Service\Filesystem\FilesystemHelper;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Routing\Attribute\Route;
@@ -26,6 +27,7 @@ final readonly class SetDirType
         private ProjectRepository $projectRepository,
         private FilesystemHelper $filesystemHelper,
         private FsSerializer $fsSerializer,
+        private IndexControllerService $indexControllerService,
         private EntityManagerInterface $em,
     ) {}
 
@@ -44,7 +46,7 @@ final readonly class SetDirType
 
         match ($request->type) {
             DirType::Project => $this->setProject($dir),
-            default => null,
+            DirType::Controller => $this->setController($dir),
         };
 
         $this->em->flush();
@@ -58,5 +60,23 @@ final readonly class SetDirType
             new Project()
                 ->setDir($dir)
         );
+    }
+
+    private function setController(Directory $dir): void
+    {
+        $projectDir = $dir;
+        while (true) {
+            if ($projectDir->getProject() !== null) {
+                break;
+            }
+
+            $projectDir = $projectDir->getParent();
+
+            if ($projectDir === null) {
+                throw new \Exception('Project not found');
+            }
+        }
+
+        $this->indexControllerService->indexDirRecursive($projectDir->getProject(), $dir);
     }
 }
