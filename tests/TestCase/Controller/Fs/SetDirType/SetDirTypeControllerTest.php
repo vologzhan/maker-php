@@ -44,6 +44,7 @@ final class SetDirTypeControllerTest extends ApiTestCase
             INSERT INTO directory (id, path, parent_id) VALUES (1, '/tmp/app/src/Controller', null);
             INSERT INTO file (id, path, directory_id) VALUES (default, '/tmp/app/src/Controller/SelfCheck.php', 1);
             INSERT INTO project (id, dir_id) VALUES (1, 1);
+            INSERT INTO response (id, class_name, project_id, file_id) VALUES (1, 'Fixture\Response\SuccessResponse', 1, 1);
             SQL
         );
     }
@@ -74,7 +75,7 @@ final class SetDirTypeControllerTest extends ApiTestCase
             ->connectionPsql()
             ->assertEquals([
                 ['id', 'path', 'method', 'project_id', 'response_id', 'file_id'],
-                [1, '/api', 'GET', 1, null, 1],
+                [1, '/api', 'GET', 1, 1, 1],
             ], 'SELECT * FROM controller')
             ->assertEquals([
                 ['id', 'path', 'directory_id'],

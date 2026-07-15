@@ -142,14 +142,14 @@ final readonly class GetFsTree
         );
         $projectDir->setProject($project);
 
-        $controllersDir = $struct->controller;
-        if ($controllersDir !== null) {
-            $this->indexControllerService->indexDirRecursive($project, $controllersDir);
-        }
-
         $responseDir = $struct->response;
         if ($responseDir !== null) {
             $this->indexResponseService->indexDirRecursive($project, $responseDir);
+        }
+
+        $controllersDir = $struct->controller;
+        if ($controllersDir !== null) {
+            $this->indexControllerService->indexDirRecursive($project, $controllersDir);
         }
     }
 }

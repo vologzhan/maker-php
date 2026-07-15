@@ -137,7 +137,7 @@ final class GetFsTreeTest extends ApiTestCase
             ], 'SELECT * FROM project')
             ->assertEquals([
                 ['id', 'path', 'method', 'project_id', 'response_id', 'file_id'],
-                [1, '/api', 'GET', 1, null, 1]
+                [1, '/api', 'GET', 1, 1, 1]
             ], 'SELECT * FROM controller')
             ->assertEquals([
                 ['id', 'class_name', 'project_id', 'file_id'],

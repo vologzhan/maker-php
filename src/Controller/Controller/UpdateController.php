@@ -71,7 +71,6 @@ final readonly class UpdateController
      */
     private function updateFile(Controller $controller): array
     {
-        // todo не обновляется Response
         $file = $controller->getFile();
         $fileDto = $this->parsePhpFileService->__invoke($file);
 
@@ -85,6 +84,14 @@ final readonly class UpdateController
 
         $path = $route->args[0]->value;
         $this->replaceTokens($tokens, $path, sprintf("'%s'", $controller->getPath()));
+
+        // todo криво обновляется Response
+        $responseFullClassName = $controller->getResponse()->getClassName();
+        $parts = explode('\\', $responseFullClassName);
+        $responseClassName = array_pop($parts);
+
+        $invoke = $class->method('__invoke')->return;
+        $this->replaceTokens($tokens, $invoke, $responseClassName);
 
         $this->phpPrinter->saveFile($file->getPath(), $tokens);
 
