@@ -50,6 +50,7 @@ final readonly class GetFsTree
         }
 
         $this->entityManager->flush();
+        $this->entityManager->clear();
 
         return $dir;
     }
