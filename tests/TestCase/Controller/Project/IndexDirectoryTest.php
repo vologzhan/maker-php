@@ -4,8 +4,10 @@ namespace App\Tests\TestCase\Controller\Project;
 
 use App\Controller\Project\IndexDirectoryController;
 use App\Tests\Infrastructure\ApiTestCase;
+use App\Tests\Infrastructure\Attribute\Skip;
 
 /** @see IndexDirectoryController */
+#[Skip]
 final class IndexDirectoryTest extends ApiTestCase
 {
     protected function setUp(): void

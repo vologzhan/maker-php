@@ -1,37 +1,45 @@
 <?php declare(strict_types=1);
 
-namespace App\Tests\TestCase\Controller\Filesystem\File;
+namespace App\Tests\TestCase\Controller\Fs;
 
-use App\Controller\Filesystem\File\DeleteController;
+use App\Controller\Fs\DeleteFile;
 use App\Tests\Infrastructure\ApiTestCase;
 
 /**
- * @see DeleteController
+ * @see DeleteFile
  */
-final class DeleteTest extends ApiTestCase
+final class DeleteFileTest extends ApiTestCase
 {
     protected function setUp(): void
     {
+        $this->filesystem()->createFile('/tmp/app/Controller.php');
+
         $this->connectionPsql()->execute(
             <<<SQL
+            TRUNCATE TABLE file RESTART IDENTITY CASCADE;
             TRUNCATE TABLE project RESTART IDENTITY CASCADE;
-            INSERT INTO file (id, path, directory_id) VALUES (1, '/tmp/tests/Controller/Filesystem/File/DeleteTest/Controller.php', null);
-            INSERT INTO project (id, name) VALUES (1, 'maker-php');
+
+            INSERT INTO file (id, path, directory_id) VALUES (1, '/tmp/app/Controller.php', null);
+            INSERT INTO project (id, dir_id) VALUES (1, null);
             INSERT INTO controller (id, path, method, project_id, response_id, file_id) VALUES (1, '/', 'GET', 1, null, 1);
             SQL
         );
-
-        $this->filesystem()->createFile('/tmp/tests/Controller/Filesystem/File/DeleteTest/Controller.php', '<?php');
     }
 
     public function test(): void
     {
         $this
-            ->request('DELETE', '/api/filesystem/file/1')
+            ->request('DELETE', '/api/file/1')
             ->expectedCode(200)
-            ->expectedJsonContent('{"success":true}');
+            ->expectedJsonContent(
+                <<<JSON
+                {
+                  "success":true
+                }
+                JSON
+            );
 
-        self::assertFileDoesNotExist('/tmp/tests/Controller/Filesystem/File/DeleteTest/Controller.php');
+        self::assertFileDoesNotExist('/tmp/app/Controller.php');
 
         $this->connectionPsql()
             ->assertEquals([
