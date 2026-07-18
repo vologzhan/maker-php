@@ -6,6 +6,7 @@ use App\Dto\Php\NodeDto;
 use App\Dto\Php\TokenDto;
 use App\Entity\Controller;
 use App\Repository\ControllerRepository;
+use App\Repository\RequestRepository;
 use App\Repository\ResponseRepository;
 use App\Request\Controller\UpdateRequest;
 use App\Response\Fs\Content\FileContent;
@@ -22,6 +23,7 @@ final readonly class UpdateController
     public function __construct(
         private PhpPrinter $phpPrinter,
         private ControllerRepository $controllerRepository,
+        private RequestRepository $requestRepository,
         private ResponseRepository $responseRepository,
         private ParsePhpFileService $parsePhpFileService,
         private FsSerializer $fsSerializer,
@@ -31,11 +33,13 @@ final readonly class UpdateController
     public function __invoke(UpdateRequest $request): FileContent
     {
         $controller = $this->controllerRepository->findById($request->id);
-        $response = $request->responseId ? $this->responseRepository->findById($request->responseId) : null;
+        $req = $this->requestRepository->findByIdOrNull($request->requestId);
+        $response = $this->responseRepository->findByIdOrNull($request->responseId);
 
         $controller
             ->setMethod($request->method)
             ->setPath($request->path)
+            ->setRequest($req)
             ->setResponse($response);
 
         $tokens = $this->updateFile($controller);

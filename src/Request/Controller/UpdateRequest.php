@@ -8,6 +8,7 @@ final class UpdateRequest
         public int $id,
         public string $method,
         public string $path,
+        public ?int $requestId,
         public ?int $responseId,
     ) {}
 }
