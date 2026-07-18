@@ -36,7 +36,7 @@ final class CollectorVisitor extends NodeVisitorAbstract
     public array $classes = [];
 
     /** @var UseDto[] */
-    public array $uses;
+    public array $uses = [];
 
     /** @var TokenDto[] */
     public readonly array $tokens;
