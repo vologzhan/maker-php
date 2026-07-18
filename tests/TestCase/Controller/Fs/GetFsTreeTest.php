@@ -18,21 +18,35 @@ final class GetFsTreeTest extends ApiTestCase
             ->createFile('/tmp/app/project.maker')
             ->createFile('/tmp/app/Controller/controller.maker')
             ->createFile('/tmp/app/Controller/SelfCheck.php',
-                <<<PHP
+                <<<'PHP'
                 <?php declare(strict_types=1);
 
                 namespace Fixture\Controller;
                 
                 use Fixture\Response\SuccessResponse;
+                use Fixture\Request\EmptyRequest;
                 use Symfony\Component\Routing\Attribute\Route;
                 
                 #[Route('/api', methods: ['GET'])]
                 final readonly class SelfCheck
                 {
-                    public function __invoke(): SuccessResponse
+                    public function __invoke(EmptyRequest $request): SuccessResponse
                     {
                         return new SuccessResponse();
                     }
+                }
+
+                PHP
+            )
+            ->createFile('/tmp/app/Request/request.maker')
+            ->createFile('/tmp/app/Request/EmptyRequest.php',
+                <<<'PHP'
+                <?php declare(strict_types=1);
+                
+                namespace Fixture\Request;
+                
+                final readonly class EmptyRequest
+                {
                 }
 
                 PHP
@@ -52,7 +66,8 @@ final class GetFsTreeTest extends ApiTestCase
                 }
 
                 PHP
-            );
+            )
+        ;
 
         $this->connectionPsql()->execute(
             <<<SQL
@@ -91,15 +106,30 @@ final class GetFsTreeTest extends ApiTestCase
                     },
                     {
                       "id": 3,
-                      "name": "Response",
+                      "name": "Request",
                       "dirs": [],
                       "files": [
                         {
                           "id": 3,
-                          "name": "SuccessResponse.php"
+                          "name": "EmptyRequest.php"
                         },
                         {
                           "id": 4,
+                          "name": "request.maker"
+                        }
+                      ]
+                    },
+                    {
+                      "id": 4,
+                      "name": "Response",
+                      "dirs": [],
+                      "files": [
+                        {
+                          "id": 5,
+                          "name": "SuccessResponse.php"
+                        },
+                        {
+                          "id": 6,
                           "name": "response.maker"
                         }
                       ]
@@ -107,7 +137,7 @@ final class GetFsTreeTest extends ApiTestCase
                   ],
                   "files": [
                     {
-                      "id": 5,
+                      "id": 7,
                       "name": "project.maker"
                     }
                   ]
@@ -121,15 +151,18 @@ final class GetFsTreeTest extends ApiTestCase
                 ['id', 'path', 'parent_id'],
                 [1, '/tmp/app', null],
                 [2, '/tmp/app/Controller', 1],
-                [3, '/tmp/app/Response', 1],
+                [3, '/tmp/app/Request', 1],
+                [4, '/tmp/app/Response', 1],
             ], 'SELECT * FROM directory')
             ->assertEquals([
                 ['id', 'path', 'directory_id'],
                 [1, '/tmp/app/Controller/SelfCheck.php', 2],
                 [2, '/tmp/app/Controller/controller.maker', 2],
-                [3, '/tmp/app/Response/SuccessResponse.php', 3],
-                [4, '/tmp/app/Response/response.maker', 3],
-                [5, '/tmp/app/project.maker', 1],
+                [3, '/tmp/app/Request/EmptyRequest.php', 3],
+                [4, '/tmp/app/Request/request.maker', 3],
+                [5, '/tmp/app/Response/SuccessResponse.php', 4],
+                [6, '/tmp/app/Response/response.maker', 4],
+                [7, '/tmp/app/project.maker', 1],
             ], 'SELECT * FROM file')
             ->assertEquals([
                 ['id', 'dir_id'],
@@ -141,7 +174,12 @@ final class GetFsTreeTest extends ApiTestCase
             ], 'SELECT * FROM controller')
             ->assertEquals([
                 ['id', 'class_name', 'project_id', 'file_id'],
-                [1, 'Fixture\Response\SuccessResponse', 1, 3]
-            ], 'SELECT * FROM response');
+                [1, 'Fixture\Request\EmptyRequest', 1, 3]
+            ], 'SELECT * FROM request')
+            ->assertEquals([
+                ['id', 'class_name', 'project_id', 'file_id'],
+                [1, 'Fixture\Response\SuccessResponse', 1, 5]
+            ], 'SELECT * FROM response')
+        ;
     }
 }
