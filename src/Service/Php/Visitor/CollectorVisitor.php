@@ -10,7 +10,7 @@ use App\Dto\Php\MethodDto;
 use App\Dto\Php\NodeDto;
 use App\Dto\Php\ParamDto;
 use App\Dto\Php\TokenDto;
-use App\Dto\Php\UseDto;
+use App\Dto\Php\ImportDto;
 use PhpParser\NameContext;
 use PhpParser\Node;
 use PhpParser\Node\Arg;
@@ -35,8 +35,8 @@ final class CollectorVisitor extends NodeVisitorAbstract
     /** @var ClassDto[] */
     public array $classes = [];
 
-    /** @var UseDto[] */
-    public array $uses = [];
+    /** @var ImportDto[] */
+    public array $imports = [];
 
     /** @var TokenDto[] */
     public readonly array $tokens;
@@ -265,7 +265,7 @@ final class CollectorVisitor extends NodeVisitorAbstract
     private function collectUse(Use_ $node): void
     {
         foreach ($node->uses as $use) {
-             $this->uses[] = new UseDto(
+             $this->imports[] = new ImportDto(
                 name: new NodeDto(
                     pos: $use->name->getStartTokenPos(),
                     end: $use->name->getEndTokenPos(),

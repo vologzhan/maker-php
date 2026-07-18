@@ -8,7 +8,7 @@ use App\Dto\Php\ClassDto;
 use App\Dto\Php\MethodDto;
 use App\Dto\Php\NodeDto;
 use App\Dto\Php\ParamDto;
-use App\Dto\Php\UseDto;
+use App\Dto\Php\ImportDto;
 use App\Service\Php\PhpParser;
 use App\Tests\Infrastructure\ApiTestCase;
 use Symfony\Component\Routing\Attribute\Route;
@@ -75,18 +75,18 @@ final class PhpParserTest extends ApiTestCase
         ], $collector->classes);
 
         $this->assertEquals([
-            new UseDto(
+            new ImportDto(
                 name: new NodeDto(16,16,'Fixture\Request\EmptyRequest'),
                 alias: null,
             ),
-            new UseDto(
+            new ImportDto(
                 name: new NodeDto(21,21,'Fixture\Response\SuccessResponse'),
                 alias: new NodeDto(25,25,'Response'),
             ),
-            new UseDto(
+            new ImportDto(
                 name: new NodeDto(30,30,'Symfony\Component\Routing\Attribute\Route'),
                 alias: null,
             ),
-        ], $collector->uses);
+        ], $collector->imports);
     }
 }

@@ -2,7 +2,7 @@
 
 namespace App\Dto\Php;
 
-final readonly class UseDto
+final readonly class ImportDto
 {
     public function __construct(
         public NodeDto $name,
