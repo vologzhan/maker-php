@@ -73,7 +73,7 @@ final class UpdateControllerTest extends ApiTestCase
             namespace Fixture\Controller;
 
             use Fixture\Request\EmptyRequest;
-            use Fixture\Response\SuccessResponse;
+            use Fixture\Response\OtherResponse;
             use Symfony\Component\Routing\Attribute\Route;
 
             #[Route('/self-check', methods: ['POST'])]
