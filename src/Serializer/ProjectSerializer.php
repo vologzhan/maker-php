@@ -17,14 +17,6 @@ final readonly class ProjectSerializer
         private ControllerSerializer $controllerSerializer,
     ) {}
 
-    public function projectItemResponse(Project $project): ProjectItemResponse
-    {
-        return new ProjectItemResponse(
-            id: $project->getId(),
-            name: basename($project->getPath()),
-        );
-    }
-
     public function projectResponseOld(Project $project): ProjectItemResponse
     {
         $controllersDir = new DirItem();
