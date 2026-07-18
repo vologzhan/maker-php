@@ -94,14 +94,17 @@ class Project
         return $this->responses->getValues();
     }
 
+    /**
+     * @return Array<string, Response>
+     */
     public function getResponsesMap(): array
     {
-        $responseMap = [];
+        $map = [];
         foreach ($this->responses as $response) {
-            $responseMap[$response->getClassName()] = $response;
+            $map[$response->getClassName()] = $response;
         }
 
-        return $responseMap;
+        return $map;
     }
 
     public function addResponse(Response $response): static
@@ -126,6 +129,19 @@ class Project
     public function getRequests(): array
     {
         return $this->requests->getValues();
+    }
+
+    /**
+     * @return Array<string, Request>
+     */
+    public function getRequestMap(): array
+    {
+        $map = [];
+        foreach ($this->requests as $request) {
+            $map[$request->getClassName()] = $request;
+        }
+
+        return $map;
     }
 
     public function addRequest(Request $request): static

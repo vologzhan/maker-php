@@ -2,10 +2,13 @@
 
 namespace App\Service\Controller;
 
+use App\Dto\Php\MethodDto;
 use App\Entity\Controller;
 use App\Entity\Directory;
 use App\Entity\File;
 use App\Entity\Project;
+use App\Entity\Request;
+use App\Entity\Response;
 use App\Enum\DirType;
 use App\Repository\ControllerRepository;
 use App\Service\Php\PhpParser;
@@ -39,10 +42,9 @@ final readonly class IndexControllerService
         $class = $fileDto->classes[0];
         $routeAttribute = $class->attribute(Route::class);
 
-        $methodInvoke = $class->method('__invoke');
-        $responseClassName = $methodInvoke->return->value;
-        $responseMap = $project->getResponsesMap();
-        $response = $responseMap[$responseClassName] ?? null;
+        $__invoke = $class->method('__invoke');
+        $request = $this->resolveRequest($__invoke, $project);
+        $response = $this->resolveResponse($__invoke, $project);
 
         $methods = $routeAttribute->oneOrNullArgument('methods');
         $firstMethod = $methods?->value?->value[0] ?? null;
@@ -52,10 +54,32 @@ final readonly class IndexControllerService
                 ->setPath($routeAttribute->args[0]->value->value)
                 ->setMethod($firstMethod)
                 ->setFile($file)
-                ->setResponse($response)
                 ->setProject($project)
+                ->setRequest($request)
+                ->setResponse($response)
         );
 
         $project->addController($controller);
+    }
+
+    private function resolveRequest(MethodDto $__invoke, Project $project): ?Request
+    {
+        $requestMap = $project->getRequestMap();
+        foreach ($__invoke->params as $param) {
+            $request = $requestMap[$param->type->value] ?? null;
+            if ($request !== null) {
+                return $request;
+            }
+        }
+
+        return null;
+    }
+
+    private function resolveResponse(MethodDto $__invoke, Project $project): ?Response
+    {
+        $responseClassName = $__invoke->return->value;
+        $responseMap = $project->getResponsesMap();
+
+        return $responseMap[$responseClassName] ?? null;
     }
 }

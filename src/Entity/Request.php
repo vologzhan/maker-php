@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\RequestRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: RequestRepository::class)]
@@ -22,6 +24,15 @@ class Request
 
     #[ORM\OneToOne(inversedBy: 'request', cascade: ['persist', 'remove'])]
     private ?File $file = null;
+
+    /** @var Collection<int, Controller> */
+    #[ORM\OneToMany(targetEntity: Controller::class, mappedBy: 'request')]
+    private Collection $controllers;
+
+    public function __construct()
+    {
+        $this->controllers = new ArrayCollection();
+    }
 
     # ------------------------------------------------------------------------------------------------------------------
 
@@ -68,6 +79,30 @@ class Request
     public function setFile(?File $file): static
     {
         $this->file = $file;
+
+        return $this;
+    }
+
+    # ------------------------------------------------------------------------------------------------------------------
+
+    /**
+     * @return Controller[]
+     */
+    public function getControllers(): array
+    {
+        return $this->controllers->getValues();
+    }
+
+    public function addController(Controller $controller): static
+    {
+        $this->controllers->add($controller);
+
+        return $this;
+    }
+
+    public function removeController(Controller $controller): static
+    {
+        $this->controllers->removeElement($controller);
 
         return $this;
     }

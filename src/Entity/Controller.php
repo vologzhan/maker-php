@@ -30,6 +30,9 @@ class Controller
     #[ORM\JoinColumn(nullable: false)]
     private File $file;
 
+    #[ORM\ManyToOne(inversedBy: 'controllers')]
+    private ?Request $request = null;
+
     # ------------------------------------------------------------------------------------------------------------------
 
     public function getId(): int
@@ -103,6 +106,20 @@ class Controller
     public function setFile(File $file): static
     {
         $this->file = $file;
+
+        return $this;
+    }
+
+    # ------------------------------------------------------------------------------------------------------------------
+
+    public function getRequest(): ?Request
+    {
+        return $this->request;
+    }
+
+    public function setRequest(?Request $request): static
+    {
+        $this->request = $request;
 
         return $this;
     }
