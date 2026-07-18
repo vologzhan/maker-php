@@ -46,7 +46,7 @@ final class DeleteFileTest extends ApiTestCase
                 ['id', 'path', 'directory_id'],
             ], 'SELECT * FROM file')
             ->assertEquals([
-                ['id', 'path', 'method', 'project_id', 'response_id', 'file_id'],
+                ['id', 'path', 'method', 'project_id', 'response_id', 'file_id', 'request_id'],
             ], 'SELECT * FROM controller');
     }
 }

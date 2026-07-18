@@ -22,13 +22,17 @@ class ResponseRepository extends ServiceEntityRepository
         return $entity;
     }
 
-    public function findById(int $id): Response
+    public function findByIdOrNull(?int $id): ?Response
     {
+        if ($id === null) {
+            return null;
+        }
+
         return $this
             ->createQueryBuilder('r')
             ->andWhere('r.id = :id')
             ->setParameter('id', $id)
             ->getQuery()
-            ->getSingleResult();
+            ->getOneOrNullResult();
     }
 }

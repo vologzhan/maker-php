@@ -64,7 +64,6 @@ final class CreateFileControllerTest extends ApiTestCase
             {
                 public function __invoke(): SuccessResponse
                 {
-                    return new SuccessResponse();
                 }
             }
 
@@ -78,8 +77,8 @@ final class CreateFileControllerTest extends ApiTestCase
                 [1, '/tmp/app/GetOne.php', 1],
             ], 'SELECT * FROM file')
             ->assertEquals([
-                ['id', 'path', 'method', 'project_id', 'response_id', 'file_id'],
-                [1, '/', 'GET', 1, null, 1],
+                ['id', 'path', 'method', 'project_id', 'response_id', 'file_id', 'request_id'],
+                [1, '/', 'GET', 1, null, 1, null],
             ], 'SELECT * FROM controller');
     }
 }

@@ -15,20 +15,20 @@ final class SetDirTypeControllerTest extends ApiTestCase
             ->filesystem()
             ->deleteDir('/tmp/app/src/Controller')
             ->createFile('/tmp/app/src/Controller/SelfCheck.php',
-                <<<PHP
+                <<<'PHP'
                 <?php declare(strict_types=1);
 
                 namespace Fixture\Controller;
                 
+                use Fixture\Request\EmptyRequest;
                 use Fixture\Response\SuccessResponse;
                 use Symfony\Component\Routing\Attribute\Route;
                 
-                #[Route('/api', methods: ['GET'])]
+                #[Route(name: '/api', methods: ['GET'])]
                 final readonly class SelfCheck
                 {
-                    public function __invoke(): SuccessResponse
+                    public function __invoke(EmptyRequest $request): SuccessResponse
                     {
-                        return new SuccessResponse();
                     }
                 }
 
@@ -44,6 +44,7 @@ final class SetDirTypeControllerTest extends ApiTestCase
             INSERT INTO directory (id, path, parent_id) VALUES (1, '/tmp/app/src/Controller', null);
             INSERT INTO file (id, path, directory_id) VALUES (default, '/tmp/app/src/Controller/SelfCheck.php', 1);
             INSERT INTO project (id, dir_id) VALUES (1, 1);
+            INSERT INTO request (id, class_name, project_id, file_id) VALUES (1, 'Fixture\Request\EmptyRequest', 1, 1);
             INSERT INTO response (id, class_name, project_id, file_id) VALUES (1, 'Fixture\Response\SuccessResponse', 1, 1);
             SQL
         );
@@ -74,8 +75,8 @@ final class SetDirTypeControllerTest extends ApiTestCase
         $this
             ->connectionPsql()
             ->assertEquals([
-                ['id', 'path', 'method', 'project_id', 'response_id', 'file_id'],
-                [1, '/api', 'GET', 1, 1, 1],
+                ['id', 'path', 'method', 'project_id', 'response_id', 'file_id', 'request_id'],
+                [1, '/api', 'GET', 1, 1, 1, 1],
             ], 'SELECT * FROM controller')
             ->assertEquals([
                 ['id', 'path', 'directory_id'],

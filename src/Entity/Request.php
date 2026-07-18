@@ -23,6 +23,7 @@ class Request
     private ?Project $project = null;
 
     #[ORM\OneToOne(inversedBy: 'request', cascade: ['persist', 'remove'])]
+    #[ORM\JoinColumn(nullable: false)]
     private ?File $file = null;
 
     /** @var Collection<int, Controller> */

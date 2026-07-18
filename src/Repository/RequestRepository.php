@@ -21,4 +21,18 @@ class RequestRepository extends ServiceEntityRepository
         $this->getEntityManager()->persist($entity);
         return $entity;
     }
+
+    public function findByIdOrNull(?int $id): ?Request
+    {
+        if ($id === null) {
+            return null;
+        }
+
+        return $this
+            ->createQueryBuilder('r')
+            ->andWhere('r.id = :id')
+            ->setParameter('id', $id)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
 }

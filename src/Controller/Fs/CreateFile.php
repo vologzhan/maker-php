@@ -64,7 +64,6 @@ final readonly class CreateFile
                 {
                     public function __invoke(): $responseName
                     {
-                        return new $responseName();
                     }
                 }
 
