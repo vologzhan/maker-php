@@ -51,26 +51,6 @@ final readonly class UpdateController
         return $this->fsSerializer->fileContent($controller->getFile(), $tokens);
     }
 
-    public function replaceTokens(array &$tokens, NodeDto $node, string $value): void
-    {
-        // todo у токенов появляется смещение и поэтому работает обновление только снизу вверх
-        $pos = $node->pos;
-        $end = $node->end;
-
-        $newToken = new TokenDto(
-            pos: $pos,
-            end: $pos,
-            value: $value,
-            type: '', // todo нужно ли это вообще обновлять при редактировании? Состояние хранится в БД
-        );
-
-        $tokens = array_merge(
-            array_slice($tokens, 0, $pos, true),
-            [$newToken],
-            array_slice($tokens, $end + 1, null, true),
-        );
-    }
-
     /**
      * @return TokenDto[]
      */
@@ -100,5 +80,25 @@ final readonly class UpdateController
         $this->phpPrinter->saveFile($file->getPath(), $tokens);
 
         return $tokens;
+    }
+
+    private function replaceTokens(array &$tokens, NodeDto $node, string $value): void
+    {
+        // todo у токенов появляется смещение и поэтому работает обновление только снизу вверх
+        $pos = $node->pos;
+        $end = $node->end;
+
+        $newToken = new TokenDto(
+            pos: $pos,
+            end: $pos,
+            value: $value,
+            type: '', // todo нужно ли это вообще обновлять при редактировании? Состояние хранится в БД
+        );
+
+        $tokens = array_merge(
+            array_slice($tokens, 0, $pos, true),
+            [$newToken],
+            array_slice($tokens, $end + 1, null, true),
+        );
     }
 }
