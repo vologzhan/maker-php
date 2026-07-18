@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace App\Service\Filesystem\File;
+namespace App\Service\Filesystem;
 
 use App\Dto\Php\FileDto;
 use App\Entity\File;

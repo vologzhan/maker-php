@@ -11,7 +11,7 @@ use App\Repository\ResponseRepository;
 use App\Request\Controller\UpdateRequest;
 use App\Response\Fs\Content\FileContent;
 use App\Serializer\FsSerializer;
-use App\Service\Filesystem\File\ParsePhpFileService;
+use App\Service\Filesystem\ParsePhpFileService;
 use App\Service\Php\PhpPrinter;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Routing\Attribute\Route;
