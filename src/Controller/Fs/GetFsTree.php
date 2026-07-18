@@ -13,6 +13,7 @@ use App\Repository\ProjectRepository;
 use App\Response\Fs\Tree\DirItem;
 use App\Serializer\FsSerializer;
 use App\Service\Controller\IndexControllerService;
+use App\Service\Request\IndexRequestService;
 use App\Service\Response\IndexResponseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
@@ -26,6 +27,7 @@ final readonly class GetFsTree
         private FileRepository $fileRepository,
         private ProjectRepository $projectRepository,
         private IndexControllerService $indexControllerService,
+        private IndexRequestService $indexRequestService,
         private IndexResponseService $indexResponseService,
         private FsSerializer $fsSerializer,
         private EntityManagerInterface $entityManager,
@@ -116,6 +118,11 @@ final readonly class GetFsTree
                 break;
             }
 
+            if ($filename === DirType::Request->filename()) {
+                $struct->request = $dir;
+                break;
+            }
+
             if ($filename === DirType::Response->filename()) {
                 $struct->response = $dir;
                 break;
@@ -141,6 +148,11 @@ final readonly class GetFsTree
                 ->setDir($projectDir)
         );
         $projectDir->setProject($project);
+
+        $requestDir = $struct->request;
+        if ($requestDir !== null) {
+            $this->indexRequestService->indexDirRecursive($project, $requestDir);
+        }
 
         $responseDir = $struct->response;
         if ($responseDir !== null) {

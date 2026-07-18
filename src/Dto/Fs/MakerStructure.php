@@ -9,6 +9,7 @@ final class MakerStructure
     public function __construct(
         public ?Directory $project = null,
         public ?Directory $controller = null,
+        public ?Directory $request = null,
         public ?Directory $response = null,
     ) {}
 }
