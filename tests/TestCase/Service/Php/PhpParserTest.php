@@ -5,10 +5,10 @@ namespace App\Tests\TestCase\Service\Php;
 use App\Dto\Php\ArgumentDto;
 use App\Dto\Php\AttributeDto;
 use App\Dto\Php\ClassDto;
+use App\Dto\Php\ImportDto;
 use App\Dto\Php\MethodDto;
 use App\Dto\Php\NodeDto;
 use App\Dto\Php\ParamDto;
-use App\Dto\Php\ImportDto;
 use App\Service\Php\PhpParser;
 use App\Tests\Infrastructure\ApiTestCase;
 use Symfony\Component\Routing\Attribute\Route;
@@ -73,6 +73,9 @@ final class PhpParserTest extends ApiTestCase
                 ],
             )
         ], $collector->classes);
+
+        $this->assertEquals(14, $collector->importsPos);
+        $this->assertEquals(31, $collector->importsEnd);
 
         $this->assertEquals([
             new ImportDto(

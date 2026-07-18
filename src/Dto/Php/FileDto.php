@@ -10,7 +10,6 @@ final readonly class FileDto
         public array $classes,
         /** @var TokenDto[] */
         public array $tokens,
-        /** @var ImportDto[] */
-        public array $imports,
+        public ImportsDto $imports,
     ) {}
 }

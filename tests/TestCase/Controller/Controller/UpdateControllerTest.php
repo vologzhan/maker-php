@@ -42,7 +42,7 @@ final class UpdateControllerTest extends ApiTestCase
                 (3, '/tmp/app/SuccessResponse.php', null),
                 (4, '/tmp/app/OtherResponse.php', null);
             INSERT INTO project (id, dir_id) VALUES (1, null);
-            INSERT INTO request (id, class_name, project_id, file_id) VALUES (1, 'Fixture\Response\EmptyRequest', 1, 2);
+            INSERT INTO request (id, class_name, project_id, file_id) VALUES (1, 'Fixture\Request\EmptyRequest', 1, 2);
             INSERT INTO response (id, class_name, project_id, file_id) VALUES
                 (1, 'Fixture\Response\SuccessResponse', 1, 3),
                 (2, 'Fixture\Response\OtherResponse', 1, 4);

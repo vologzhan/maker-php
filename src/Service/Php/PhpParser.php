@@ -3,6 +3,7 @@
 namespace App\Service\Php;
 
 use App\Dto\Php\FileDto;
+use App\Dto\Php\ImportsDto;
 use App\Service\Php\Visitor\CollectorVisitor;
 use PhpParser\NodeTraverser;
 use PhpParser\NodeVisitor\CloningVisitor;
@@ -20,7 +21,11 @@ final readonly class PhpParser
             path: $path,
             classes: $collector->classes,
             tokens: $collector->tokens,
-            imports: $collector->imports,
+            imports: new ImportsDto(
+                pos: $collector->importsPos,
+                end: $collector->importsEnd,
+                value: $collector->imports,
+            ),
         );
     }
 

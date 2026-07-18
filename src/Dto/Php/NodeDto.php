@@ -2,7 +2,7 @@
 
 namespace App\Dto\Php;
 
-final readonly class NodeDto
+readonly class NodeDto
 {
     public function __construct(
         public int $pos,

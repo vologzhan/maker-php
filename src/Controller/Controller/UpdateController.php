@@ -12,6 +12,7 @@ use App\Request\Controller\UpdateRequest;
 use App\Response\Fs\Content\FileContent;
 use App\Serializer\FsSerializer;
 use App\Service\Filesystem\ParsePhpFileService;
+use App\Service\Php\ImportsDecorator;
 use App\Service\Php\PhpPrinter;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Routing\Attribute\Route;
@@ -33,28 +34,50 @@ final readonly class UpdateController
     public function __invoke(UpdateRequest $request): FileContent
     {
         $controller = $this->controllerRepository->findById($request->id);
-        $req = $this->requestRepository->findByIdOrNull($request->requestId);
-        $response = $this->responseRepository->findByIdOrNull($request->responseId);
+        $newImports = [];
+        $removeImports = [];
+
+        if ($controller->getRequest()?->getId() !== $request->requestId) {
+            $req = $this->requestRepository->findByIdOrNull($request->requestId);
+            if ($req !== null) {
+                $newImports[] = $req->getClassName();
+            }
+            if ($controller->getRequest() !== null) {
+                $removeImports[] = $controller->getRequest()->getClassName();
+            }
+            $controller->setRequest($req);
+        }
+
+        if ($controller->getResponse()?->getId() !== $request->responseId) {
+            $response = $this->responseRepository->findByIdOrNull($request->responseId);
+            if ($response !== null) {
+                $newImports[] = $response->getClassName();
+            }
+            if ($controller->getResponse() !== null) {
+                $removeImports[] = $controller->getResponse()->getClassName();
+            }
+            $controller->setResponse($response);
+        }
 
         $controller
             ->setMethod($request->method)
-            ->setPath($request->path)
-            ->setRequest($req)
-            ->setResponse($response);
+            ->setPath($request->path);
 
-        $tokens = $this->updateFile($controller);
+        $tokens = $this->updateFile($controller, $newImports, $removeImports);
 
         $this->controllerRepository->save($controller);
-
         $this->entityManager->flush();
 
         return $this->fsSerializer->fileContent($controller->getFile(), $tokens);
     }
 
     /**
+     * @param string[] $newImports
+     * @param string[] $removeImports
+     *
      * @return TokenDto[]
      */
-    private function updateFile(Controller $controller): array
+    private function updateFile(Controller $controller, array $newImports, array $removeImports): array
     {
         $file = $controller->getFile();
         $fileDto = $this->parsePhpFileService->__invoke($file);
@@ -62,7 +85,6 @@ final readonly class UpdateController
         $class = $fileDto->classes[0];
         $tokens = $fileDto->tokens;
 
-        // todo обновить импорт в use
         $responseFullClassName = $controller->getResponse()->getClassName();
         $parts = explode('\\', $responseFullClassName);
         $responseClassName = array_pop($parts);
@@ -76,6 +98,18 @@ final readonly class UpdateController
 
         $path = $route->args[0]->value;
         $this->replaceTokens($tokens, $path, sprintf("'%s'", $controller->getPath()));
+
+        if ($newImports !== [] || $removeImports !== []) {
+            $imports = new ImportsDecorator($fileDto->imports->value);
+            foreach ($newImports as $import) {
+                $imports->create($import);
+            }
+            foreach ($removeImports as $import) {
+                $imports->remove($import);
+            }
+
+            $this->replaceTokens($tokens, $fileDto->imports, $imports->toString());
+        }
 
         $this->phpPrinter->saveFile($file->getPath(), $tokens);
 

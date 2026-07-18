@@ -37,6 +37,8 @@ final class CollectorVisitor extends NodeVisitorAbstract
 
     /** @var ImportDto[] */
     public array $imports = [];
+    public int $importsPos = 0;
+    public int $importsEnd = 0;
 
     /** @var TokenDto[] */
     public readonly array $tokens;
@@ -264,6 +266,11 @@ final class CollectorVisitor extends NodeVisitorAbstract
 
     private function collectUse(Use_ $node): void
     {
+        if ($this->importsPos === 0) {
+            $this->importsPos = $node->getStartTokenPos();
+        }
+        $this->importsEnd = $node->getEndTokenPos();
+
         foreach ($node->uses as $use) {
              $this->imports[] = new ImportDto(
                 name: new NodeDto(
