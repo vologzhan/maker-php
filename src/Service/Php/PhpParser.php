@@ -20,6 +20,7 @@ final readonly class PhpParser
             path: $path,
             classes: $collector->classes,
             tokens: $collector->tokens,
+            uses: $collector->uses,
         );
     }
 

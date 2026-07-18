@@ -10,6 +10,7 @@ use App\Dto\Php\MethodDto;
 use App\Dto\Php\NodeDto;
 use App\Dto\Php\ParamDto;
 use App\Dto\Php\TokenDto;
+use App\Dto\Php\UseDto;
 use PhpParser\NameContext;
 use PhpParser\Node;
 use PhpParser\Node\Arg;
@@ -25,19 +26,19 @@ use PhpParser\Node\Scalar\Int_;
 use PhpParser\Node\Scalar\String_;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
+use PhpParser\Node\Stmt\Use_;
 use PhpParser\NodeVisitorAbstract;
 use PhpParser\Token;
 
 final class CollectorVisitor extends NodeVisitorAbstract
 {
-    /**
-     * @var ClassDto[]
-     */
+    /** @var ClassDto[] */
     public array $classes = [];
 
-    /**
-     * @var TokenDto[]
-     */
+    /** @var UseDto[] */
+    public array $uses;
+
+    /** @var TokenDto[] */
     public readonly array $tokens;
 
     private readonly NameContext $nameContext;
@@ -65,6 +66,9 @@ final class CollectorVisitor extends NodeVisitorAbstract
     {
         if ($node instanceof Class_) {
             $this->classes[] = $this->collectClass($node);
+        }
+        if ($node instanceof Use_) {
+            $this->collectUse($node);
         }
     }
 
@@ -256,5 +260,23 @@ final class CollectorVisitor extends NodeVisitorAbstract
             nullable: $nullable,
             annotationVar: $annotationVar,
         );
+    }
+
+    private function collectUse(Use_ $node): void
+    {
+        foreach ($node->uses as $use) {
+             $this->uses[] = new UseDto(
+                name: new NodeDto(
+                    pos: $use->name->getStartTokenPos(),
+                    end: $use->name->getEndTokenPos(),
+                    value: $use->name->toString(),
+                ),
+                alias: $use->alias ? new NodeDto(
+                    pos: $use->alias->getStartTokenPos(),
+                    end: $use->alias->getEndTokenPos(),
+                    value: $use->alias->toString(),
+                ) : null,
+            );
+        }
     }
 }
