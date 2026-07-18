@@ -197,11 +197,13 @@ final class CollectorVisitor extends NodeVisitorAbstract
 
         if ($type instanceof NullableType) {
             $nullable = true;
-            $typeValue = $type->type->name;
+            $typeValueNotResolved = $type->type;
         } else {
             $nullable = false;
-            $typeValue = $type->name;
+            $typeValueNotResolved = $type;
         }
+
+        $typeValue = $typeValueNotResolved instanceof Name ? $typeValueNotResolved->getAttribute('resolvedName')->name : $typeValueNotResolved->name;
 
         $docComment = $param->getDocComment();
         $comment = null;
